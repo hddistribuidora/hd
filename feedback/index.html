@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro de Feedback — HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F0F3F8;
+    --surface: #FFFFFF;
+    --surface2: #F7F8F5;
+    --border: #C8D6E8;
+    --border-focus: #2E4DA6;
+    --text: #1C201A;
+    --text-muted: #5E6659;
+    --text-hint: #9AA394;
+    --accent: #2E4DA6;
+    --accent-light: #E8EDF8;
+    --accent-text: #1A2D6B;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2.5rem 1rem 5rem;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .page-wrap { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .brand-icon img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+  .brand-text { display: flex; flex-direction: column; gap: 1px; }
+  .brand-name {
+    font-family: 'Lora', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2E4DA6;
+    line-height: 1.2;
+    display: block;
+  }
+  .brand-sub {
+    font-size: 12px;
+    color: var(--text-hint);
+    font-weight: 400;
+  }
+  .rec-id {
+    font-size: 11px;
+    color: var(--text-hint);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    letter-spacing: 0.05em;
+  }
+
+  /* Divider label */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-hint);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.85rem;
+    margin-top: 0.25rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; align-items: start; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; align-items: start; }
+
+  /* Fields */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field + .field { margin-top: 12px; }
+  .field label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-muted);
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--border-focus);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(46,77,166,0.1);
+  }
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA394' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-color: var(--surface2);
+    padding-right: 32px;
+    cursor: pointer;
+  }
+  .field textarea {
+    resize: vertical;
+    min-height: 110px;
+    line-height: 1.6;
+  }
+  .field textarea.tall { min-height: 140px; }
+
+  .field-hint {
+    font-size: 12px;
+    color: var(--text-hint);
+    font-style: italic;
+    margin-top: 2px;
+  }
+
+  /* Ciência botões */
+  .science-opts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .science-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+  }
+  .science-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .science-btn.on { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); font-weight: 500; }
+
+  /* Footer */
+  .form-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .btn-group { display: flex; gap: 8px; }
+  .btn {
+    padding: 10px 22px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s;
+    border: 1px solid transparent;
+  }
+  .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--surface2); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-danger { background: transparent; border-color: var(--border); color: #943030; font-size: 13px; padding: 7px 16px; }
+  .btn-danger:hover { background: #FEF2F2; border-color: #943030; }
+
+  /* Histórico */
+  .historico-section { margin-top: 2.5rem; }
+  .historico-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .historico-title {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-hint);
+  }
+  .count-badge {
+    background: var(--accent-light); color: var(--accent-text);
+    font-size: 11px; font-weight: 600;
+    padding: 2px 10px; border-radius: 999px;
+  }
+  .empty-state {
+    text-align: center; padding: 2rem;
+    color: var(--text-hint); font-size: 13px;
+    border: 1px dashed var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+  }
+  .hist-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    margin-bottom: 8px;
+    position: relative;
+    transition: border-color 0.12s;
+  }
+  .hist-item:hover { border-color: #C2C9BA; }
+  .hist-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .hist-nome { font-weight: 600; font-size: 14px; color: var(--text); }
+  .hist-tipo {
+    font-size: 11px; font-weight: 500;
+    background: var(--surface2); color: var(--text-muted);
+    padding: 2px 8px; border-radius: 4px;
+  }
+  .hist-data { font-size: 12px; color: var(--text-hint); margin-left: auto; }
+  .hist-body { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .hist-body b { color: var(--text); font-weight: 500; }
+  .hist-del {
+    position: absolute; top: 10px; right: 12px;
+    font-size: 17px; color: var(--text-hint);
+    cursor: pointer; background: none; border: none;
+    padding: 2px 5px; border-radius: 4px; line-height: 1;
+  }
+  .hist-del:hover { color: #943030; background: #FEF2F2; }
+
+  @media (max-width: 560px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .form-footer .btn-ghost, .historico-section { display: none; }
+    .card { break-inside: avoid; }
+  }
+  .rec-id { display: none !important; }
+  .count-badge { display: none !important; }
+  @media print { .no-print { display: none !important; } }
+</style>
+</head>
+<body>
+<!-- TELA DE LOGIN -->
+<div id="tela-login" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F0F3F8;padding:2rem 1rem;">
+  <div style="background:white;border:1px solid #C8D6E8;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+    <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:5px 12px;border-radius:8px;border:1.5px solid #2E4DA6;margin-bottom:1.5rem;transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'">← Início</a>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
+      <img src="../logo.jpg" style="width:44px;height:44px;border-radius:50%;object-fit:cover;" alt="HD Distribuidora"/>
+      <div>
+        <div style="font-family:'Lora',serif;font-size:1.05rem;font-weight:700;color:#2E4DA6;">Registro de Feedback</div>
+        <div style="font-size:0.78rem;color:#9AA394;margin-top:1px;">HD Distribuidora · Gestão de Pessoas</div>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Usuário</label>
+      <input type="text" id="inp-usuario" placeholder="seu usuário" autocomplete="username"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Senha</label>
+      <input type="password" id="inp-senha" placeholder="sua senha" autocomplete="current-password"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <button onclick="fazerLogin()" style="width:100%;padding:11px;background:#2E4DA6;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#3a6347'" onmouseout="this.style.background='#2E4DA6'">Entrar</button>
+    <div id="login-erro" style="display:none;background:#fdf0ee;border:1px solid #e8b4ae;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.85rem;color:#9b3a2e;margin-top:0.75rem;">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+<div id="tela-conteudo" style="display:none;">
+
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="brand">
+      <div class="brand-icon"><img src="../logo.jpg" alt="HD Distribuidora"></div>
+      <div class="brand-text">
+        <span class="brand-name">HD Distribuidora</span>
+        <span class="brand-sub">Registro de Feedback — Colaboradores</span>
+      </div>
+    </div>
+    <span class="rec-id" id="rec-id">—</span>
+  </div>
+
+  <!-- Identificação -->
+  <div class="card">
+    <div class="section-label">Identificação</div>
+
+    <div class="field">
+      <label>Colaborador</label>
+      <input type="text" id="colaborador" placeholder="Nome completo">
+    </div>
+    <div class="field">
+      <label>Responsável pelo feedback</label>
+      <input type="text" id="responsavel" placeholder="Quem conduz a conversa">
+    </div>
+    <div class="field">
+      <label>Cargo / área</label>
+      <input type="text" id="cargo" placeholder="Ex: Fisioterapeuta — Pilates">
+    </div>
+    <div class="field">
+      <label>Data</label>
+      <input type="date" id="data">
+    </div>
+    <div class="field">
+      <label>Tipo de feedback</label>
+      <select id="tipo">
+        <option value="">Selecione</option>
+        <option>Feedback 1:1</option>
+        <option>Feedback de desempenho</option>
+        <option>Feedback corretivo</option>
+        <option>Feedback de reconhecimento</option>
+        <option>PDI / Desenvolvimento</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Formato</label>
+      <select id="formato">
+        <option value="">Selecione</option>
+        <option>Presencial</option>
+        <option>Videoconferência</option>
+        <option>Somente escrito</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Motivo do feedback -->
+  <div class="card">
+    <div class="section-label">Motivo do feedback</div>
+    <div class="field">
+      <label>Por que este feedback está sendo realizado?</label>
+      <textarea id="motivo" class="tall" placeholder="Descreva o contexto que motivou este feedback: situações observadas, comportamentos, resultados ou período avaliado..."></textarea>
+      <span class="field-hint">Seja específico — exemplos concretos tornam o feedback mais claro e útil.</span>
+    </div>
+  </div>
+
+  <!-- O que ficou acertado -->
+  <div class="card">
+    <div class="section-label">O que ficou acertado</div>
+    <div class="field">
+      <label>Pontos positivos, conquistas e acordos desta conversa</label>
+      <textarea id="acertado" class="tall" placeholder="Descreva os pontos fortes observados, os resultados alcançados e os combinados definidos entre as partes..."></textarea>
+      <span class="field-hint">Inclua tanto reconhecimentos quanto próximos passos acordados.</span>
+    </div>
+  </div>
+
+  <!-- Ciência -->
+  <div class="card">
+    <div class="section-label">Ciência</div>
+
+    <div class="field">
+      <label>O colaborador tomou conhecimento deste feedback?</label>
+      <div class="science-opts">
+        <div class="science-btn" data-sci="Sim, ciente">Sim, ciente</div>
+        <div class="science-btn" data-sci="Não estava presente">Não estava presente</div>
+        <div class="science-btn" data-sci="Recebeu por escrito">Recebeu por escrito</div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Observação final</label>
+      <textarea id="obs-final" placeholder="Qualquer nota adicional do responsável pelo feedback ou comentário do colaborador..."></textarea>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <div class="btn-group">
+      <button class="btn btn-ghost" onclick="limpar()">Limpar</button>
+      <button class="btn btn-ghost" onclick="window.print()">Imprimir / PDF</button>
+    </div>
+    <button class="btn btn-primary" onclick="salvar()">Salvar no histórico ↓</button>
+  </div>
+
+  <!-- Histórico -->
+  <div class="historico-section">
+    <div class="historico-header">
+      <span class="historico-title">Histórico de registros</span>
+      <span class="count-badge" id="count-badge">0</span>
+    </div>
+    <div id="historico-lista"></div>
+    <div style="margin-top: 10px; text-align: right;">
+      <button class="btn btn-danger" onclick="exportar()">Exportar histórico (.txt)</button>
+    </div>
+  </div>
+
+  <!-- Painel: Histórico da Planilha -->
+  <div style="margin-top:2rem;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+      <span style="font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#9AA394;">Histórico da Planilha</span>
+      <button onclick="carregarPlanilha()" id="btn-carregar-planilha"
+        style="padding:7px 16px;background:#2E4DA6;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;"
+        onmouseover="this.style.background='#3a6347'" onmouseout="this.style.background='#2E4DA6'">
+        ↓ Carregar registros
+      </button>
+    </div>
+    <div style="margin-bottom:0.75rem;">
+      <input type="text" id="busca-planilha" placeholder="🔍  Buscar por colaborador, responsável ou motivo..." oninput="filtrarPlanilha()"
+        style="width:100%;padding:9px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;outline:none;display:none;"
+        onfocus="this.style.borderColor='#2E4DA6'" onblur="this.style.borderColor='#C8D6E8'">
+    </div>
+    <div id="planilha-lista" style="display:flex;flex-direction:column;gap:0.6rem;"></div>
+  </div>
+
+  <!-- Modal detalhe feedback -->
+  <div id="modal-fb" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:1000;align-items:flex-start;justify-content:center;padding:2rem 1rem;overflow-y:auto;">
+    <div style="background:white;border-radius:12px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);margin:auto;">
+      <div style="position:sticky;top:0;background:white;padding:1.25rem 1.5rem;border-bottom:1px solid #C8D6E8;display:flex;align-items:center;justify-content:space-between;z-index:10;">
+        <span style="font-family:'Lora',serif;font-size:1.1rem;font-weight:700;color:#2E4DA6;" id="modal-fb-titulo">Feedback</span>
+        <div style="display:flex;gap:0.5rem;">
+          <button onclick="imprimirFeedback()" style="padding:6px 14px;background:#2E4DA6;color:white;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;">🖨️ Imprimir</button>
+          <button onclick="fecharModalFb()" style="width:32px;height:32px;border-radius:50%;border:none;background:#F0F3F8;cursor:pointer;font-size:1.1rem;color:#5E6659;">✕</button>
+        </div>
+      </div>
+      <div id="modal-fb-body" style="padding:1.5rem;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let cienciaVal = '';
+  let registros = JSON.parse(localStorage.getItem('hddistribuidora_fb') || '[]');
+
+  function gerarId() {
+    const d = new Date();
+    return 'ZF-' + d.getFullYear().toString().slice(2) +
+      String(d.getMonth()+1).padStart(2,'0') +
+      String(d.getDate()).padStart(2,'0') + '-' +
+      String(d.getHours()).padStart(2,'0') +
+      String(d.getMinutes()).padStart(2,'0');
+  }
+
+  document.getElementById('rec-id').textContent = gerarId();
+  document.getElementById('data').valueAsDate = new Date();
+
+  document.querySelectorAll('.science-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      cienciaVal = b.dataset.sci;
+      document.querySelectorAll('.science-btn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+    });
+  });
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQLpig4MMObfBEb1NR7ww3q4c_EhaHIrYXB6d34pJYUmpydetWIEb8oVD9kKzhfTvZ/exec';
+
+  function salvar() {
+    const nome = document.getElementById('colaborador').value.trim();
+    const data = document.getElementById('data').value;
+    if (!nome || !data) { alert('Preencha ao menos o nome do colaborador e a data.'); return; }
+
+    const r = {
+      tipo: 'feedback',
+      id: gerarId(),
+      data,
+      proximo: '',
+      tipo_feedback: document.getElementById('tipo').value || '—',
+      colaborador: nome,
+      cargo: document.getElementById('cargo').value,
+      responsavel: document.getElementById('responsavel').value,
+      formato: document.getElementById('formato').value,
+      motivo: document.getElementById('motivo').value,
+      acertado: document.getElementById('acertado').value,
+      ciencia: cienciaVal || '—',
+      obsFinal: document.getElementById('obs-final').value,
+    };
+
+    registros.unshift(r);
+    localStorage.setItem('hddistribuidora_fb', JSON.stringify(registros));
+    renderHistorico();
+
+    const btnSalvar = document.querySelector('.btn-primary');
+    btnSalvar.textContent = 'Enviando...';
+    btnSalvar.disabled = true;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(r)
+    }).then(() => {
+      btnSalvar.textContent = 'Salvo ✓';
+      btnSalvar.style.background = '#1A2D6B';
+      setTimeout(() => {
+        btnSalvar.textContent = 'Salvar no histórico ↓';
+        btnSalvar.style.background = '';
+        btnSalvar.disabled = false;
+      }, 3000);
+    }).catch(() => {
+      btnSalvar.textContent = 'Salvar no histórico ↓';
+      btnSalvar.disabled = false;
+    });
+
+    limpar();
+    document.getElementById('rec-id').textContent = gerarId();
+    document.querySelector('.historico-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderHistorico() {
+    const lista = document.getElementById('historico-lista');
+    document.getElementById('count-badge').textContent = registros.length;
+
+    if (registros.length === 0) {
+      lista.innerHTML = '<div class="empty-state">Nenhum registro ainda. Preencha o formulário acima e salve.</div>';
+      return;
+    }
+
+    lista.innerHTML = registros.map((r, idx) => {
+      const fmtData = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      const fmtProx = r.proximo ? new Date(r.proximo + 'T12:00:00').toLocaleDateString('pt-BR') : null;
+      const motivo = r.motivo ? r.motivo.substring(0, 140) + (r.motivo.length > 140 ? '…' : '') : null;
+      const acertado = r.acertado ? r.acertado.substring(0, 140) + (r.acertado.length > 140 ? '…' : '') : null;
+
+      return `
+      <div class="hist-item">
+        <button class="hist-del" onclick="deletar(${idx})" title="Remover">×</button>
+        <div class="hist-top">
+          <span class="hist-nome">${r.colaborador}</span>
+          ${r.tipo !== '—' ? `<span class="hist-tipo">${r.tipo}</span>` : ''}
+          <span class="hist-data">${fmtData}${fmtProx ? ' → ' + fmtProx : ''}</span>
+        </div>
+        <div class="hist-body">
+          ${r.cargo ? `<b>Cargo:</b> ${r.cargo}${r.responsavel ? ' &nbsp;·&nbsp; <b>Resp.:</b> ' + r.responsavel : ''}<br>` : ''}
+          ${motivo ? `<b>Motivo:</b> ${motivo}<br>` : ''}
+          ${acertado ? `<b>Acertado:</b> ${acertado}<br>` : ''}
+          <b>Ciência:</b> ${r.ciencia}${r.obsFinal ? ' &nbsp;·&nbsp; ' + r.obsFinal.substring(0,80) : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function deletar(idx) {
+    if (!confirm('Remover este registro?')) return;
+    registros.splice(idx, 1);
+    localStorage.setItem('hddistribuidora_fb', JSON.stringify(registros));
+    renderHistorico();
+  }
+
+  function limpar() {
+    ['colaborador','cargo','responsavel','motivo','acertado','obs-final'].forEach(id => document.getElementById(id).value = '');
+    ['tipo','formato'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('data').valueAsDate = new Date();
+    document.querySelectorAll('.science-btn').forEach(b => b.classList.remove('on'));
+    cienciaVal = '';
+  }
+
+  function exportar() {
+    if (registros.length === 0) { alert('Nenhum registro para exportar.'); return; }
+    const txt = registros.map(r => {
+      const d = r.data ? new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      const p = r.proximo ? new Date(r.proximo + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return [
+        `=== ${r.id} ===`,
+        `Data: ${d} | Próximo: ${p} | Tipo: ${r.tipo} | Formato: ${r.formato}`,
+        `Colaborador: ${r.colaborador} | Cargo: ${r.cargo}`,
+        `Responsável: ${r.responsavel}`,
+        '',
+        `MOTIVO DO FEEDBACK\n${r.motivo || '—'}`,
+        '',
+        `O QUE FICOU ACERTADO\n${r.acertado || '—'}`,
+        '',
+        `Ciência: ${r.ciencia}`,
+        r.obsFinal ? `Observação final: ${r.obsFinal}` : '',
+      ].filter(l => l !== null).join('\n');
+    }).join('\n\n' + '─'.repeat(50) + '\n\n');
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `feedbacks_hddistribuidora_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+  }
+
+  renderHistorico();
+
+  // ── PAINEL PLANILHA ──────────────────────────────────────
+  const SCRIPT_URL_FB = 'https://script.google.com/macros/s/AKfycbwQLpig4MMObfBEb1NR7ww3q4c_EhaHIrYXB6d34pJYUmpydetWIEb8oVD9kKzhfTvZ/exec';
+  let todosFeedbacks = [];
+  let feedbackAtual = null;
+
+  async function carregarPlanilha() {
+    const btn = document.getElementById('btn-carregar-planilha');
+    const lista = document.getElementById('planilha-lista');
+    btn.textContent = 'Carregando...'; btn.disabled = true;
+    lista.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#9AA394;font-size:0.9rem;">Buscando registros...</div>';
+    try {
+      const resp = await fetch(SCRIPT_URL_FB + '?acao=listar');
+      const json = await resp.json();
+      if (!json.ok) throw new Error(json.erro);
+      todosFeedbacks = (json.dados || []).reverse();
+      document.getElementById('busca-planilha').style.display = todosFeedbacks.length ? 'block' : 'none';
+      renderPlanilha(todosFeedbacks);
+      btn.textContent = '↺ Atualizar';
+      // Oculta o histórico local quando a planilha carregar
+      const histLocal = document.querySelector('.historico-section');
+      if (histLocal) histLocal.style.display = 'none';
+    } catch(e) {
+      lista.innerHTML = '<div style="text-align:center;padding:1.5rem;color:#9b3a2e;font-size:0.9rem;">⚠️ Erro ao carregar. Verifique a conexão.</div>';
+      btn.textContent = '↓ Carregar registros';
+    }
+    btn.disabled = false;
+  }
+
+  function filtrarPlanilha() {
+    const q = document.getElementById('busca-planilha').value.toLowerCase().trim();
+    if (!q) { renderPlanilha(todosFeedbacks); return; }
+    const f = todosFeedbacks.filter(r => {
+      return ['Colaborador','Responsável','Motivo','Tipo','Cargo'].some(k => (r[k]||'').toLowerCase().includes(q));
+    });
+    renderPlanilha(f);
+  }
+
+  function renderPlanilha(registros) {
+    const lista = document.getElementById('planilha-lista');
+    if (!registros.length) {
+      lista.innerHTML = '<div style="text-align:center;padding:2rem;color:#9AA394;font-size:0.9rem;">📭 Nenhum registro encontrado.</div>';
+      return;
+    }
+    lista.innerHTML = registros.map((r, i) => {
+      const nome = r['Colaborador'] || '—';
+      const resp = r['Responsável'] || '—';
+      const tipo = r['Tipo'] || r['Tipo Feedback'] || '';
+      const data = r['Data'] || r['Timestamp'] || '';
+      const dataFmt = formatarDataFb(data);
+      const tipoBg = tipo === 'positivo' ? 'background:#e3f5e1;color:#2e7d32;'
+        : tipo === 'construtivo' ? 'background:#fdf0ee;color:#9b3a2e;'
+        : 'background:#E8EDF8;color:#2E4DA6;';
+      return `<div onclick="abrirFeedback(${i})" style="background:white;border:1px solid #C8D6E8;border-radius:10px;padding:0.9rem 1.1rem;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:space-between;"
+        onmouseover="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 2px 8px rgba(46,77,166,0.1)'"
+        onmouseout="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+        <div>
+          <div style="font-weight:700;font-size:0.9rem;color:#1C201A;">${nome}</div>
+          <div style="font-size:0.8rem;color:#5E6659;margin-top:2px;">Resp.: ${resp} · ${dataFmt}</div>
+        </div>
+        <span style="font-size:0.72rem;font-weight:700;padding:3px 10px;border-radius:20px;white-space:nowrap;${tipoBg}">${tipo || 'feedback'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function abrirFeedback(idx) {
+    feedbackAtual = todosFeedbacks[idx];
+    const r = feedbackAtual;
+    document.getElementById('modal-fb-titulo').textContent = (r['Colaborador'] || 'Feedback') + ' — ' + formatarDataFb(r['Data']);
+    const campos = [
+      ['Colaborador', r['Colaborador']], ['Data', formatarDataFb(r['Data'])],
+      ['Cargo', r['Cargo']], ['Responsável', r['Responsável']],
+      ['Tipo de Feedback', r['Tipo']], ['Formato', r['Formato']],
+      ['Motivo do Feedback', r['Motivo']],
+      ['O que ficou acertado', r['O que ficou acertado'] || r['Acertado']],
+      ['Ciência do Colaborador', r['Ciência'] || r['Ciencia']],
+      ['Observações Finais', r['Obs. Final'] || r['Obs Final'] || r['obsFinal']],
+    ];
+    document.getElementById('modal-fb-body').innerHTML = campos.map(([l,v]) => `
+      <div style="margin-bottom:1rem;">
+        <div style="font-size:0.75rem;font-weight:600;color:#9AA394;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.05em;">${l}</div>
+        <div style="font-size:0.9rem;color:#1C201A;line-height:1.5;">${v || '—'}</div>
+      </div>`).join('');
+    document.getElementById('modal-fb').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function fecharModalFb() {
+    document.getElementById('modal-fb').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const mfb = document.getElementById('modal-fb');
+    if (mfb) mfb.addEventListener('click', e => { if (e.target === mfb) fecharModalFb(); });
+  });
+
+  function imprimirFeedback() {
+    const r = feedbackAtual; if (!r) return;
+    const nome    = r['Colaborador'] || '—';
+    const data    = formatarDataFb(r['Data']);
+    const cargo   = r['Cargo'] || '—';
+    const resp    = r['Responsável'] || '—';
+    const tipo    = r['Tipo'] || '—';
+    const formato = r['Formato'] || '—';
+    const motivo  = r['Motivo'] || '—';
+    const acertado= r['O que ficou acertado'] || r['Acertado'] || '—';
+    const ciencia = r['Ciência'] || r['Ciencia'] || '—';
+    const obs     = r['Obs. Final'] || r['Obs Final'] || r['obsFinal'] || '';
+
+    const tipoBadgeColor = tipo === 'positivo' ? '#2e7d32' : tipo === 'construtivo' ? '#9b3a2e' : '#2E4DA6';
+    const tipoBadgeBg    = tipo === 'positivo' ? '#e3f5e1' : tipo === 'construtivo' ? '#fdf0ee' : '#E8EDF8';
+
+    const win = window.open('', '_blank');
+    win.document.write(`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Registro de Feedback — ${nome}</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: #F0F3F8; color: #1C201A; padding: 2rem; }
+  .header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
+  .header img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+  .header h1 { font-family: 'Lora', serif; font-size: 1.3rem; font-weight: 700; color: #2E4DA6; }
+  .header p { font-size: 0.82rem; color: #9AA394; margin-top: 2px; }
+  .card { background: white; border: 1px solid #C8D6E8; border-radius: 12px; padding: 1.5rem; margin-bottom: 1.25rem; }
+  .section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #9AA394; border-bottom: 1px solid #C8D6E8; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .field-label { font-size: 0.78rem; font-weight: 600; color: #9AA394; margin-bottom: 4px; }
+  .field-value { font-size: 0.9rem; color: #1C201A; line-height: 1.6; }
+  .field-value.long { white-space: pre-wrap; }
+  .badge { display: inline-block; padding: 3px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+  .full { grid-column: 1 / -1; }
+  @media print {
+    body { background: white; padding: 1rem; }
+    .card { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+  <div class="header">
+    <img src="../logo.jpg" alt="HD Distribuidora"/>
+    <div>
+      <h1>Registro de Feedback</h1>
+      <p>HD Distribuidora · Gestão de Pessoas</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Identificação</div>
+    <div class="grid-2">
+      <div>
+        <div class="field-label">Colaborador</div>
+        <div class="field-value">${nome}</div>
+      </div>
+      <div>
+        <div class="field-label">Data</div>
+        <div class="field-value">${data}</div>
+      </div>
+      <div>
+        <div class="field-label">Cargo / Área</div>
+        <div class="field-value">${cargo}</div>
+      </div>
+      <div>
+        <div class="field-label">Responsável pelo feedback</div>
+        <div class="field-value">${resp}</div>
+      </div>
+      <div>
+        <div class="field-label">Tipo de feedback</div>
+        <div class="field-value">
+          <span class="badge" style="background:${tipoBadgeBg};color:${tipoBadgeColor};">${tipo}</span>
+        </div>
+      </div>
+      <div>
+        <div class="field-label">Formato</div>
+        <div class="field-value">${formato}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Motivo do Feedback</div>
+    <div class="field-label">Por que este feedback está sendo realizado?</div>
+    <div class="field-value long">${motivo}</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">O que ficou acertado</div>
+    <div class="field-label">Pontos positivos, conquistas e acordos desta conversa</div>
+    <div class="field-value long">${acertado}</div>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Ciência do Colaborador</div>
+    <div class="field-value">${ciencia}</div>
+  </div>
+
+  ${obs ? `<div class="card">
+    <div class="section-label">Observações Finais</div>
+    <div class="field-value long">${obs}</div>
+  </div>` : ''}
+
+</body>
+</html>`);
+    win.document.close();
+    setTimeout(() => { win.focus(); win.print(); }, 800);
+  }
+
+  function formatarDataFb(d) {
+    if (!d) return '—';
+    const s = d.toString();
+    if (s.includes('-') && s.length >= 10) {
+      const parts = s.split('T')[0].split('-');
+      return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    return s.split(' ')[0] || s;
+  }
+
+
+</script>
+
+</div>
+<script>
+const USUARIOS_VALIDOS = {
+  'rh':      { senha: 'hdd@rh',      nome: 'RH',              perfil: 'rh'    },
+  'tais':    { senha: 'hdd@tais',    nome: 'Ta�s Huth',       perfil: 'rh'    },
+  'paulo':   { senha: 'hdd@paulo',   nome: 'Paulo Huth',      perfil: 'rh'    },
+  'renan':   { senha: 'hdd@renan',   nome: 'Renan Moraes',    perfil: 'rh'    },
+  'sandro':  { senha: 'hdd@sandro',  nome: 'Sandro Zanoello', perfil: 'lider' },
+  'juliana': { senha: 'hdd@juliana', nome: 'Juliana Siqueira',perfil: 'lider' },
+  'loren':   { senha: 'hdd@loren',   nome: 'Loren dos Santos',perfil: 'lider' },
+};,
+  'taiz':      { senha: 'zen@taiz',      nome: 'Taiz',      perfil: 'lider' },
+  'juliana':   { senha: 'zen@juliana',   nome: 'Juliana',   perfil: 'lider' },
+  'gustavo':   { senha: 'zen@gustavo',   nome: 'Gustavo',   perfil: 'lider' },
+  'lucas':     { senha: 'zen@lucas',     nome: 'Lucas',     perfil: 'lider' },
+  'anderson':  { senha: 'zen@anderson',  nome: 'Anderson',  perfil: 'lider' },
+  'guilherme': { senha: 'zen@guilherme', nome: 'Guilherme', perfil: 'lider' },
+  'viviane':   { senha: 'zen@viviane',   nome: 'Viviane',   perfil: 'lider' },
+  'rh':        { senha: 'zen@rh',        nome: 'RH',        perfil: 'rh'    },
+};
+function fazerLogin() {
+  const u = document.getElementById('inp-usuario').value.trim().toLowerCase();
+  const s = document.getElementById('inp-senha').value;
+  const usr = USUARIOS_VALIDOS[u];
+  if (!usr || usr.senha !== s) {
+    document.getElementById('login-erro').style.display = 'block';
+    return;
+  }
+  document.getElementById('login-erro').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('tela-conteudo').style.display = 'block';
+  // Oculta histórico local imediatamente após login
+  setTimeout(() => {
+    const h = document.querySelector('.historico-section');
+    if (h) h.style.display = 'none';
+  }, 50);
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('inp-usuario');
+  if (inp) inp.focus();
+});
+</script>
+</body>
+</html>
