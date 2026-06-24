@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Avaliação — Período de Experiência (Colaborador) | HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F0F3F8; --surface: #FFFFFF; --border: #C8D6E8; --border-focus: #2E4DA6;
+    --text: #1C201A; --text-muted: #5E6659; --text-hint: #9AA394;
+    --accent: #2E4DA6; --accent-light: #E8EDF8; --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); padding: 2rem 1rem 5rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+  .header-logo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+  .page-header h1 { font-family: 'Lora', serif; font-size: 1.4rem; font-weight: 700; color: var(--accent); line-height: 1.2; }
+  .page-header p { font-size: 0.85rem; color: var(--text-hint); margin-top: 2px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin-bottom: 1.25rem; }
+  .section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-hint); margin-bottom: 1.25rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
+  .field { margin-bottom: 1.1rem; }
+  .field:last-child { margin-bottom: 0; }
+  .field label { display: block; font-size: 0.875rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.4rem; }
+  .field input[type=text], .field input[type=date], .field select, .field textarea {
+    width: 100%; padding: 10px 13px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    background: var(--surface); transition: border-color 0.15s; outline: none;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(46,77,166,0.1); }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .radio-group { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.5rem; }
+  .radio-opt { display: flex !important; flex-direction: row !important; align-items: center !important; gap: 16px !important; cursor: pointer; padding: 0.5rem 0.75rem; border-radius: 6px; transition: background 0.12s; }
+  .radio-opt:hover { background: var(--accent-light); }
+  .radio-opt input[type=radio] { flex-shrink: 0 !important; width: 17px !important; height: 17px !important; margin: 0 !important; cursor: pointer; accent-color: #2E4DA6; appearance: auto; }
+  .radio-opt span { font-size: 0.9rem; color: var(--text); line-height: 1.5; }
+  .q-label { font-size: 0.9rem; font-weight: 600; color: var(--text); margin-bottom: 0.2rem; display: block; }
+  .required-star { color: #c0392b; margin-left: 2px; }
+  .q-separator { border: none; border-top: 1px solid var(--border); margin: 1.25rem 0; }
+  .form-footer { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 2rem; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 22px; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: white; }
+  .btn-primary:hover { background: #3a6347; }
+  .btn-primary:disabled { background: #a0b8a8; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: var(--accent); border: 1.5px solid var(--accent); }
+  .btn-ghost:hover { background: var(--accent-light); }
+  .notice { background: var(--accent-light); border: 1px solid #c3dac9; border-radius: var(--radius-sm); padding: 0.9rem 1rem; font-size: 0.85rem; color: #1A2D6B; margin-bottom: 1.5rem; line-height: 1.55; }
+  .error-msg { color: #c0392b; font-size: 0.8rem; margin-top: 4px; display: none; }
+  .toast { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #1A2D6B; color: white; padding: 12px 24px; border-radius: 8px; font-size: 0.9rem; font-weight: 600; z-index: 9999; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .toast.show { opacity: 1; }
+  @media print { .no-print { display: none !important; } }
+  @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+<div class="container">
+
+  <div class="page-header no-print">
+    <img src="../../logo.jpg" class="header-logo" alt="HD Distribuidora"/>
+    <div>
+      <h1>Avaliação — Período de Experiência</h1>
+      <p>Avaliação Colaborador · HD Distribuidora RH</p>
+    </div>
+  </div>
+
+  <div class="notice">
+    A Entrevista de Acompanhamento tem o objetivo de verificar a sua adaptação e satisfação no ambiente de trabalho durante o período de experiência. Responda da forma mais sincera possível — suas respostas nos ajudam a melhorar continuamente o ambiente de trabalho.
+  </div>
+
+  <!-- IDENTIFICAÇÃO -->
+  <div class="card">
+    <div class="section-label">Identificação</div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Nome <span class="required-star">*</span></label>
+        <input type="text" id="nome" placeholder="Nome completo" required>
+      </div>
+      <div class="field">
+        <label>Data <span class="required-star">*</span></label>
+        <input type="date" id="data" required>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Função <span class="required-star">*</span></label>
+        <input type="text" id="funcao" placeholder="Ex: Fisioterapeuta">
+      </div>
+      <div class="field">
+        <label>Responsável pelo acompanhamento <span class="required-star">*</span></label>
+        <input type="text" id="responsavel" placeholder="Nome do líder">
+      </div>
+    </div>
+  </div>
+
+  <!-- ADAPTAÇÃO À EMPRESA -->
+  <div class="card">
+    <div class="section-label">Adaptação à Empresa</div>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.25rem;">Essa seção é para que possamos entender como está sua adaptação no contexto geral da empresa e das suas atividades.</p>
+
+    <div class="field">
+      <span class="q-label">Como está sendo a sua adaptação às Normas, Horários e Faltas? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q1">
+        <label class="radio-opt"><input type="radio" name="q1" value="Excelente. Me adaptei bem às normas da empresa e aos horários de trabalho."><span>Excelente. Me adaptei bem às normas da empresa e aos horários de trabalho.</span></label>
+        <label class="radio-opt"><input type="radio" name="q1" value="Bom. Ainda estou me adaptando às normas e horários, mas acredito que estou no caminho certo."><span>Bom. Ainda estou me adaptando às normas e horários, mas acredito que estou no caminho certo.</span></label>
+        <label class="radio-opt"><input type="radio" name="q1" value="Regular. Ainda estou com dificuldades para cumprir as normas e horários da empresa."><span>Regular. Ainda estou com dificuldades para cumprir as normas e horários da empresa.</span></label>
+        <label class="radio-opt"><input type="radio" name="q1" value="Ruim. Não estou conseguindo me adaptar às normas e horários propostos."><span>Ruim. Não estou conseguindo me adaptar às normas e horários propostos.</span></label>
+      </div>
+      <div class="error-msg" id="err-q1">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <span class="q-label">Como está sendo a sua adaptação à Função? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q2">
+        <label class="radio-opt"><input type="radio" name="q2" value="Excelente. Estou bem adaptado(a) à função, realizando as tarefas com facilidade e eficiência."><span>Excelente. Estou bem adaptado(a) à função, realizando as tarefas com facilidade e eficiência.</span></label>
+        <label class="radio-opt"><input type="radio" name="q2" value="Boa. Estou me adaptando bem, mas ainda tenho algumas dificuldades em tarefas específicas."><span>Boa. Estou me adaptando bem, mas ainda tenho algumas dificuldades em tarefas específicas.</span></label>
+        <label class="radio-opt"><input type="radio" name="q2" value="Mais ou menos. Ainda estou com muitas dificuldades para realizar as atividades da minha função."><span>Mais ou menos. Ainda estou com muitas dificuldades para realizar as atividades da minha função.</span></label>
+        <label class="radio-opt"><input type="radio" name="q2" value="Ruim. Estou com sérias dificuldades na adaptação à minha função."><span>Ruim. Estou com sérias dificuldades na adaptação à minha função.</span></label>
+      </div>
+      <div class="error-msg" id="err-q2">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <span class="q-label">As atividades e rotinas do seu trabalho estão de acordo com o que foi apresentado no processo seletivo? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q6">
+        <label class="radio-opt"><input type="radio" name="q6" value="Sim, completamente. As atividades estão totalmente de acordo com o que foi apresentado."><span>Sim, completamente. As atividades estão totalmente de acordo com o que foi apresentado.</span></label>
+        <label class="radio-opt"><input type="radio" name="q6" value="Sim, em grande parte. Há algumas pequenas diferenças, mas nada que me preocupe."><span>Sim, em grande parte. Há algumas pequenas diferenças, mas nada que me preocupe.</span></label>
+        <label class="radio-opt"><input type="radio" name="q6" value="Parcialmente. Há diferenças significativas entre o que foi apresentado e a realidade."><span>Parcialmente. Há diferenças significativas entre o que foi apresentado e a realidade.</span></label>
+        <label class="radio-opt"><input type="radio" name="q6" value="Não. As atividades são bem diferentes do que me foi apresentado no processo seletivo."><span>Não. As atividades são bem diferentes do que me foi apresentado no processo seletivo.</span></label>
+      </div>
+      <div class="error-msg" id="err-q6">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <label>Você tem encontrado alguma dificuldade na execução de seu trabalho? <span class="required-star">*</span></label>
+      <textarea id="dificuldade" placeholder="Descreva as dificuldades encontradas..."></textarea>
+      <div class="error-msg" id="err-dificuldade">Campo obrigatório.</div>
+    </div>
+  </div>
+
+  <!-- AMBIENTE DE TRABALHO -->
+  <div class="card">
+    <div class="section-label">Ambiente de Trabalho</div>
+
+    <div class="field">
+      <span class="q-label">Como você tem se relacionado com os colegas? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q3">
+        <label class="radio-opt"><input type="radio" name="q3" value="De maneira excelente. Não tenho tido dificuldades de me enturmar ou de pedir ajuda."><span>De maneira excelente. Não tenho tido dificuldades de me enturmar ou de pedir ajuda.</span></label>
+        <label class="radio-opt"><input type="radio" name="q3" value="Bem. Ainda tem pessoas que não conheço, mas consigo ter uma boa interação."><span>Bem. Ainda tem pessoas que não conheço, mas consigo ter uma boa interação.</span></label>
+        <label class="radio-opt"><input type="radio" name="q3" value="Mais ou menos. Ainda estou com dificuldades para me enturmar com a equipe."><span>Mais ou menos. Ainda estou com dificuldades para me enturmar com a equipe.</span></label>
+        <label class="radio-opt"><input type="radio" name="q3" value="De maneira ruim. Não tenho conseguido me relacionar com os colegas. Preciso de apoio."><span>De maneira ruim. Não tenho conseguido me relacionar com os colegas. Preciso de apoio.</span></label>
+      </div>
+      <div class="error-msg" id="err-q3">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <span class="q-label">Os colegas têm contribuído no sentido de facilitar sua adaptação? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q4">
+        <label class="radio-opt"><input type="radio" name="q4" value="Sempre. Todos se mostram disponíveis a ajudar sempre que peço apoio."><span>Sempre. Todos se mostram disponíveis a ajudar sempre que peço apoio.</span></label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Às vezes. Alguns ainda têm dificuldades em ajudar, mas em sua grande maioria estão disponíveis."><span>Às vezes. Alguns ainda têm dificuldades em ajudar, mas em sua grande maioria estão disponíveis.</span></label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Raramente ajudam quando preciso."><span>Raramente ajudam quando preciso.</span></label>
+        <label class="radio-opt"><input type="radio" name="q4" value="Nenhum pouco. Não se mostram disponíveis para ajudar."><span>Nenhum pouco. Não se mostram disponíveis para ajudar.</span></label>
+      </div>
+      <div class="error-msg" id="err-q4">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <span class="q-label">Como é seu relacionamento com seu Líder? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q5">
+        <label class="radio-opt"><input type="radio" name="q5" value="Excelente. Tenho um ótimo relacionamento com meu líder. Ele(a) é acessível e sempre me apoia."><span>Excelente. Tenho um ótimo relacionamento com meu líder. Ele(a) é acessível e sempre me apoia.</span></label>
+        <label class="radio-opt"><input type="radio" name="q5" value="Bom. Tenho um bom relacionamento, mas ainda estamos nos conhecendo melhor."><span>Bom. Tenho um bom relacionamento, mas ainda estamos nos conhecendo melhor.</span></label>
+        <label class="radio-opt"><input type="radio" name="q5" value="Regular. Tenho algumas dificuldades de me comunicar com meu líder."><span>Regular. Tenho algumas dificuldades de me comunicar com meu líder.</span></label>
+        <label class="radio-opt"><input type="radio" name="q5" value="Ruim. Não tenho um bom relacionamento com meu líder. Preciso de apoio."><span>Ruim. Não tenho um bom relacionamento com meu líder. Preciso de apoio.</span></label>
+      </div>
+      <div class="error-msg" id="err-q5">Selecione uma opção.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <label>Como seu líder poderia te ajudar/auxiliar mais? <span class="required-star">*</span></label>
+      <textarea id="ajuda-lider" placeholder="Descreva como seu líder poderia te apoiar melhor..."></textarea>
+      <div class="error-msg" id="err-ajuda-lider">Campo obrigatório.</div>
+    </div>
+  </div>
+
+  <!-- SUGESTÕES -->
+  <div class="card">
+    <div class="section-label">Sugestões</div>
+
+    <div class="field">
+      <label>Você acha necessário receber algum treinamento adicional do sistema HD Distribuidora ou de alguma ferramenta que usamos? Em caso afirmativo, nos dê exemplos do que gostaria de aprender mais. <span class="required-star">*</span></label>
+      <textarea id="treinamento" placeholder="Descreva os treinamentos que gostaria de receber..."></textarea>
+      <div class="error-msg" id="err-treinamento">Campo obrigatório.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <label>Você gostaria de deixar alguma sugestão? <span class="required-star">*</span></label>
+      <textarea id="sugestao" placeholder="Seja para a HD Distribuidora ou para as atividades em geral..."></textarea>
+      <div class="error-msg" id="err-sugestao">Campo obrigatório.</div>
+    </div>
+
+    <hr class="q-separator">
+
+    <div class="field">
+      <span class="q-label">Você deseja seguir conosco? <span class="required-star">*</span></span>
+      <div class="radio-group" id="rg-q7">
+        <label class="radio-opt"><input type="radio" name="q7" value="Sim"><span>Sim</span></label>
+        <label class="radio-opt"><input type="radio" name="q7" value="Não"><span>Não</span></label>
+        <label class="radio-opt"><input type="radio" name="q7" value="Quero conversar com vocês."><span>Quero conversar com vocês.</span></label>
+      </div>
+      <div class="error-msg" id="err-q7">Selecione uma opção.</div>
+    </div>
+  </div>
+
+  <div class="form-footer no-print">
+    <button class="btn btn-ghost" onclick="window.print()">Imprimir / PDF</button>
+    <button class="btn btn-primary" id="btn-salvar" onclick="salvar()">Salvar registro ↓</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwxVpKU4NOZpzjPIg8hyev_HFmMuh3inNIMsep7qjBS-H9dllGHnsWoZTBO5PNYPd7P/exec';
+
+function mostrarToast(msg, erro) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = erro ? '#c0392b' : '#1A2D6B';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function validar() {
+  let ok = true;
+
+  // Campos de texto
+  ['nome','data','funcao','responsavel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el.value.trim()) { el.style.borderColor='#c0392b'; ok=false; }
+    else { el.style.borderColor=''; }
+  });
+
+  // Radio buttons
+  ['q1','q2','q3','q4','q5','q6','q7'].forEach(n => {
+    const sel = document.querySelector('input[name='+n+']:checked');
+    const err = document.getElementById('err-'+n);
+    if (!sel) { err.style.display='block'; ok=false; }
+    else { err.style.display='none'; }
+  });
+
+  // Textareas obrigatórias
+  ['dificuldade','ajuda-lider','treinamento','sugestao'].forEach(id => {
+    const el = document.getElementById(id);
+    const err = document.getElementById('err-'+id);
+    if (!el.value.trim()) { err.style.display='block'; el.style.borderColor='#c0392b'; ok=false; }
+    else { err.style.display='none'; el.style.borderColor=''; }
+  });
+
+  return ok;
+}
+
+async function salvar() {
+  if (!validar()) { mostrarToast('Preencha todos os campos obrigatórios.', true); return; }
+  const btn = document.getElementById('btn-salvar');
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  const dados = {
+    tipo: 'avaliacao_colaborador',
+    nome: document.getElementById('nome').value,
+    data: document.getElementById('data').value,
+    funcao: document.getElementById('funcao').value,
+    responsavel: document.getElementById('responsavel').value,
+    q1: document.querySelector('input[name=q1]:checked')?.value,
+    q2: document.querySelector('input[name=q2]:checked')?.value,
+    q6_adaptacao: document.querySelector('input[name=q6]:checked')?.value,
+    dificuldade: document.getElementById('dificuldade').value,
+    q3: document.querySelector('input[name=q3]:checked')?.value,
+    q4: document.querySelector('input[name=q4]:checked')?.value,
+    q5: document.querySelector('input[name=q5]:checked')?.value,
+    ajudaLider: document.getElementById('ajuda-lider').value,
+    treinamento: document.getElementById('treinamento').value,
+    sugestao: document.getElementById('sugestao').value,
+    q7: document.querySelector('input[name=q7]:checked')?.value,
+    timestamp: new Date().toLocaleString('pt-BR')
+  };
+  try {
+    await fetch(SCRIPT_URL, {method:'POST',mode:'no-cors',body:JSON.stringify(dados)});
+    mostrarToast('✓ Avaliação registrada com sucesso!', false);
+    setTimeout(() => window.location.href='../index.html', 2500);
+  } catch(e) {
+    mostrarToast('Erro ao salvar. Tente novamente.', true);
+    btn.disabled = false; btn.textContent = 'Salvar registro ↓';
+  }
+}
+</script>
+</body>
+</html>
