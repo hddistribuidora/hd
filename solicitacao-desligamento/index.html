@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitação de Desligamento — HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F0F3F8;
+    --surface: #FFFFFF;
+    --surface2: #F7F8F5;
+    --border: #C8D6E8;
+    --border-focus: #2E4DA6;
+    --text: #1C201A;
+    --text-muted: #5E6659;
+    --text-hint: #9AA394;
+    --accent: #2E4DA6;
+    --accent-light: #E8EDF8;
+    --accent-text: #1A2D6B;
+    --red: #943030;
+    --red-light: #FEF2F2;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 2.5rem 1rem 5rem;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .page-wrap { max-width: 760px; margin: 0 auto; }
+
+  /* Header */
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.75rem;
+  }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-icon {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .brand-name {
+    font-family: 'Lora', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #2E4DA6;
+    line-height: 1.2;
+    display: block;
+  }
+  .brand-sub { font-size: 0.85rem; color: var(--text-hint); margin-top: 2px; }
+  .rec-id {
+    font-size: 11px; color: var(--text-hint);
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 4px 10px; letter-spacing: 0.05em;
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-hint);
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1rem;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+  .mt { margin-top: 12px; }
+
+  /* Fields */
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif; font-size: 14px;
+    color: var(--text); background: var(--surface2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 13px; outline: none; width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--border-focus); background: #fff;
+    box-shadow: 0 0 0 3px rgba(46,77,166,0.1);
+  }
+  .field select {
+    appearance: none; cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA394' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center;
+    background-color: var(--surface2); padding-right: 32px;
+  }
+  .field textarea { resize: vertical; min-height: 90px; line-height: 1.6; }
+
+  /* Opção de checkbox estilizado */
+  .opt-group { display: flex; flex-direction: column; gap: 8px; }
+  .opt-item {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+  }
+  .opt-item:hover { border-color: var(--accent); background: var(--accent-light); }
+  .opt-item.on { border-color: var(--accent); background: var(--accent-light); }
+  .opt-box {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    background: var(--surface);
+    margin-top: 2px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .opt-item.on .opt-box { background: var(--accent); border-color: var(--accent); }
+  .opt-item.on .opt-box::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(45deg) translate(-1px, -1px); }
+  .opt-text { font-size: 13px; line-height: 1.5; color: var(--text-muted); }
+  .opt-text b { color: var(--text); font-weight: 500; }
+
+  /* Sub-seção dentro do card */
+  .subsection {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-hint);
+    margin: 1.2rem 0 0.75rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Aviso prévio */
+  .aviso-opts { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+  .aviso-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.12s; user-select: none;
+  }
+  .aviso-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .aviso-btn.on { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
+
+  /* Retorno semáforo */
+  .retorno-opts { display: flex; gap: 8px; margin-top: 4px; }
+  .ret-btn {
+    flex: 1; padding: 10px 8px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.12s; user-select: none;
+    text-align: center;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .ret-btn .dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--border);
+    transition: background 0.12s;
+  }
+  .ret-btn[data-ret="Verde"] .dot { background: #A3C78A; }
+  .ret-btn[data-ret="Amarelo"] .dot { background: #D4B84A; }
+  .ret-btn[data-ret="Vermelho"] .dot { background: #C97070; }
+  .ret-btn.on[data-ret="Verde"] { background: #EAF5E3; border-color: #3B7A2A; color: #2D5A1E; }
+  .ret-btn.on[data-ret="Amarelo"] { background: #FDF9E6; border-color: #B8972A; color: #856B1A; }
+  .ret-btn.on[data-ret="Vermelho"] { background: #FEF2F2; border-color: #943030; color: #6B1F1F; }
+  .ret-btn.on[data-ret="Verde"] .dot { background: #3B7A2A; }
+  .ret-btn.on[data-ret="Amarelo"] .dot { background: #B8972A; }
+  .ret-btn.on[data-ret="Vermelho"] .dot { background: #943030; }
+
+  .ret-legend {
+    display: flex; gap: 16px; margin-top: 8px;
+    font-size: 11px; color: var(--text-hint);
+  }
+  .ret-legend span { display: flex; align-items: center; gap: 5px; }
+  .ret-legend .d { width: 8px; height: 8px; border-radius: 50%; }
+
+  /* Footer */
+  .form-footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 1.5rem; flex-wrap: wrap; gap: 10px;
+  }
+  .btn-group { display: flex; gap: 8px; }
+  .btn {
+    padding: 10px 22px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: all 0.12s; border: 1px solid transparent;
+  }
+  .btn-ghost { background: var(--surface); border-color: var(--border); color: var(--text-muted); }
+  .btn-ghost:hover { background: var(--surface2); }
+  .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-danger { background: transparent; border-color: var(--border); color: var(--red); font-size: 13px; padding: 7px 16px; }
+  .btn-danger:hover { background: var(--red-light); border-color: var(--red); }
+
+  /* Histórico */
+  .historico-section { margin-top: 2.5rem; }
+  .historico-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .historico-title { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-hint); }
+  .count-badge { background: var(--accent-light); color: var(--accent-text); font-size: 11px; font-weight: 600; padding: 2px 10px; border-radius: 999px; }
+  .empty-state { text-align: center; padding: 2rem; color: var(--text-hint); font-size: 13px; border: 1px dashed var(--border); border-radius: var(--radius); background: var(--surface); }
+  .hist-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.1rem 1.25rem;
+    margin-bottom: 8px; position: relative; transition: border-color 0.12s;
+  }
+  .hist-item:hover { border-color: #C2C9BA; }
+  .hist-top { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
+  .hist-nome { font-weight: 600; font-size: 14px; color: var(--text); }
+  .hist-tag { font-size: 11px; font-weight: 500; background: var(--surface2); color: var(--text-muted); padding: 2px 8px; border-radius: 4px; }
+  .hist-data { font-size: 12px; color: var(--text-hint); margin-left: auto; }
+  .hist-body { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .hist-body b { color: var(--text); font-weight: 500; }
+  .hist-del { position: absolute; top: 10px; right: 12px; font-size: 17px; color: var(--text-hint); cursor: pointer; background: none; border: none; padding: 2px 5px; border-radius: 4px; line-height: 1; }
+  .hist-del:hover { color: var(--red); background: var(--red-light); }
+  .pill-verde { background: #EAF5E3; color: #2D5A1E; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .pill-amarelo { background: #FDF9E6; color: #856B1A; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .pill-vermelho { background: #FEF2F2; color: #6B1F1F; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+
+  @media (max-width: 560px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .page-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .retorno-opts { flex-direction: column; }
+  }
+
+  @media print {
+    body { background: white; padding: 0; }
+    .form-footer .btn-ghost, .historico-section { display: none; }
+    .card { break-inside: avoid; }
+  }
+  .rec-id { display: none !important; }
+  .count-badge { display: none !important; }
+  @media print { .no-print { display: none !important; } }
+</style>
+</head>
+<body>
+<!-- TELA DE LOGIN -->
+<div id="tela-login" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F0F3F8;padding:2rem 1rem;">
+  <div style="background:white;border:1px solid #C8D6E8;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+    <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:5px 12px;border-radius:8px;border:1.5px solid #2E4DA6;margin-bottom:1.5rem;transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'">← Início</a>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
+      <img src="../logo.jpg" style="width:44px;height:44px;border-radius:50%;object-fit:cover;" alt="HD Distribuidora"/>
+      <div>
+        <div style="font-family:'Lora',serif;font-size:1.05rem;font-weight:700;color:#2E4DA6;">Solicitação de Desligamento</div>
+        <div style="font-size:0.78rem;color:#9AA394;margin-top:1px;">HD Distribuidora · Gestão de Pessoas</div>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Usuário</label>
+      <input type="text" id="inp-usuario" placeholder="seu usuário" autocomplete="username"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Senha</label>
+      <input type="password" id="inp-senha" placeholder="sua senha" autocomplete="current-password"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <button onclick="fazerLogin()" style="width:100%;padding:11px;background:#2E4DA6;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#3a6347'" onmouseout="this.style.background='#2E4DA6'">Entrar</button>
+    <div id="login-erro" style="display:none;background:#fdf0ee;border:1px solid #e8b4ae;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.85rem;color:#9b3a2e;margin-top:0.75rem;">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+<div id="tela-conteudo" style="display:none;">
+
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+<div class="page-wrap">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="brand">
+      <div class="brand-icon"><img src="../logo.jpg" alt="HD Distribuidora" style="width:48px;height:48px;border-radius:50%;object-fit:cover;"></div>
+      <div>
+        <span class="brand-name">HD Distribuidora</span>
+        <span class="brand-sub">Solicitação de Desligamento</span>
+      </div>
+    </div>
+    <span class="rec-id" id="rec-id">—</span>
+  </div>
+
+  <!-- Dados funcionais -->
+  <div class="card">
+    <div class="section-label">Dados Funcionais</div>
+    <div class="grid-2" style="margin-bottom: 12px;">
+      <div class="field">
+        <label>Nome do colaborador(a)</label>
+        <input type="text" id="nome" placeholder="Nome completo">
+      </div>
+      <div class="field">
+        <label>Chefia imediata</label>
+        <input type="text" id="chefia" placeholder="Nome do gestor responsável">
+      </div>
+    </div>
+    <div class="grid-3">
+      <div class="field">
+        <label>Função atual</label>
+        <input type="text" id="funcao" placeholder="Ex: Fisioterapeuta">
+      </div>
+      <div class="field">
+        <label>Data de admissão</label>
+        <input type="date" id="admissao">
+      </div>
+      <div class="field">
+        <label>Data do desligamento</label>
+        <input type="date" id="data-deslig">
+      </div>
+    </div>
+  </div>
+
+  <!-- Formato de desligamento -->
+  <div class="card">
+    <div class="section-label">Formato de Desligamento</div>
+    <div class="opt-group" id="formato-group">
+      <div class="opt-item" data-grupo="formato" data-val="Extinção do Contrato de Experiência por Iniciativa do Colaborador">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Extinção do Contrato de Experiência por Iniciativa do Colaborador</b> — Rescisão antes do cumprimento dos 30, 60 ou 90 dias de experiência.</span>
+      </div>
+      <div class="opt-item" data-grupo="formato" data-val="Extinção do Contrato de Experiência por Iniciativa da Empresa">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Extinção do Contrato de Experiência por Iniciativa da Empresa</b> — Rescisão antes do cumprimento dos 30, 60 ou 90 dias de experiência.</span>
+      </div>
+      <div class="opt-item" data-grupo="formato" data-val="Término do Contrato de Experiência">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Término do Contrato de Experiência</b> — Rescisão de trabalho no término do contrato, concluindo os 30, 60 ou 90 dias do período de experiência.</span>
+      </div>
+      <div class="opt-item" data-grupo="formato" data-val="Rescisão por Iniciativa da Empresa">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Rescisão por Iniciativa da Empresa</b> — Rescisão sem justa causa a qualquer tempo, fora do período de experiência.</span>
+      </div>
+      <div class="opt-item" data-grupo="formato" data-val="Rescisão por Iniciativa do Colaborador">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Rescisão por Iniciativa do Colaborador</b> — Rescisão sem justa causa a qualquer tempo, fora do período de experiência.</span>
+      </div>
+      <div class="opt-item" data-grupo="formato" data-val="Redução de Quadro">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Redução de Quadro</b> — Rescisão por iniciativa da empresa com decisão estratégica autorizada pela diretoria.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivo do desligamento -->
+  <div class="card">
+    <div class="section-label">Motivo do Desligamento</div>
+
+    <div class="subsection">Por parte da Empresa</div>
+    <div class="opt-group" id="motivo-empresa-group">
+      <div class="opt-item" data-grupo="motivo" data-val="Desídia">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Desídia</b> — Desleixo no desenvolvimento da função, incluindo excesso de faltas e/ou ausências durante os turnos.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Insubordinação">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Insubordinação</b> — Não cumprimento de uma ordem ou ainda desacato e desrespeito.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Falta de Comprometimento">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Falta de Comprometimento</b> — Falta de compromisso, interesse, vontade ou descuido no exercício da função.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Atestados">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Atestados</b> — Apresentação de diversos atestados consecutivos ou com intuito de não comparecer ao trabalho.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Relacionamento">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Relacionamento</b> — Relação entre empresa e colaborador gerando conflito no ambiente de trabalho (discussões, fofocas, intrigas).</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Redução de Quadro">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Redução de Quadro</b> — Decisão colegiada do conselho administrativo visando à estratégia da empresa.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Baixa Performance">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Baixa Performance</b> — Rendimento do colaborador muito abaixo do desejado para a função.</span>
+      </div>
+    </div>
+
+    <div class="subsection" style="margin-top: 1.25rem;">Por parte do Colaborador</div>
+    <div class="opt-group" id="motivo-colab-group">
+      <div class="opt-item" data-grupo="motivo" data-val="Mudança de Cidade">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Mudança de Cidade</b> — Desligamento por necessidade de mudança de cidade, estado ou país.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Insatisfação Salarial">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Insatisfação Salarial</b> — Desligamento por insatisfação com a remuneração recebida.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Outro Emprego">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Outro Emprego</b> — Desligamento para iniciar em outra empresa.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Problemas de Saúde">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Problemas de Saúde</b> — Desligamento por motivos relacionados à saúde própria ou de familiar.</span>
+      </div>
+      <div class="opt-item" data-grupo="motivo" data-val="Relacionamento">
+        <div class="opt-box"></div>
+        <span class="opt-text"><b>Relacionamento</b> — Relação com a empresa ou equipe não está mais satisfatória.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aviso prévio e considerações -->
+  <div class="card">
+    <div class="section-label">Aviso Prévio e Considerações</div>
+
+    <div class="field" style="margin-bottom: 16px;">
+      <label>Gestor solicita</label>
+      <div class="aviso-opts">
+        <div class="aviso-btn" data-aviso="Cumprimento do Aviso Prévio">Cumprimento do Aviso Prévio</div>
+        <div class="aviso-btn" data-aviso="Dispensa do Aviso Prévio">Dispensa do Aviso Prévio</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-bottom: 16px;">
+      <label>Considerações sobre o desligamento</label>
+      <textarea id="consideracoes" placeholder="Descreva detalhes relevantes sobre o desligamento, contexto da decisão ou informações adicionais..."></textarea>
+    </div>
+
+    <div class="field" style="margin-bottom: 16px;">
+      <label>Comentários sobre o colaborador</label>
+      <textarea id="comentarios" placeholder="Observações sobre o perfil, desempenho ou conduta do colaborador durante o período na empresa..."></textarea>
+    </div>
+
+    <div class="field" style="margin-bottom: 16px;">
+      <label>Possibilidade de retorno à empresa futuramente</label>
+      <div class="retorno-opts">
+        <div class="ret-btn" data-ret="Verde"><span class="dot"></span> Verde</div>
+        <div class="ret-btn" data-ret="Amarelo"><span class="dot"></span> Amarelo</div>
+        <div class="ret-btn" data-ret="Vermelho"><span class="dot"></span> Vermelho</div>
+      </div>
+      <div class="ret-legend">
+        <span><span class="d" style="background:#3B7A2A"></span> Verde — indicado para retorno</span>
+        <span><span class="d" style="background:#B8972A"></span> Amarelo — retorno a avaliar</span>
+        <span><span class="d" style="background:#943030"></span> Vermelho — não indicado</span>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="field">
+        <label>Valor total da rescisão (R$)</label>
+        <input type="text" id="valor" placeholder="0,00">
+      </div>
+      <div class="field">
+        <label>Forma de pagamento</label>
+        <select id="pagamento">
+          <option value="">Selecione</option>
+          <option>Depósito bancário</option>
+          <option>PIX</option>
+          <option>Dinheiro</option>
+          <option>Cheque</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assinaturas -->
+  <div class="card">
+    <div class="section-label">Responsáveis</div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Responsável RH</label>
+        <input type="text" id="rh" placeholder="Nome do responsável de RH">
+      </div>
+      <div class="field">
+        <label>Gestor / Chefia</label>
+        <input type="text" id="gestor" placeholder="Nome do gestor responsável">
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="form-footer">
+    <div class="btn-group">
+      <button class="btn btn-ghost" onclick="limpar()">Limpar</button>
+      <button class="btn btn-ghost" onclick="window.print()">Imprimir / PDF</button>
+    </div>
+    <button class="btn btn-primary" onclick="salvar()">Salvar no histórico ↓</button>
+  </div>
+
+  <!-- Histórico -->
+  <div class="historico-section">
+    <div class="historico-header">
+      <span class="historico-title">Histórico de registros</span>
+      <span class="count-badge" id="count-badge">0</span>
+    </div>
+    <div id="historico-lista"></div>
+    <div style="margin-top: 10px; text-align: right;">
+      <button class="btn btn-danger" onclick="exportar()">Exportar histórico (.txt)</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let formatoVal = '';
+  let motivoVal = '';
+  let avisoVal = '';
+  let retornoVal = '';
+  let registros = JSON.parse(localStorage.getItem('hddistribuidora_desl') || '[]');
+
+  function gerarId() {
+    const d = new Date();
+    return 'DS-' + d.getFullYear().toString().slice(2) +
+      String(d.getMonth()+1).padStart(2,'0') +
+      String(d.getDate()).padStart(2,'0') + '-' +
+      String(d.getHours()).padStart(2,'0') +
+      String(d.getMinutes()).padStart(2,'0');
+  }
+  document.getElementById('rec-id').textContent = gerarId();
+  document.getElementById('data-deslig').valueAsDate = new Date();
+
+  // Seleção única por grupo
+  document.querySelectorAll('.opt-item[data-grupo="formato"]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.opt-item[data-grupo="formato"]').forEach(x => x.classList.remove('on'));
+      el.classList.add('on');
+      formatoVal = el.dataset.val;
+    });
+  });
+
+  document.querySelectorAll('.opt-item[data-grupo="motivo"]').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('.opt-item[data-grupo="motivo"]').forEach(x => x.classList.remove('on'));
+      el.classList.add('on');
+      motivoVal = el.dataset.val;
+    });
+  });
+
+  document.querySelectorAll('.aviso-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.aviso-btn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      avisoVal = b.dataset.aviso;
+    });
+  });
+
+  document.querySelectorAll('.ret-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.ret-btn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      retornoVal = b.dataset.ret;
+    });
+  });
+
+  /* v3 */
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLzUYX00C4JXxUKntHFX8ASxEAd_iOLnZ9g5cFmqWWTQ6E11ZjGE0VEfc2S4apIZ3vPQ/exec';
+
+  function salvar() {
+    const nome = document.getElementById('nome').value.trim();
+    const data = document.getElementById('data-deslig').value;
+    if (!nome || !data) { alert('Preencha ao menos o nome do colaborador e a data de desligamento.'); return; }
+
+    const r = {
+      id: gerarId(),
+      data,
+      proximo: '',
+      tipo: '—',
+      nome,
+      funcao: document.getElementById('funcao').value,
+      responsavel: document.getElementById('chefia').value,
+      formato: '—',
+      formatoDeslig: formatoVal || '—',
+      motivo: motivoVal || '—',
+      aviso: avisoVal || '—',
+      consideracoes: document.getElementById('consideracoes').value,
+      comentarios: document.getElementById('comentarios').value,
+      retorno: retornoVal || '—',
+      valor: document.getElementById('valor').value,
+      pagamento: document.getElementById('pagamento').value,
+      rh: document.getElementById('rh').value,
+      gestor: document.getElementById('gestor').value,
+    };
+
+    // Salva localmente
+    registros.unshift(r);
+    localStorage.setItem('hddistribuidora_desl', JSON.stringify(registros));
+    renderHistorico();
+
+    // Envia para Google Sheets
+    const btnSalvar = document.querySelector('.btn-primary');
+    btnSalvar.textContent = 'Enviando...';
+    btnSalvar.disabled = true;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(r)
+    }).then(() => {
+      btnSalvar.textContent = 'Salvo na planilha ✓';
+      btnSalvar.style.background = '#1A2D6B';
+      setTimeout(() => {
+        btnSalvar.textContent = 'Salvar no histórico ↓';
+        btnSalvar.style.background = '';
+        btnSalvar.disabled = false;
+      }, 3000);
+    }).catch(() => {
+      btnSalvar.textContent = 'Salvar no histórico ↓';
+      btnSalvar.disabled = false;
+      alert('Salvo localmente, mas houve erro ao enviar para a planilha. Verifique sua conexão.');
+    });
+
+    limpar();
+    document.getElementById('rec-id').textContent = gerarId();
+    document.querySelector('.historico-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderHistorico() {
+    const lista = document.getElementById('historico-lista');
+    document.getElementById('count-badge').textContent = registros.length;
+    if (registros.length === 0) {
+      lista.innerHTML = '<div class="empty-state">Nenhum registro ainda.</div>';
+      return;
+    }
+    lista.innerHTML = registros.map((r, idx) => {
+      const d = r.dataDeslig ? new Date(r.dataDeslig + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      const retClass = r.retorno === 'Verde' ? 'pill-verde' : r.retorno === 'Amarelo' ? 'pill-amarelo' : r.retorno === 'Vermelho' ? 'pill-vermelho' : '';
+      return `
+      <div class="hist-item">
+        <button class="hist-del" onclick="deletar(${idx})" title="Remover">×</button>
+        <div class="hist-top">
+          <span class="hist-nome">${r.nome}</span>
+          ${r.funcao ? `<span class="hist-tag">${r.funcao}</span>` : ''}
+          ${r.retorno && r.retorno !== '—' ? `<span class="${retClass}">Retorno: ${r.retorno}</span>` : ''}
+          <span class="hist-data">${d}</span>
+        </div>
+        <div class="hist-body">
+          ${r.chefia ? `<b>Chefia:</b> ${r.chefia}<br>` : ''}
+          ${r.formato !== '—' ? `<b>Formato:</b> ${r.formato}<br>` : ''}
+          ${r.motivo !== '—' ? `<b>Motivo:</b> ${r.motivo}<br>` : ''}
+          ${r.aviso !== '—' ? `<b>Aviso prévio:</b> ${r.aviso}<br>` : ''}
+          ${r.valor ? `<b>Valor rescisão:</b> R$ ${r.valor}${r.pagamento ? ' — ' + r.pagamento : ''}<br>` : ''}
+          ${r.rh || r.gestor ? `<b>Resp.:</b> RH: ${r.rh || '—'} · Gestor: ${r.gestor || '—'}` : ''}
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function deletar(idx) {
+    if (!confirm('Remover este registro?')) return;
+    registros.splice(idx, 1);
+    localStorage.setItem('hddistribuidora_desl', JSON.stringify(registros));
+    renderHistorico();
+  }
+
+  function limpar() {
+    ['nome','chefia','funcao','admissao','data-deslig','consideracoes','comentarios','valor','rh','gestor'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    document.getElementById('pagamento').value = '';
+    document.getElementById('data-deslig').valueAsDate = new Date();
+    document.querySelectorAll('.opt-item').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.aviso-btn').forEach(x => x.classList.remove('on'));
+    document.querySelectorAll('.ret-btn').forEach(x => x.classList.remove('on'));
+    formatoVal = ''; motivoVal = ''; avisoVal = ''; retornoVal = '';
+  }
+
+  function exportar() {
+    if (registros.length === 0) { alert('Nenhum registro para exportar.'); return; }
+    const txt = registros.map(r => {
+      const d = r.dataDeslig ? new Date(r.dataDeslig + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      const adm = r.admissao ? new Date(r.admissao + 'T12:00:00').toLocaleDateString('pt-BR') : '—';
+      return [
+        `=== ${r.id} ===`,
+        `Colaborador: ${r.nome} | Função: ${r.funcao}`,
+        `Chefia: ${r.chefia} | Admissão: ${adm} | Desligamento: ${d}`,
+        `Formato: ${r.formato}`,
+        `Motivo: ${r.motivo}`,
+        `Aviso prévio: ${r.aviso}`,
+        r.consideracoes ? `\nConsiderações:\n${r.consideracoes}` : '',
+        r.comentarios ? `\nComentários sobre o colaborador:\n${r.comentarios}` : '',
+        `\nRetorno à empresa: ${r.retorno}`,
+        r.valor ? `Valor rescisão: R$ ${r.valor} — ${r.pagamento}` : '',
+        `Responsável RH: ${r.rh} | Gestor: ${r.gestor}`,
+      ].filter(Boolean).join('\n');
+    }).join('\n\n' + '─'.repeat(50) + '\n\n');
+
+    const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `desligamentos_hddistribuidora_${new Date().toISOString().slice(0,10)}.txt`;
+    a.click();
+  }
+
+  renderHistorico();
+</script>
+
+</div>
+<script>
+const USUARIOS_VALIDOS = {
+  'rh':      { senha: 'hdd@rh',      nome: 'RH',              perfil: 'rh'    },
+  'tais':    { senha: 'hdd@tais',    nome: 'Ta�s Huth',       perfil: 'rh'    },
+  'paulo':   { senha: 'hdd@paulo',   nome: 'Paulo Huth',      perfil: 'rh'    },
+  'renan':   { senha: 'hdd@renan',   nome: 'Renan Moraes',    perfil: 'rh'    },
+  'sandro':  { senha: 'hdd@sandro',  nome: 'Sandro Zanoello', perfil: 'lider' },
+  'juliana': { senha: 'hdd@juliana', nome: 'Juliana Siqueira',perfil: 'lider' },
+  'loren':   { senha: 'hdd@loren',   nome: 'Loren dos Santos',perfil: 'lider' },
+};,
+  'taiz':      { senha: 'zen@taiz',      nome: 'Taiz',      perfil: 'lider' },
+  'juliana':   { senha: 'zen@juliana',   nome: 'Juliana',   perfil: 'lider' },
+  'gustavo':   { senha: 'zen@gustavo',   nome: 'Gustavo',   perfil: 'lider' },
+  'lucas':     { senha: 'zen@lucas',     nome: 'Lucas',     perfil: 'lider' },
+  'anderson':  { senha: 'zen@anderson',  nome: 'Anderson',  perfil: 'lider' },
+  'guilherme': { senha: 'zen@guilherme', nome: 'Guilherme', perfil: 'lider' },
+  'viviane':   { senha: 'zen@viviane',   nome: 'Viviane',   perfil: 'lider' },
+  'rh':        { senha: 'zen@rh',        nome: 'RH',        perfil: 'rh'    },
+};
+function fazerLogin() {
+  const u = document.getElementById('inp-usuario').value.trim().toLowerCase();
+  const s = document.getElementById('inp-senha').value;
+  const usr = USUARIOS_VALIDOS[u];
+  if (!usr || usr.senha !== s) {
+    document.getElementById('login-erro').style.display = 'block';
+    return;
+  }
+  document.getElementById('login-erro').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('tela-conteudo').style.display = 'block';
+  const badge = document.getElementById('usuario-logado');
+  if (badge) badge.textContent = usr.nome;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('inp-usuario');
+  if (inp) inp.focus();
+});
+</script>
+</body>
+</html>
