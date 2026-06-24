@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha de Admissão — Admin HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--border-focus:#2E4DA6;
+  --text:#1C201A;--text-muted:#5E6659;--text-hint:#9AA394;
+  --accent:#2E4DA6;--accent-light:#E8EDF8;--accent-text:#1A2D6B;
+  --radius:14px;--radius-sm:8px;
+}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);padding:1.5rem 1rem 5rem;font-size:15px;line-height:1.65;}.container{max-width:760px;margin:0 auto;}
+.page-header{display:flex;align-items:center;gap:1rem;margin-bottom:1.75rem;}
+.header-logo{width:52px;height:52px;border-radius:50%;object-fit:cover;flex-shrink:0;}
+.page-header h1{font-family:"Lora",serif;font-size:1.4rem;font-weight:700;color:var(--accent);line-height:1.2;}
+.page-header p{font-size:0.85rem;color:var(--text-hint);margin-top:2px;}
+.back-btn{display:inline-flex;align-items:center;gap:6px;font-family:"DM Sans",sans-serif;font-size:0.82rem;font-weight:600;color:var(--accent);text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid var(--accent);background:white;transition:all 0.15s;margin-bottom:1.5rem;}
+.back-btn:hover{background:var(--accent-light);}
+.page-wrap{max-width:760px;margin:0 auto;padding:1.5rem 1rem;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1rem;}
+.section-label{font-size:10px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-hint);display:flex;align-items:center;gap:10px;margin-bottom:1rem;}
+.section-label::after{content:"";flex:1;height:1px;background:var(--border);}
+.subsection{font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-hint);margin:1.25rem 0 0.75rem;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+.field:last-child{margin-bottom:0;}
+.field label{font-size:12px;font-weight:500;color:var(--text-muted);}
+.field input,.field select,.field textarea{font-family:"DM Sans",sans-serif;font-size:14px;color:var(--text);background:#F7F8F5;border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 13px;outline:none;width:100%;transition:border-color 0.15s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--border-focus);background:#fff;box-shadow:0 0 0 3px rgba(46,77,166,0.1);}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA394' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:#F7F8F5;padding-right:32px;cursor:pointer;}
+.field textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.field-readonly{background:#F0EDE7!important;color:var(--text-muted)!important;cursor:default;}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;}
+.radio-btn{padding:7px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:#F7F8F5;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all 0.12s;user-select:none;}
+.radio-btn:hover{border-color:var(--accent);color:var(--accent);}
+.radio-btn.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent-text);}
+.btn-group{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;}
+.btn{padding:10px 22px;border-radius:var(--radius-sm);font-family:"DM Sans",sans-serif;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.12s;border:1px solid transparent;}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent);}
+.btn-primary:hover{opacity:0.88;}
+.btn-ghost{background:var(--surface);border-color:var(--border);color:var(--text-muted);}
+.btn-ghost:hover{background:var(--bg);}
+.btn-pdf{background:#185F8A;color:#fff;border-color:#185F8A;}
+.btn-pdf:hover{opacity:0.88;}
+.ficha-item{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface);margin-bottom:8px;cursor:pointer;transition:all 0.12s;}
+.ficha-item:hover{border-color:var(--accent);background:var(--accent-light);}
+.ficha-nome{font-size:14px;font-weight:500;color:var(--text);}
+.ficha-data{font-size:12px;color:var(--text-hint);}
+.ficha-arrow{color:var(--text-hint);font-size:16px;}
+.loading{text-align:center;padding:2rem;color:var(--text-hint);font-size:14px;}
+.empty{text-align:center;padding:2rem;color:var(--text-hint);font-size:14px;border:1px dashed var(--border);border-radius:var(--radius);}
+.alert-info{background:var(--accent-light);border:1px solid rgba(46,77,166,0.25);border-radius:10px;padding:1rem 1.25rem;font-size:13px;color:var(--accent-text);margin-bottom:1rem;}
+
+
+/* PDF */
+@media print {
+  @page { margin: 1.5cm; size: A4; }
+  body { background: white; padding: 0; font-size: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .no-print { display: none !important; }
+  .card { border: 1px solid #ccc; border-radius: 0; padding: 1rem; margin-bottom: 0.5rem; page-break-inside: avoid; }
+  .section-label { font-size: 9px; }
+  .subsection { font-size: 9px; }
+  .field label { font-size: 10px; }
+  .field input, .field select, .field textarea { border: 1px solid #ccc; background: white !important; padding: 4px 6px; font-size: 11px; }
+  .field-readonly { background: #f5f5f5 !important; }
+  .pdf-header { display: flex !important; align-items: center; gap: 16px; border-bottom: 2px solid #2E4DA6; padding-bottom: 1rem; margin-bottom: 1rem; }
+  .pdf-logo { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; }
+  .pdf-title { font-family: "Lora", serif; font-size: 18px; font-weight: 600; }
+  .pdf-sub { font-size: 11px; color: #666; }
+  .radio-group { display: flex; gap: 6px; }
+  .radio-btn { padding: 3px 10px; font-size: 11px; border: 1px solid #ccc; color: #aaa; background: white; }
+  .radio-btn.on { background: #1A2D6B !important; border-color: #1A2D6B !important; color: #fff !important; font-weight: 600; }
+  .grid-2, .grid-3 { gap: 8px; }
+  .ficha-item, .alert-info, #select-screen { display: none !important; }
+}
+.pdf-header{display:none;}
+@media(max-width:560px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<!-- TELA DE LOGIN -->
+<div id="tela-login" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#F0F3F8;padding:2rem 1rem;">
+  <div style="background:white;border:1px solid #C8D6E8;border-radius:12px;padding:2.5rem 2rem;width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+    <a href="../index.html" style="display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:5px 12px;border-radius:8px;border:1.5px solid #2E4DA6;margin-bottom:1.5rem;transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'">← Início</a>
+    <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.75rem;">
+      <img src="../logo.jpg" style="width:44px;height:44px;border-radius:50%;object-fit:cover;" alt="HD Distribuidora"/>
+      <div>
+        <div style="font-family:'Lora',serif;font-size:1.05rem;font-weight:700;color:#2E4DA6;">Admissão — Admin</div>
+        <div style="font-size:0.78rem;color:#9AA394;margin-top:1px;">HD Distribuidora · Gestão de Pessoas</div>
+      </div>
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Usuário</label>
+      <input type="text" id="inp-usuario" placeholder="seu usuário" autocomplete="username"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <div style="margin-bottom:1rem;">
+      <label style="display:block;font-size:0.82rem;font-weight:600;color:#5E6659;margin-bottom:0.35rem;">Senha</label>
+      <input type="password" id="inp-senha" placeholder="sua senha" autocomplete="current-password"
+        style="width:100%;padding:10px 13px;border:1px solid #C8D6E8;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;"
+        onkeydown="if(event.key==='Enter')fazerLogin()"
+        onfocus="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 0 0 3px rgba(46,77,166,0.1)'"
+        onblur="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
+    </div>
+    <button onclick="fazerLogin()" style="width:100%;padding:11px;background:#2E4DA6;color:white;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:600;cursor:pointer;" onmouseover="this.style.background='#3a6347'" onmouseout="this.style.background='#2E4DA6'">Entrar</button>
+    <div id="login-erro" style="display:none;background:#fdf0ee;border:1px solid #e8b4ae;border-radius:8px;padding:0.6rem 0.9rem;font-size:0.85rem;color:#9b3a2e;margin-top:0.75rem;">Usuário ou senha incorretos.</div>
+  </div>
+</div>
+<div id="tela-conteudo" style="display:none;">
+
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+
+<div class="container">
+    <div class="page-header no-print">
+    <img src="../logo.jpg" class="header-logo" alt="HD Distribuidora"/>
+    <div>
+      <h1>HD Distribuidora — Admin RH</h1>
+      <p>Ficha de Cadastro de Empregado</p>
+    </div>
+  </div>
+
+
+
+  <!-- TELA DE SELEÇÃO -->
+  <div id="select-screen">
+    <div class="card">
+      <div class="section-label">Fichas recebidas</div>
+      <div class="alert-info">Clique em "Atualizar" para carregar as fichas enviadas pelos colaboradores. Selecione uma para completar os dados da empresa e gerar o PDF.</div>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="carregarFichas()">↻ Atualizar fichas</button>
+        <button class="btn btn-ghost" onclick="novaFicha()">+ Preencher manualmente</button>
+      </div>
+      <div id="lista-fichas"><div class="empty">Clique em "Atualizar fichas" para carregar.</div></div>
+    </div>
+  </div>
+
+  <!-- FICHA COMPLETA -->
+  <div id="form-screen" style="display:none;">
+
+    <div class="pdf-header">
+      <img src="../logo.jpg" alt="HD Distribuidora" class="pdf-logo">
+      <div>
+        <div class="pdf-title">Ficha de Cadastro de Empregado</div>
+        <div class="pdf-sub">HD Distribuidora Tecnologia da Informação Ltda — CNPJ: 35.824.553/0001-43</div>
+      </div>
+    </div>
+
+    <div class="btn-group no-print">
+      <button class="btn btn-ghost" onclick="voltarSelecao()">← Voltar</button>
+      <button class="btn btn-pdf" onclick="prepararPDF()">🖨️ Salvar como PDF</button>
+      <button class="btn btn-primary no-print" onclick="salvarNoSheets()" id="btnSalvar">
+        <span id="btnSalvarLabel">💾 Salvar no Sheets</span>
+      </button>
+    </div>
+
+    <!-- Dados do colaborador -->
+    <div class="card">
+      <div class="section-label">Dados do empregado — preenchido pelo colaborador</div>
+      <div class="field"><label>Nome completo</label><input type="text" id="f_nome" class="field-readonly" readonly></div>
+      <div class="grid-3">
+        <div class="field"><label>Data de nascimento</label><input type="text" id="f_nascimento" class="field-readonly" readonly></div>
+        <div class="field"><label>Natural de</label><input type="text" id="f_naturalidade" class="field-readonly" readonly></div>
+        <div class="field"><label>UF</label><input type="text" id="f_uf_nasc" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Filiação — Pai</label><input type="text" id="f_pai" class="field-readonly" readonly></div>
+        <div class="field"><label>Filiação — Mãe</label><input type="text" id="f_mae" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Endereço residencial</label><input type="text" id="f_endereco" class="field-readonly" readonly></div>
+        <div class="field"><label>Número</label><input type="text" id="f_numero" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Complemento</label><input type="text" id="f_complemento" class="field-readonly" readonly></div>
+        <div class="field"><label>Bairro</label><input type="text" id="f_bairro" class="field-readonly" readonly></div>
+        <div class="field"><label>CEP</label><input type="text" id="f_cep" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Cidade</label><input type="text" id="f_cidade" class="field-readonly" readonly></div>
+        <div class="field"><label>UF</label><input type="text" id="f_uf_end" class="field-readonly" readonly></div>
+        <div class="field"><label>Celular</label><input type="text" id="f_celular" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Fone residencial</label><input type="text" id="f_fone" class="field-readonly" readonly></div>
+        <div class="field"><label>Estado civil</label><input type="text" id="f_estado_civil" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Filhos menores de 14 anos</label><input type="text" id="f_filhos" class="field-readonly" readonly></div>
+        <div class="field"><label>Quantidade</label><input type="text" id="f_qtd_filhos" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Nome do cônjuge</label><input type="text" id="f_conjuge" class="field-readonly" readonly></div>
+        <div class="field"><label>Nasc. cônjuge</label><input type="text" id="f_nasc_conjuge" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>CTPS Digital?</label><input type="text" id="f_ctps_digital" class="field-readonly" readonly></div>
+        <div class="field"><label>Nº CTPS</label><input type="text" id="f_ctps_num" class="field-readonly" readonly></div>
+        <div class="field"><label>Série / Data</label><input type="text" id="f_ctps_serie" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Nº do RG</label><input type="text" id="f_rg" class="field-readonly" readonly></div>
+        <div class="field"><label>Data expedição RG</label><input type="text" id="f_rg_data" class="field-readonly" readonly></div>
+        <div class="field"><label>Órgão emissor</label><input type="text" id="f_rg_orgao" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>CPF</label><input type="text" id="f_cpf" class="field-readonly" readonly></div>
+        <div class="field"><label>Nº do PIS</label><input type="text" id="f_pis" class="field-readonly" readonly></div>
+        <div class="field"><label>Cadastro PIS em</label><input type="text" id="f_pis_data" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Título de eleitor</label><input type="text" id="f_titulo" class="field-readonly" readonly></div>
+        <div class="field"><label>Zona</label><input type="text" id="f_zona" class="field-readonly" readonly></div>
+        <div class="field"><label>Seção</label><input type="text" id="f_secao" class="field-readonly" readonly></div>
+      </div>
+      <div class="grid-3">
+        <div class="field"><label>Raça / Cor</label><input type="text" id="f_raca" class="field-readonly" readonly></div>
+        <div class="field"><label>Grau de instrução</label><input type="text" id="f_instrucao" class="field-readonly" readonly></div>
+        <div class="field"><label>Primeiro emprego?</label><input type="text" id="f_primeiro" class="field-readonly" readonly></div>
+      </div>
+    </div>
+
+    <!-- Preenchimento da empresa -->
+    <div class="card">
+      <div class="section-label">Preenchimento da empresa — RH HD Distribuidora</div>
+      <div class="grid-2">
+        <div class="field"><label>Função</label><input type="text" id="f_funcao" placeholder="Cargo/função"></div>
+        <div class="field"><label>Data de admissão</label><input type="date" id="f_admissao"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Departamento</label><input type="text" id="f_departamento" placeholder="Área/setor"></div>
+        <div class="field"><label>Contrato de experiência (dias)</label><input type="text" id="f_contrato" placeholder="Ex: 45 dias"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Salário contratual (R$)</label><input type="text" id="f_salario" placeholder="0,00"></div>
+        <div class="field"><label>Benefícios</label><input type="text"></div>
+      </div>
+      <div class="subsection">Horário de trabalho</div>
+      <div class="grid-2">
+        <div class="field"><label>Segunda a sexta — Manhã</label><input type="text" id="f_h_manha" value="08:00h às 12:00h"></div>
+        <div class="field"><label>Segunda a sexta — Tarde</label><input type="text" id="f_h_tarde" value="13:30h às 17:30h"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field"><label>Sábados</label><input type="text" id="f_h_sab" placeholder="—"></div>
+        <div class="field"><label>Domingos</label><input type="text" id="f_h_dom" placeholder="—"></div>
+      </div>
+      <div class="subsection">Benefícios e descontos</div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Desconta Vale Transporte?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+          </div>
+        </div>
+        <div class="field"><label>Quantos VT/dia?</label><input type="text" id="f_vt_qtd" placeholder="—"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Desconta Vale Refeição?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+          </div>
+        </div>
+        <div class="field"><label>Valor do VR</label><input type="text" id="f_vr_val" placeholder="—"></div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Recebe adiantamento de salário?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Possui PPRA/LTCAT?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-2">
+        <div class="field">
+          <label>Periculosidade?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Insalubridade?</label>
+          <div class="radio-group">
+            <div class="radio-btn" onclick="sel(this)">Sim</div>
+            <div class="radio-btn on" onclick="sel(this)">Não</div>
+            <div class="radio-btn" onclick="sel(this)">40%</div>
+            <div class="radio-btn" onclick="sel(this)">20%</div>
+            <div class="radio-btn" onclick="sel(this)">10%</div>
+          </div>
+        </div>
+      </div>
+      <div class="field"><label>Observações</label><textarea id="f_obs" placeholder="Informações adicionais..."></textarea></div>
+    </div>
+
+  </div>
+
+
+</div>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywkZIgkqmapHY1U1LePoKmx93vxVU8Ijn3-0nxtrAoMOPup-ScpQnWiaTSz_aZSmHdrg/exec';
+
+function carregarFichas() {
+  const lista = document.getElementById('lista-fichas');
+  lista.innerHTML = '<div class="loading">Carregando fichas...</div>';
+  fetch(SCRIPT_URL)
+    .then(r => r.json())
+    .then(data => {
+      if (!data.fichas || data.fichas.length === 0) {
+        lista.innerHTML = '<div class="empty">Nenhuma ficha recebida ainda.</div>';
+        return;
+      }
+      lista.innerHTML = data.fichas.map((f, i) => `
+        <div class="ficha-item" onclick="selecionarFicha(${i})">
+          <div>
+            <div class="ficha-nome">${f['Nome'] || 'Sem nome'}</div>
+            <div class="ficha-data">Enviado em: ${f['Data Envio'] || '—'} · CPF: ${f['CPF'] || '—'}</div>
+          </div>
+          <span class="ficha-arrow">→</span>
+        </div>
+      `).join('');
+      window._fichas = data.fichas;
+    })
+    .catch(() => {
+      lista.innerHTML = '<div class="empty">Erro ao carregar. Verifique sua conexão.</div>';
+    });
+}
+
+function selecionarFicha(idx) {
+  const f = window._fichas[idx];
+  function formatVal(val) {
+    if (!val) return '';
+    val = String(val);
+    if (val.indexOf('T') > 0 && val.match(/\d{4}-\d{2}-\d{2}/)) {
+      const parts = val.split('T')[0].split('-');
+      return parts[2] + '/' + parts[1] + '/' + parts[0];
+    }
+    return val;
+  }
+  function get(keys) {
+    for (const k of keys) {
+      if (f[k] !== undefined && f[k] !== '') return formatVal(f[k]);
+    }
+    return '';
+  }
+  function set(id, val) {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  }
+  set('f_nome',         get(['Nome']));
+  set('f_nascimento',   get(['Nascimento']));
+  set('f_naturalidade', get(['Naturalidade']));
+  set('f_uf_nasc',      get(['UF Nasc']));
+  set('f_pai',          get(['Pai']));
+  set('f_mae',          get(['Mãe','Mae']));
+  set('f_endereco',     get(['Endereço','Endereco']));
+  set('f_numero',       get(['Número','Numero']));
+  set('f_complemento',  get(['Complemento']));
+  set('f_bairro',       get(['Bairro']));
+  set('f_cidade',       get(['Cidade']));
+  set('f_uf_end',       get(['UF']));
+  set('f_cep',          get(['CEP']));
+  set('f_fone',         get(['Fone']));
+  set('f_celular',      get(['Celular']));
+  set('f_estado_civil', get(['Estado Civil']));
+  set('f_filhos',       get(['Filhos']));
+  set('f_qtd_filhos',   get(['Qtd Filhos']));
+  set('f_conjuge',      get(['Cônjuge','Conjuge']));
+  set('f_nasc_conjuge', get(['Nasc Cônjuge','Nasc Conjuge']));
+  set('f_ctps_digital', get(['CTPS Digital']));
+  set('f_ctps_num',     get(['Nº CTPS','CTPS Num']));
+  set('f_ctps_serie',   get(['Série CTPS','CTPS Serie']));
+  set('f_rg',           get(['RG']));
+  set('f_rg_data',      get(['Data RG','RG Data']));
+  set('f_rg_orgao',     get(['Órgão RG','RG Orgao']));
+  set('f_cpf',          get(['CPF']));
+  set('f_pis',          get(['PIS']));
+  set('f_pis_data',     get(['Data PIS','PIS Data']));
+  set('f_titulo',       get(['Título Eleitor','Titulo']));
+  set('f_zona',         get(['Zona']));
+  set('f_secao',        get(['Seção','Secao']));
+  set('f_raca',         get(['Raça','Raca']));
+  set('f_instrucao',    get(['Instrução','Instrucao']));
+  set('f_primeiro',     get(['Primeiro Emprego']));
+  document.getElementById('select-screen').style.display = 'none';
+  document.getElementById('form-screen').style.display = 'block';
+  window.scrollTo(0,0);
+  carregarDadosAdmin(f['Nome'] || '');
+}
+
+function novaFicha() {
+  document.querySelectorAll('[id^="f_"]').forEach(el => { if(el.tagName !== 'BUTTON') el.value = ''; });
+  document.getElementById('f_h_manha').value = '08:00h às 12:00h';
+  document.getElementById('f_h_tarde').value = '13:30h às 17:30h';
+  document.getElementById('select-screen').style.display = 'none';
+  document.getElementById('form-screen').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+function prepararPDF() {
+  document.querySelectorAll('.field').forEach(function(field) {
+    const input = field.querySelector('input, select, textarea');
+    const radioGroup = field.querySelector('.radio-group');
+    if (input && !radioGroup) {
+      if (!input.value || input.value.trim() === '') {
+        field.setAttribute('data-empty', 'true');
+        field.style.display = 'none';
+      } else {
+        field.removeAttribute('data-empty');
+        field.style.display = '';
+      }
+    }
+  });
+  window.print();
+  setTimeout(function() {
+    document.querySelectorAll('[data-empty="true"]').forEach(function(field) {
+      field.style.display = '';
+      field.removeAttribute('data-empty');
+    });
+  }, 1000);
+}
+
+function voltarSelecao() {
+  document.getElementById('select-screen').style.display = 'block';
+  document.getElementById('form-screen').style.display = 'none';
+}
+
+function capitalize(str) {
+  return str.replace(/(^|\s)\S/g, c => c.toUpperCase());
+}
+document.querySelectorAll('#form-screen input[type="text"]').forEach(function(input) {
+  if (input.id === 'f_salario') return;
+  input.addEventListener('input', function() {
+    if (this.classList.contains('field-readonly')) return;
+    const pos = this.selectionStart;
+    this.value = capitalize(this.value);
+    this.setSelectionRange(pos, pos);
+  });
+});
+
+const salarioEl = document.getElementById('f_salario');
+if (salarioEl) {
+  salarioEl.addEventListener('blur', function() {
+    let val = this.value.replace(/\D/g, '');
+    if (!val) return;
+    val = (parseInt(val) / 100).toFixed(2);
+    this.value = 'R$ ' + val.replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  });
+  salarioEl.addEventListener('focus', function() {
+    this.value = this.value.replace(/[R$\s.]/g, '').replace(',', '.');
+  });
+}
+
+function salvarNoSheets() {
+  const nome = document.getElementById('f_nome').value.trim();
+  if (!nome) { alert('Selecione um colaborador antes de salvar.'); return; }
+  const btn = document.getElementById('btnSalvar');
+  const label = document.getElementById('btnSalvarLabel');
+  label.textContent = '⏳ Salvando...';
+  btn.disabled = true;
+  function radioVal(group) {
+    const on = group ? group.querySelector('.radio-btn.on') : null;
+    return on ? on.textContent.trim() : '';
+  }
+  const radioGroups = document.querySelectorAll('.radio-group');
+  const payload = {
+    tipo: 'dadosAdmin',
+    nome:           nome,
+    funcao:         (document.getElementById('f_funcao')?.value||'').trim(),
+    admissao:       (document.getElementById('f_admissao')?.value||'').trim(),
+    departamento:   (document.getElementById('f_departamento')?.value||'').trim(),
+    contrato:       (document.getElementById('f_contrato')?.value||'').trim(),
+    salario:        (document.getElementById('f_salario')?.value||'').trim(),
+    horarioManha:   (document.getElementById('f_h_manha')?.value||'').trim(),
+    horarioTarde:   (document.getElementById('f_h_tarde')?.value||'').trim(),
+    horarioSab:     (document.getElementById('f_h_sab')?.value||'').trim(),
+    horarioDom:     (document.getElementById('f_h_dom')?.value||'').trim(),
+    vt:             radioVal(radioGroups[0]),
+    vr:             radioVal(radioGroups[1]),
+    adiantamento:   radioVal(radioGroups[2]),
+    ppra:           radioVal(radioGroups[3]),
+    periculosidade: radioVal(radioGroups[4]),
+    insalubridade:  radioVal(radioGroups[5]),
+    obs:            (document.getElementById('f_obs')?.value||'').trim()
+  };
+  fetch(SCRIPT_URL, {
+    method: 'POST', mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(() => {
+    label.textContent = '✓ Salvo!';
+    btn.style.background = '#276843';
+    setTimeout(() => { label.textContent = '💾 Salvar no Sheets'; btn.style.background = ''; btn.disabled = false; }, 3000);
+  })
+  .catch(() => {
+    label.textContent = '✗ Erro';
+    btn.style.background = '#9b3a2e';
+    setTimeout(() => { label.textContent = '💾 Salvar no Sheets'; btn.style.background = ''; btn.disabled = false; }, 3000);
+  });
+}
+
+function carregarDadosAdmin(nome) {
+  if (!nome) return;
+  fetch(SCRIPT_URL + '?acao=getDadosAdmin&colaborador=' + encodeURIComponent(nome))
+    .then(r => r.json())
+    .then(data => {
+      if (!data.dados) return;
+      const d = data.dados;
+      function setVal(id, val) {
+        const el = document.getElementById(id);
+        if (el && val) el.value = val;
+      }
+      const rawAdmissao = d['Data Admissão'] || d['Data Admissao'] || '';
+      let admissaoFmt = rawAdmissao;
+      if (rawAdmissao && rawAdmissao.includes('T')) {
+        const parts = rawAdmissao.split('T')[0].split('-');
+        admissaoFmt = parts[0] + '-' + parts[1] + '-' + parts[2];
+      }
+      setVal('f_funcao',       d['Função'] || d['Funcao'] || d['função'] || d['funcao'] || d['Cargo'] || '');
+      setVal('f_admissao',     admissaoFmt);
+      setVal('f_departamento', d['Departamento'] || d['departamento'] || '');
+      setVal('f_contrato',     d['Contrato Experiência'] || d['Contrato Experiencia'] || '');
+      setVal('f_salario',      d['Salário'] || d['Salario'] || '');
+      setVal('f_h_manha',      d['Horário Manhã'] || d['Horario Manha'] || '');
+      setVal('f_h_tarde',      d['Horário Tarde'] || d['Horario Tarde'] || '');
+      setVal('f_h_sab',        d['Horário Sáb'] || d['Horario Sab'] || '');
+      setVal('f_h_dom',        d['Horário Dom'] || d['Horario Dom'] || '');
+      setVal('f_obs',          d['Observações'] || d['Observacoes'] || '');
+    })
+    .catch(() => {});
+}
+
+function sel(el) {
+  el.closest('.radio-group').querySelectorAll('.radio-btn').forEach(b => b.classList.remove('on'));
+  el.classList.add('on');
+}
+</script>
+
+</div>
+<script>
+const USUARIOS_VALIDOS = {
+  'rh':      { senha: 'hdd@rh',      nome: 'RH',              perfil: 'rh'    },
+  'tais':    { senha: 'hdd@tais',    nome: 'Ta�s Huth',       perfil: 'rh'    },
+  'paulo':   { senha: 'hdd@paulo',   nome: 'Paulo Huth',      perfil: 'rh'    },
+  'renan':   { senha: 'hdd@renan',   nome: 'Renan Moraes',    perfil: 'rh'    },
+  'sandro':  { senha: 'hdd@sandro',  nome: 'Sandro Zanoello', perfil: 'lider' },
+  'juliana': { senha: 'hdd@juliana', nome: 'Juliana Siqueira',perfil: 'lider' },
+  'loren':   { senha: 'hdd@loren',   nome: 'Loren dos Santos',perfil: 'lider' },
+};,
+  'taiz':      { senha: 'zen@taiz',      nome: 'Taiz',      perfil: 'lider' },
+  'juliana':   { senha: 'zen@juliana',   nome: 'Juliana',   perfil: 'lider' },
+  'gustavo':   { senha: 'zen@gustavo',   nome: 'Gustavo',   perfil: 'lider' },
+  'lucas':     { senha: 'zen@lucas',     nome: 'Lucas',     perfil: 'lider' },
+  'anderson':  { senha: 'zen@anderson',  nome: 'Anderson',  perfil: 'lider' },
+  'guilherme': { senha: 'zen@guilherme', nome: 'Guilherme', perfil: 'lider' },
+  'viviane':   { senha: 'zen@viviane',   nome: 'Viviane',   perfil: 'lider' },
+  'rh':        { senha: 'zen@rh',        nome: 'RH',        perfil: 'rh'    },
+};
+function fazerLogin() {
+  const u = document.getElementById('inp-usuario').value.trim().toLowerCase();
+  const s = document.getElementById('inp-senha').value;
+  const usr = USUARIOS_VALIDOS[u];
+  if (!usr || usr.senha !== s) {
+    document.getElementById('login-erro').style.display = 'block';
+    return;
+  }
+  document.getElementById('login-erro').style.display = 'none';
+  document.getElementById('tela-login').style.display = 'none';
+  document.getElementById('tela-conteudo').style.display = 'block';
+  const badge = document.getElementById('usuario-logado');
+  if (badge) badge.textContent = usr.nome;
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('inp-usuario');
+  if (inp) inp.focus();
+});
+</script>
+</body>
+</html>
