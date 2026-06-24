@@ -16,7 +16,7 @@
     }
     body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-    header { background: var(--accent); color: #fff; padding: 20px 32px; display: flex; align-items: center; gap: 16px; }
+    header { background: var(--accent); color: #fff; padding: 20px 32px 20px 140px; display: flex; align-items: center; gap: 16px; }
     .header-back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; transition: color .2s; }
     .header-back:hover { color: #fff; }
     .header-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; }
@@ -54,9 +54,9 @@
   </style>
 </head>
 <body>
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'">← Início</a>
 
 <header>
-  <a class="header-back" href="../">← Portal RH</a>
   <span class="header-title">Perfil da Equipe</span>
   <span class="header-sub" id="header-sub">Carregando...</span>
 </header>
@@ -113,7 +113,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzblEIQor7UuPFzO6Ga2UREXjYYkeiCNXtsom4XjCFSUbb9hI7S-djhgi6WioNGSJ2k/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzepwuAs3LRpzFwXXwlKQhPf11OoWxW5DP94ZqAowOTkA9bv0tPTus0Cy3Q-eNGPlJX/exec';
 
   const CORES = ['#2E4DA6','#6aab7e','#8dc4a0','#b2d9c2','#d5ece0','#1A2D6B','#1a3d28','#9fc5b0','#5c9474','#3d7a5a'];
   const CORES_PIZZA = ['#2E4DA6','#6aab7e','#9fc5b0','#d5ece0','#1A2D6B','#b2d9c2'];
@@ -139,7 +139,7 @@
     // Resumo
     document.getElementById('resumo-grid').innerHTML = `
       <div class="resumo-card"><div class="resumo-num">${total}</div><div class="resumo-label">Colaboradores</div></div>
-      <div class="resumo-card"><div class="resumo-num">${d.mediaIdade}</div><div class="resumo-label">Média de Idade</div></div>
+      <div class="resumo-card"><div class="resumo-num">${parseFloat(d.mediaIdade).toFixed(1)}</div><div class="resumo-label">Média de Idade</div></div>
       <div class="resumo-card"><div class="resumo-num">${d.setor.length}</div><div class="resumo-label">Setores</div></div>
       <div class="resumo-card"><div class="resumo-num">${d.modeloContratacao.find(m => m.label === 'CLT')?.valor || 0}</div><div class="resumo-label">CLT</div></div>
     `;
