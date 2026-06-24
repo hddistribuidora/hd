@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist de Contratação | HD Distribuidora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #2E4DA6;
+      --green-light: #6a9e78;
+      --green-pale: #e8f0ea;
+      --bg: #F0F3F8;
+      --surface: #FFFFFF;
+      --border: #C8D6E8;
+      --text: #1e2a22;
+      --muted: #6b7a6e;
+      --blue: #2e6da4;
+      --blue-pale: #e8f0f7;
+      --warning: #e67e22;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "DM Sans", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 5rem; }
+    .container { max-width: 780px; margin: 0 auto; }
+
+    /* HEADER */
+    .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+    .header-logo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .page-header h1 { font-family: "Lora", serif; font-size: 1.4rem; font-weight: 700; color: var(--green); line-height: 1.2; }
+    .page-header p { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+
+    /* PRINT HEADER (hidden on screen) */
+    .print-header { display: none; }
+
+    /* SELECTOR */
+    .selector-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .selector-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .selector-field { flex: 1; min-width: 200px; }
+    .selector-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .selector-field select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 0.9rem; color: var(--text); background: white; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a6e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer; }
+    .selector-field select:focus { outline: none; border-color: var(--green); }
+
+    .btn { font-family: "DM Sans", sans-serif; font-size: 0.88rem; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .btn-primary { background: var(--green); color: white; }
+    .btn-primary:hover { background: #3d6b4a; }
+    .btn-primary:disabled { background: #aac5b3; cursor: not-allowed; }
+    .btn-ghost { background: white; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); color: var(--text); }
+    .btn-outline-green { background: white; color: var(--green); border: 1.5px solid var(--green); }
+    .btn-outline-green:hover { background: var(--green-pale); }
+    .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .btn.loading .spinner { display: inline-block; }
+    .btn.loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* COLAB BANNER */
+    .colab-banner { display: none; background: var(--green-pale); border: 1px solid #c2d9c9; border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .colab-banner.visible { display: flex; }
+    .colab-info { display: flex; align-items: center; gap: 10px; }
+    .colab-avatar { width: 36px; height: 36px; background: var(--green); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+    .colab-name { font-weight: 600; font-size: 0.95rem; color: var(--green); }
+    .colab-meta { font-size: 0.78rem; color: var(--muted); }
+    .save-status { font-size: 0.78rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: none; }
+    .save-status.saved { display: inline-flex; align-items: center; gap: 4px; background: #d4edda; color: #276843; }
+    .save-status.saving { display: inline-flex; align-items: center; gap: 4px; background: #fff3cd; color: #856404; }
+    .save-status.error { display: inline-flex; align-items: center; gap: 4px; background: #f8d7da; color: #721c24; }
+
+    /* TABS */
+    .tabs-wrapper { display: none; }
+    .tabs-wrapper.visible { display: block; }
+    .tabs-nav { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 0; overflow-x: auto; scrollbar-width: none; }
+    .tabs-nav::-webkit-scrollbar { display: none; }
+    .tab-btn { font-family: "DM Sans", sans-serif; font-size: 0.84rem; font-weight: 600; padding: 10px 16px; border: none; background: transparent; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; white-space: nowrap; transition: all 0.15s; display: flex; align-items: center; gap: 6px; border-radius: 8px 8px 0 0; }
+    .tab-btn:hover { color: var(--text); background: var(--bg); }
+    .tab-btn.active { color: var(--green); border-bottom-color: var(--green); background: white; }
+    .tab-pill { font-size: 0.68rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; background: var(--border); color: var(--muted); transition: all 0.15s; }
+    .tab-btn.active .tab-pill { background: var(--green-pale); color: var(--green); }
+    .tab-panel { display: none; padding-top: 1.25rem; }
+    .tab-panel.active { display: block; }
+
+    /* CHECKLIST CARD */
+    .cl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .cl-card-header { padding: 0.9rem 1.25rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .cl-card-header.green { background: var(--green-pale); }
+    .cl-card-header.blue { background: var(--blue-pale); }
+    .cl-card-title { font-family: "Lora", serif; font-weight: 600; font-size: 0.92rem; }
+    .cl-card-header.green .cl-card-title { color: var(--green); }
+    .cl-card-header.blue .cl-card-title { color: var(--blue); }
+    .resp-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; color: white; white-space: nowrap; }
+    .tag-rh { background: var(--green); }
+    .tag-dir { background: var(--blue); }
+    .cl-list { list-style: none; }
+    .cl-item { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1.25rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; user-select: none; }
+    .cl-item:last-child { border-bottom: none; }
+    .cl-item:hover { background: #f7faf7; }
+    .cl-item.checked { background: #f0f7f2; }
+    .chkbox { width: 21px; height: 21px; border-radius: 6px; border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.12s; background: white; }
+    .cl-item.checked .chkbox { background: var(--green); border-color: var(--green); }
+    .chkbox svg { width: 12px; height: 12px; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 0.12s; }
+    .cl-item.checked .chkbox svg { opacity: 1; }
+    .cl-label { font-size: 0.88rem; color: var(--text); line-height: 1.4; flex: 1; transition: color 0.12s; }
+    .cl-item.checked .cl-label { color: var(--muted); text-decoration: line-through; text-decoration-color: #b0bdb3; }
+    .tag-cond { font-size: 0.68rem; font-weight: 600; padding: 2px 7px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; color: var(--warning); background: #fef5ec; border: 1px solid #f5cba7; }
+    .cl-footer { padding: 0.85rem 1.25rem; border-top: 1px solid var(--border); }
+    .cl-footer.green { background: var(--green-pale); }
+    .cl-footer.blue { background: var(--blue-pale); }
+    .prog-track { height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.3s; width: 0%; }
+    .prog-fill.blue { background: var(--blue); }
+    .prog-label { font-size: 0.76rem; color: var(--muted); margin-top: 5px; }
+    .complete-badge { display: none; align-items: center; gap: 8px; background: #e8f5ed; border: 1px solid #a8d5b5; border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; color: var(--green); font-weight: 600; font-size: 0.88rem; }
+    .complete-badge.visible { display: flex; }
+    .complete-badge svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.35; }
+    .empty-state h3 { font-family: "Lora", serif; font-size: 1.1rem; color: var(--text); margin-bottom: 0.5rem; }
+    .empty-state p { font-size: 0.85rem; }
+
+    /* SAVE BAR */
+    .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 0.85rem 1.5rem; display: none; align-items: center; justify-content: flex-end; gap: 1rem; flex-wrap: wrap; z-index: 100; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); }
+    .save-bar.visible { display: flex; }
+
+    /* ── PRINT STYLES ── */
+    @media print {
+      body { background: white; padding: 0; font-size: 11pt; }
+      .selector-card, .tabs-nav, .save-bar, .complete-badge, .empty-state { display: none !important; }
+      .page-header { display: none !important; }
+      .print-header { display: flex !important; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--green); }
+      .print-header img { width: 44px; height: 44px; border-radius: 50%; }
+      .print-header-text h1 { font-family: "Lora", serif; font-size: 14pt; font-weight: 700; color: var(--green); }
+      .print-header-text p { font-size: 9pt; color: var(--muted); }
+      .print-colab-box { display: flex !important; align-items: center; gap: 10px; background: var(--green-pale); border: 1px solid #c2d9c9; border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; }
+      .print-colab-box .label { font-size: 8pt; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
+      .print-colab-box .name { font-size: 12pt; font-weight: 700; color: var(--green); font-family: "Lora", serif; }
+      .tabs-wrapper { display: block !important; }
+      .tab-panel { display: block !important; page-break-inside: avoid; }
+      .tab-panel + .tab-panel { margin-top: 20px; }
+      .tab-section-title { display: block !important; font-family: "Lora", serif; font-size: 11pt; font-weight: 700; color: var(--green); padding: 6px 0; border-bottom: 1px solid var(--border); margin-bottom: 8px; }
+      .cl-card { box-shadow: none; border: 1px solid var(--border); margin-bottom: 10px; page-break-inside: avoid; }
+      .cl-item { padding: 5px 10px; }
+      .cl-label { font-size: 9pt; }
+      .chkbox { width: 14px; height: 14px; border-radius: 3px; }
+      .chkbox svg { width: 9px; height: 9px; }
+      .cl-footer, .prog-track, .prog-label { display: none; }
+      .cl-card-header { padding: 6px 10px; }
+      .cl-card-title { font-size: 9pt; }
+      .resp-tag { font-size: 7pt; }
+      .tag-cond { font-size: 7pt; }
+      @page { margin: 15mm 12mm; }
+    }
+    .print-colab-box { display: none; }
+    .tab-section-title { display: none; }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: "DM Sans", sans-serif; font-size: 0.82rem; font-weight: 600;
+    color: var(--green, #2E4DA6); text-decoration: none;
+    padding: 6px 12px; border-radius: 8px;
+    border: 1.5px solid var(--green, #2E4DA6);
+    background: white; transition: all 0.15s;
+    margin-bottom: 1.5rem; align-self: flex-start;
+  }
+  .back-btn:hover { background: var(--green-pale, #e8f0ea); }
+  @media print { .back-btn { display: none !important; } }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+<div class="container">
+  
+
+  <!-- SCREEN HEADER -->
+  <div class="page-header">
+    <img src="../logo.jpg" class="header-logo" alt="HD Distribuidora"/>
+    <div>
+      <h1>Checklist de Contratação</h1>
+      <p>Painel administrativo — HD Distribuidora RH</p>
+    </div>
+  </div>
+
+  <!-- PRINT HEADER -->
+  <div class="print-header">
+    <img src="../logo.jpg" alt="HD Distribuidora"/>
+    <div class="print-header-text">
+      <h1>Checklist de Contratação</h1>
+      <p>HD Distribuidora Tecnologia da Informação Ltda</p>
+    </div>
+  </div>
+  <div class="print-colab-box" id="printColabBox">
+    <div>
+      <div class="label">Colaborador</div>
+      <div class="name" id="printColabName">—</div>
+    </div>
+  </div>
+
+  <!-- SELECTOR -->
+  <div class="selector-card">
+    <div class="selector-row">
+      <div class="selector-field">
+        <label>Colaborador</label>
+        <select id="selectColab" onchange="onColabChange()">
+          <option value="">— Selecione um colaborador —</option>
+        </select>
+      </div>
+      <button class="btn btn-outline-green" onclick="loadColabs()">
+        <div class="spinner"></div>
+        <span class="btn-label">↻ Atualizar lista</span>
+      </button>
+    </div>
+    <div class="colab-banner" id="colabBanner">
+      <div class="colab-info">
+        <div class="colab-avatar" id="colabAvatar">--</div>
+        <div>
+          <div class="colab-name" id="colabName">—</div>
+          <div class="colab-meta" id="colabMeta">—</div>
+        </div>
+      </div>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+  </div>
+
+  <!-- EMPTY STATE -->
+  <div class="empty-state" id="emptyState">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+    <h3>Nenhum colaborador selecionado</h3>
+    <p>Clique em "Atualizar lista" e selecione um colaborador para iniciar.</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrapper" id="tabsWrapper">
+    <div class="tabs-nav">
+      <button class="tab-btn active" onclick="switchTab('docs', this)">
+        📁 Documentos <span class="tab-pill" id="tPill-docs">0/14</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('sign', this)">
+        ✍️ Assinaturas <span class="tab-pill" id="tPill-sign">0/6</span>
+      </button>
+      <button class="tab-btn" onclick="switchTab('reg', this)">
+        🖥️ Registros <span class="tab-pill" id="tPill-reg">0/8</span>
+      </button>
+    </div>
+
+    <!-- TAB DOCUMENTOS -->
+    <div class="tab-panel active" id="tab-docs">
+      <span class="tab-section-title">📁 Documentos Obrigatórios</span>
+      <div class="complete-badge" id="done-docs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Todos os documentos foram conferidos!
+      </div>
+      <div class="cl-card">
+        <div class="cl-card-header green">
+          <span class="cl-card-title">📁 Documentos para Encaminhamento de Admissão</span>
+        </div>
+        <ul class="cl-list" id="list-docs">
+          <li class="cl-item" onclick="toggleItem(this,'docs',0)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Carteira de Trabalho (se não for digital)</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',1)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Ficha de Registro de Empregado</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',2)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia do RG</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',3)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia do CPF</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',4)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia do Comprovante de Residência</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',5)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia do Título de Eleitor</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',6)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Carteira de Habilitação</span><span class="tag-cond">Motorista</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',7)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Certidão de Nascimento ou Casamento</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',8)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Certidão de Reservista</span><span class="tag-cond">Sexo Masc.</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',9)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Certidão de Nascimento dos filhos menores de 14 anos</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',10)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia de Diploma ou Certificado Escolar</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',11)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cópia da Caderneta de Vacinação (filhos menores de 7 anos — anual)</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',12)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">1 foto recente 3×4</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'docs',13)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Exame Médico Admissional</span></li>
+        </ul>
+        <div class="cl-footer green">
+          <div class="prog-track"><div class="prog-fill" id="bar-docs"></div></div>
+          <div class="prog-label" id="lbl-docs">0 de 14 itens conferidos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB ASSINATURAS -->
+    <div class="tab-panel" id="tab-sign">
+      <span class="tab-section-title">✍️ Documentos para Assinatura na Admissão na Admissão</span>
+      <div class="complete-badge" id="done-sign">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Todos os documentos foram assinados!
+      </div>
+      <div class="cl-card">
+        <div class="cl-card-header green">
+          <span class="cl-card-title">✍️ Documentos para Assinatura na Admissão</span>
+        </div>
+        <ul class="cl-list" id="list-sign">
+          <li class="cl-item" onclick="toggleItem(this,'sign',0)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Contrato de Trabalho</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'sign',1)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Contrato de Renovação do Período de Experiência</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'sign',2)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Acordo de Horário de Trabalho</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'sign',3)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Acordo de Compensação de Horas de Trabalho</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'sign',4)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Acordo de Prorrogação de Horas</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'sign',5)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Termo de Vale Transporte</span></li>
+        </ul>
+        <div class="cl-footer green">
+          <div class="prog-track"><div class="prog-fill" id="bar-sign"></div></div>
+          <div class="prog-label" id="lbl-sign">0 de 6 itens conferidos</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB REGISTROS -->
+    <div class="tab-panel" id="tab-reg">
+      <span class="tab-section-title">🖥️ Registros Necessários</span>
+      <div class="complete-badge" id="done-reg">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Todos os registros foram realizados!
+      </div>
+      <div class="cl-card">
+        <div class="cl-card-header green">
+          <span class="cl-card-title">🏢 Setor de RH</span>
+          <span class="resp-tag tag-rh">RH</span>
+        </div>
+        <ul class="cl-list" id="list-reg-rh">
+          <li class="cl-item" onclick="toggleItem(this,'reg',0)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Senha de acesso à porta — reconhecimento facial</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',1)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cadastro do Empregado no Sistema Ponto</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',2)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cadastro do Colaborador no Cartão Caju</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',3)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Subir documentos no Drive — Pasta Individual <em style="color:var(--text-hint);font-size:0.85em;">(em até 7 dias)</em></span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',4)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cadastro do(a) Colaborador(a) na Planilha de RH</span></li>
+        </ul>
+        <div class="cl-footer green">
+          <div class="prog-track"><div class="prog-fill" id="bar-reg-rh"></div></div>
+          <div class="prog-label" id="lbl-reg-rh">0 de 5 itens realizados (RH)</div>
+        </div>
+      </div>
+      <div class="cl-card">
+        <div class="cl-card-header blue">
+          <span class="cl-card-title" style="color:var(--blue)">👤 Diretor / Coordenador</span>
+          <span class="resp-tag tag-dir">Diretor</span>
+        </div>
+        <ul class="cl-list" id="list-reg-dir">
+          <li class="cl-item" onclick="toggleItem(this,'reg',5)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Criação de E-mail (HD Distribuidora e Drive)</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',6)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Criação de Conta no Slack</span></li>
+          <li class="cl-item" onclick="toggleItem(this,'reg',7)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Encaminhamento para criação de usuário nas ferramentas de trabalho (conforme setor)</span></li>
+        </ul>
+        <div class="cl-footer blue">
+          <div class="prog-track"><div class="prog-fill prog-fill blue" id="bar-reg-dir" style="background:var(--blue)"></div></div>
+          <div class="prog-label" id="lbl-reg-dir">0 de 3 itens realizados (Diretor)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="saveBar">
+  <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+  <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveProgress()">
+    <div class="spinner"></div>
+    <span class="btn-label">💾 Salvar progresso</span>
+  </button>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywkZIgkqmapHY1U1LePoKmx93vxVU8Ijn3-0nxtrAoMOPup-ScpQnWiaTSz_aZSmHdrg/exec';
+const GRUPOS = { docs: 14, sign: 6, reg: 8 };
+let currentColab = null;
+let state = { docs: [], sign: [], reg: [] };
+
+// Init state arrays
+Object.keys(GRUPOS).forEach(g => { state[g] = new Array(GRUPOS[g]).fill(false); });
+
+async function loadColabs() {
+  const btn = document.querySelector('.btn-outline-green');
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    const sel = document.getElementById('selectColab');
+    sel.innerHTML = '<option value="">— Selecione um colaborador —</option>';
+    const list = data.fichas || [];
+    list.forEach(c => {
+      const name = c['Nome'] || '';
+      const cargo = c['Funcao'] || c['Função'] || '';
+      const admissao = c['Admissao'] || c['Admissão'] || '';
+      if (!name) return;
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.dataset.cargo = cargo;
+      opt.dataset.admissao = admissao;
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  } catch(e) { alert('Erro ao carregar colaboradores.'); }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+async function onColabChange() {
+  const sel = document.getElementById('selectColab');
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt || !opt.value) {
+    currentColab = null;
+    document.getElementById('colabBanner').classList.remove('visible');
+    document.getElementById('tabsWrapper').classList.remove('visible');
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('saveBar').classList.remove('visible');
+    return;
+  }
+
+  currentColab = { nome: opt.value, cargo: '', admissao: '' };
+
+  // Busca dados admin (cargo, admissão, departamento)
+  try {
+    const url = SCRIPT_URL + '?acao=getDadosAdmin&colaborador=' + encodeURIComponent(opt.value);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.dados) {
+      const d = data.dados;
+      currentColab.cargo = d['Função'] || d['Funcao'] || d['função'] || d['funcao'] || d['Cargo'] || '';
+      const rawAdmissao = d['Data Admissão'] || d['Data Admissao'] || d['Data admissão'] || d['DataAdmissao'] || '';
+      if (rawAdmissao && rawAdmissao.includes('T')) {
+        const parts = rawAdmissao.split('T')[0].split('-');
+        currentColab.admissao = parts[2] + '/' + parts[1] + '/' + parts[0];
+      } else {
+        currentColab.admissao = rawAdmissao;
+      }
+      currentColab.departamento = d['Departamento'] || d['departamento'] || '';
+    }
+  } catch(e) { /* sem dados admin ainda */ }
+
+  const initials = opt.value.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('colabAvatar').textContent = initials;
+  document.getElementById('colabName').textContent = opt.value;
+  document.getElementById('printColabName').textContent = opt.value;
+  document.getElementById('printColabBox').style.display = 'flex';
+  let meta = [];
+  if (currentColab.cargo) meta.push(currentColab.cargo);
+  if (currentColab.departamento) meta.push(currentColab.departamento);
+  if (currentColab.admissao) meta.push('Admissão: ' + currentColab.admissao);
+  document.getElementById('colabMeta').textContent = meta.join(' · ') || 'Colaborador HD Distribuidora';
+  document.getElementById('colabBanner').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('tabsWrapper').classList.add('visible');
+  document.getElementById('saveBar').classList.add('visible');
+  setSaveStatus('');
+  await loadSavedState();
+}
+
+async function loadSavedState() {
+  setSaveStatus('saving', '⏳ Carregando...');
+  try {
+    const url = SCRIPT_URL + '?acao=getChecklist&colaborador=' + encodeURIComponent(currentColab.nome) + '&tipo=contratacao';
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.checklist) {
+      applyState(data.checklist);
+      setSaveStatus('saved', '✓ Atualizado');
+    } else {
+      resetAllItems();
+      setSaveStatus('');
+    }
+  } catch(e) {
+    resetAllItems();
+    setSaveStatus('');
+  }
+}
+
+function applyState(saved) {
+  resetAllItems();
+  if (saved.docs) saved.docs.forEach((v,i) => { if(v) markItem('docs',i,true); });
+  if (saved.sign) saved.sign.forEach((v,i) => { if(v) markItem('sign',i,true); });
+  if (saved.reg)  saved.reg.forEach((v,i)  => { if(v) markItem('reg',i,true);  });
+  ['docs','sign','reg'].forEach(g => updateGroup(g));
+}
+
+function markItem(group, idx, checked) {
+  const lists = group === 'reg'
+    ? [...document.getElementById('list-reg-rh').querySelectorAll('.cl-item'), ...document.getElementById('list-reg-dir').querySelectorAll('.cl-item')]
+    : [...document.getElementById('list-' + group).querySelectorAll('.cl-item')];
+  if (lists[idx]) {
+    if (checked) lists[idx].classList.add('checked');
+    else lists[idx].classList.remove('checked');
+  }
+  state[group][idx] = checked;
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleItem(item, group, idx) {
+  const checked = !item.classList.contains('checked');
+  item.classList.toggle('checked');
+  state[group][idx] = checked;
+  updateGroup(group);
+}
+
+function updateGroup(group) {
+  const lists = group === 'reg'
+    ? [...document.getElementById('list-reg-rh').querySelectorAll('.cl-item'), ...document.getElementById('list-reg-dir').querySelectorAll('.cl-item')]
+    : [...document.getElementById('list-' + group).querySelectorAll('.cl-item')];
+  const total = lists.length;
+  const done = lists.filter(i => i.classList.contains('checked')).length;
+  document.getElementById('tPill-' + group).textContent = done + '/' + total;
+  document.getElementById('done-' + group).classList.toggle('visible', done === total && total > 0);
+  if (group === 'reg') {
+    const rhItems = document.getElementById('list-reg-rh').querySelectorAll('.cl-item');
+    const rhDone = [...rhItems].filter(i=>i.classList.contains('checked')).length;
+    document.getElementById('bar-reg-rh').style.width = (rhDone/rhItems.length*100)+'%';
+    document.getElementById('lbl-reg-rh').textContent = rhDone+' de '+rhItems.length+' itens realizados (RH)';
+    const dirItems = document.getElementById('list-reg-dir').querySelectorAll('.cl-item');
+    const dirDone = [...dirItems].filter(i=>i.classList.contains('checked')).length;
+    document.getElementById('bar-reg-dir').style.width = (dirDone/dirItems.length*100)+'%';
+    document.getElementById('lbl-reg-dir').textContent = dirDone+' de '+dirItems.length+' itens realizados (Diretor)';
+  } else {
+    document.getElementById('bar-'+group).style.width = total?(done/total*100)+'%':'0%';
+    const labels = {docs:'itens conferidos', sign:'itens conferidos'};
+    document.getElementById('lbl-'+group).textContent = done+' de '+total+' '+(labels[group]||'itens');
+  }
+}
+
+function resetAllItems() {
+  document.querySelectorAll('.cl-item.checked').forEach(i => i.classList.remove('checked'));
+  Object.keys(GRUPOS).forEach(g => {
+    state[g] = new Array(GRUPOS[g]).fill(false);
+    document.getElementById('tPill-'+g).textContent = '0/'+GRUPOS[g];
+    document.getElementById('done-'+g).classList.remove('visible');
+  });
+  document.getElementById('bar-docs').style.width='0%';
+  document.getElementById('bar-sign').style.width='0%';
+  document.getElementById('bar-reg-rh').style.width='0%';
+  document.getElementById('bar-reg-dir').style.width='0%';
+}
+
+function setSaveStatus(s, msg) {
+  const el = document.getElementById('saveStatus');
+  el.className = 'save-status';
+  if (!s) { el.style.display='none'; return; }
+  el.classList.add(s); el.textContent = msg;
+}
+
+async function saveProgress() {
+  if (!currentColab) return;
+  const btn = document.getElementById('saveBtn');
+  btn.classList.add('loading'); btn.disabled = true;
+  setSaveStatus('saving','⏳ Salvando...');
+  const payload = {
+    tipo: 'checklist',
+    subtipo: 'contratacao',
+    colaborador: currentColab.nome,
+    cargo: currentColab.cargo,
+    dataRegistro: new Date().toLocaleDateString('pt-BR'),
+    horaRegistro: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    state: { docs: state.docs, sign: state.sign, reg: state.reg },
+    progressoDocumentos: state.docs.filter(Boolean).length+'/'+GRUPOS.docs,
+    progressoAssinaturas: state.sign.filter(Boolean).length+'/'+GRUPOS.sign,
+    progressoRegistros: state.reg.filter(Boolean).length+'/'+GRUPOS.reg
+  };
+  try {
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    setSaveStatus('saved','✓ Salvo');
+  } catch(e) { setSaveStatus('error','✗ Erro ao salvar'); }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+loadColabs();
+</script>
+</body>
+</html>
