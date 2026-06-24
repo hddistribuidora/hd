@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Entrevista de Desligamento — HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F8F6F1;
+    --surface: #FFFFFF;
+    --surface2: #F3F1EC;
+    --border: #E0DDD6;
+    --border-focus: #2E4DA6;
+    --text: #1C201A;
+    --text-muted: #5E6659;
+    --text-hint: #9AA394;
+    --accent: #2E4DA6;
+    --accent-light: #E8EDF8;
+    --accent-text: #1A2D6B;
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: "DM Sans", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 0 0 5rem;
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
+  /* Hero */
+  .hero {
+    background: var(--accent);
+    padding: 2.5rem 1.5rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 70%);
+  }
+  .hero-logo {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,0.3);
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .hero-title {
+    font-family: "Lora", serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.3px;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .hero-sub {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  /* Intro */
+  .intro-card {
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem auto;
+    max-width: 680px;
+  }
+  .intro-card p {
+    font-size: 14px;
+    color: var(--text-muted);
+    font-style: italic;
+    line-height: 1.7;
+  }
+
+  /* Page wrap */
+  .page-wrap { max-width: 680px; margin: 0 auto; padding: 0 1rem; }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-hint);
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 1rem;
+    font-family: "DM Sans", sans-serif;
+  }
+  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+
+  /* Grids */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+  /* Fields */
+  .field { display: flex; flex-direction: column; gap: 5px; margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  .field label {
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
+  }
+  .field input, .field select, .field textarea {
+    font-family: "DM Sans", sans-serif; font-size: 14px;
+    color: var(--text); background: var(--surface2);
+    border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 10px 13px; outline: none; width: 100%;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--border-focus); background: #fff;
+    box-shadow: 0 0 0 3px rgba(46,77,166,0.1);
+  }
+  .field textarea { resize: vertical; min-height: 100px; line-height: 1.6; }
+
+  /* Pergunta aberta */
+  .question-label {
+    font-family: "Lora", serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+
+  /* Opções checkbox */
+  .check-group { display: flex; flex-direction: column; gap: 7px; }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+  .check-item:hover { border-color: var(--accent); background: var(--accent-light); }
+  .check-item.on { border-color: var(--accent); background: var(--accent-light); color: var(--accent-text); }
+  .check-box {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 4px; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .check-item.on .check-box { background: var(--accent); border-color: var(--accent); }
+  .check-item.on .check-box::after {
+    content: ""; display: block; width: 5px; height: 9px;
+    border: 2px solid #fff; border-top: none; border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+
+  /* Radio opcoes motivo */
+  .radio-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .radio-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 9px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+  .radio-item:hover { border-color: var(--accent); background: var(--accent-light); }
+  .radio-item.on { border-color: var(--accent); background: var(--accent-light); color: var(--accent-text); font-weight: 500; }
+  .radio-dot {
+    width: 16px; height: 16px; min-width: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 50%; background: var(--surface);
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.12s;
+  }
+  .radio-item.on .radio-dot { border-color: var(--accent); }
+  .radio-item.on .radio-dot::after {
+    content: ""; width: 8px; height: 8px;
+    border-radius: 50%; background: var(--accent); display: block;
+  }
+
+  /* Avaliação estrelas */
+  .avaliacao-grid { display: flex; flex-direction: column; gap: 10px; }
+  .aval-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .aval-label { font-size: 13px; color: var(--text-muted); flex: 1; min-width: 160px; }
+  .aval-opts { display: flex; gap: 6px; }
+  .aval-btn {
+    padding: 5px 14px;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface2);
+    font-size: 12px; font-weight: 500;
+    color: var(--text-hint);
+    cursor: pointer; transition: all 0.12s; user-select: none;
+  }
+  .aval-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .aval-btn.on-ruim { background: #FEF2F2; border-color: #943030; color: #943030; }
+  .aval-btn.on-regular { background: #FDF9E6; border-color: #B8972A; color: #856B1A; }
+  .aval-btn.on-bom { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
+
+  /* Sim/Não */
+  .simnao-opts { display: flex; gap: 8px; margin-top: 4px; }
+  .simnao-btn {
+    flex: 1; padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.12s; user-select: none;
+    text-align: center;
+  }
+  .simnao-btn:hover { border-color: var(--accent); }
+  .simnao-btn.on-sim { background: var(--accent-light); border-color: var(--accent); color: var(--accent-text); }
+  .simnao-btn.on-nao { background: #FEF2F2; border-color: #943030; color: #943030; }
+
+  /* Nota */
+  .nota-opts { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 4px; }
+  .nota-btn {
+    width: 40px; height: 40px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface2);
+    font-size: 14px; font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer; transition: all 0.12s; user-select: none;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .nota-btn:hover { border-color: var(--accent); }
+  .nota-btn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  /* Subsection */
+  .subsection {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-hint);
+    margin: 1.2rem 0 0.75rem;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Footer */
+  .form-footer {
+    display: flex; align-items: center; justify-content: flex-end;
+    margin-top: 1.5rem;
+  }
+  .btn-primary {
+    padding: 12px 32px; border-radius: var(--radius-sm);
+    font-family: "DM Sans", sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: all 0.12s;
+    background: var(--accent); color: #fff; border: none;
+  }
+  .btn-primary:hover { opacity: 0.88; }
+
+  /* Sucesso */
+  .success-screen {
+    display: none;
+    flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 4rem 2rem;
+    min-height: 60vh;
+  }
+  .success-icon {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent-light);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .success-title {
+    font-family: "Lora", serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--text); margin-bottom: 0.75rem;
+  }
+  .success-sub { font-size: 14px; color: var(--text-muted); max-width: 360px; }
+
+  @media (max-width: 560px) {
+    .grid-2, .grid-3, .radio-group { grid-template-columns: 1fr; }
+    .aval-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Hero -->
+<div class="hero">
+  <img src="../logo.jpg" alt="HD Distribuidora" class="hero-logo">
+  <h1 class="hero-title">Entrevista de Desligamento</h1>
+  <p class="hero-sub">Sua opinião é muito importante para nós. Responda com sinceridade — suas respostas nos ajudam a crescer.</p>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Intro -->
+  <div class="intro-card">
+    <p>Prezado(a) colaborador(a), construímos parte da nossa história com você. Gostaríamos que contribuísse com sua visão sobre a empresa, respondendo às questões abaixo da forma mais sincera possível.</p>
+  </div>
+
+  <!-- Dados funcionais -->
+  <div class="card">
+    <div class="section-label">Dados funcionais</div>
+    <div class="grid-2" style="margin-bottom: 12px;">
+      <div class="field">
+        <label>Seu nome completo</label>
+        <input type="text" id="nome" placeholder="Nome completo">
+      </div>
+      <div class="field">
+        <label>Cargo que ocupava</label>
+        <input type="text" id="cargo" placeholder="Ex: Fisioterapeuta">
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="field">
+        <label>Data de admissão</label>
+        <input type="date" id="admissao">
+      </div>
+      <div class="field">
+        <label>Data de desligamento</label>
+        <input type="date" id="desligamento">
+      </div>
+    </div>
+  </div>
+
+  <!-- Motivo do desligamento -->
+  <div class="card">
+    <div class="section-label">Motivo do desligamento</div>
+    <div class="field">
+      <label class="question-label">Como você classificaria seu desligamento?</label>
+      <div class="radio-group" id="tipo-desl">
+        <div class="radio-item" data-val="Demissão"><div class="radio-dot"></div>Demissão</div>
+        <div class="radio-item" data-val="Pedido de demissão"><div class="radio-dot"></div>Pedido de demissão</div>
+        <div class="radio-item" data-val="Acordo entre as partes"><div class="radio-dot"></div>Acordo entre as partes</div>
+        <div class="radio-item" data-val="Término de contrato"><div class="radio-dot"></div>Término de contrato</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Causas -->
+  <div class="card">
+    <div class="section-label">Causas do desligamento</div>
+
+    <div class="subsection">Se foi pedido de demissão, o que motivou?</div>
+    <div class="check-group" id="causas-pedido">
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Salário</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Insatisfação profissional</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Horários de trabalho</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Estudos</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Negócio próprio</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Ambiente de trabalho</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Outro emprego</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Problemas de saúde</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Mudança de cidade</div>
+      <div class="check-item" data-g="pedido"><div class="check-box"></div>Outros</div>
+    </div>
+
+    <div class="subsection" style="margin-top:1.25rem;">Se foi demissão, qual foi o motivo?</div>
+    <div class="check-group" id="causas-dispensa">
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Baixo Desempenho</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Relacionamento com a chefia e/ou colegas</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Advertências ou Suspensões</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Descumprimento de normas — Desalinhamento com a cultura/valores da HD Distribuidora</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Redução de quadro</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Encerramento do ciclo na empresa</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Não sei / não entendi a demissão</div>
+      <div class="check-item" data-g="dispensa"><div class="check-box"></div>Outros</div>
+    </div>
+
+    <div class="field" style="margin-top: 1rem;">
+      <label>Considerações sobre as causas</label>
+      <textarea id="cons-causas" placeholder="Descreva com mais detalhes se quiser..."></textarea>
+    </div>
+  </div>
+
+  <!-- Percepção pessoal -->
+  <div class="card">
+    <div class="section-label">Sua percepção</div>
+    <div class="field">
+      <label class="question-label">Você considera seu desligamento justo? O que motivou sua decisão ou como se sentiu com a decisão da empresa?</label>
+      <textarea id="percepcao" placeholder="Compartilhe sua visão com sinceridade..."></textarea>
+    </div>
+  </div>
+
+  <!-- Depoimento pessoal -->
+  <div class="card">
+    <div class="section-label">Depoimento pessoal</div>
+    <div class="field">
+      <label class="question-label">Quais foram os pontos positivos de trabalhar na HD Distribuidora?</label>
+      <textarea id="pontos-pos" placeholder="O que você mais valorizou durante sua trajetória aqui..."></textarea>
+    </div>
+    <div class="field">
+      <label class="question-label">Quais foram os pontos negativos?</label>
+      <textarea id="pontos-neg" placeholder="O que poderia ter sido diferente ou melhor..."></textarea>
+    </div>
+    <div class="field">
+      <label class="question-label">Sugestões de melhoria, comentários ou observações</label>
+      <textarea id="sugestoes" placeholder="Sua opinião é muito importante para nosso crescimento..."></textarea>
+    </div>
+    <div class="field">
+      <label class="question-label">Comentários sobre a equipe, liderança, cultura ou comunicação (opcional)</label>
+      <textarea id="comentarios" placeholder="Fique à vontade para ser honesto(a)..."></textarea>
+    </div>
+  </div>
+
+
+
+  <!-- Finalização -->
+  <div class="card">
+    <div class="section-label">Finalização</div>
+
+    <div class="field">
+      <label class="question-label">Você voltaria a trabalhar na HD Distribuidora?</label>
+      <div class="simnao-opts" id="voltaria">
+        <div class="simnao-btn" data-sn="Sim">Sim</div>
+        <div class="simnao-btn" data-sn="Não">Não</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 1rem;">
+      <label class="question-label">Indicaria a HD Distribuidora para alguém trabalhar?</label>
+      <div class="simnao-opts" id="indicaria">
+        <div class="simnao-btn" data-sni="Sim">Sim</div>
+        <div class="simnao-btn" data-sni="Não">Não</div>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top: 1rem;">
+      <label class="question-label">De 0 a 10, que nota você daria para a HD Distribuidora?</label>
+      <div class="nota-opts" id="nota-opts">
+        <div class="nota-btn">0</div><div class="nota-btn">1</div><div class="nota-btn">2</div>
+        <div class="nota-btn">3</div><div class="nota-btn">4</div><div class="nota-btn">5</div>
+        <div class="nota-btn">6</div><div class="nota-btn">7</div><div class="nota-btn">8</div>
+        <div class="nota-btn">9</div><div class="nota-btn">10</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-footer">
+    <button class="btn-primary" id="btn-enviar" onclick="enviar()">Enviar entrevista</button>
+  </div>
+
+  <!-- Sucesso -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2E4DA6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2 class="success-title">Obrigada pela sua sinceridade!</h2>
+    <p class="success-sub">Suas respostas foram registradas e farão parte do nosso processo de melhoria contínua. Desejamos muito sucesso na sua próxima jornada.</p>
+  </div>
+
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzLzUYX00C4JXxUKntHFX8ASxEAd_iOLnZ9g5cFmqWWTQ6E11ZjGE0VEfc2S4apIZ3vPQ/exec';
+
+  let tipoDesl = '';
+  let voltaria = '';
+  let indicaria = '';
+  let nota = '';
+
+
+  // Tipo desligamento (radio)
+  document.querySelectorAll('#tipo-desl .radio-item').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#tipo-desl .radio-item').forEach(x => x.classList.remove('on'));
+      el.classList.add('on');
+      tipoDesl = el.dataset.val;
+    });
+  });
+
+  // Checkboxes causas — máximo 3 por grupo
+  document.querySelectorAll('.check-item').forEach(el => {
+    el.addEventListener('click', () => {
+      const grupo = el.dataset.g;
+      const selecionados = document.querySelectorAll(`.check-item[data-g="${grupo}"].on`).length;
+      if (el.classList.contains('on')) {
+        el.classList.remove('on');
+      } else {
+        if (selecionados >= 3) {
+          alert('Selecione no máximo 3 opções.');
+          return;
+        }
+        el.classList.add('on');
+      }
+    });
+  });
+
+
+
+  // Voltaria
+  document.querySelectorAll('#voltaria .simnao-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#voltaria .simnao-btn').forEach(x => x.classList.remove('on-sim','on-nao'));
+      voltaria = b.dataset.sn;
+      b.classList.add(voltaria === 'Sim' ? 'on-sim' : 'on-nao');
+    });
+  });
+
+  // Indicaria
+  document.querySelectorAll('#indicaria .simnao-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('#indicaria .simnao-btn').forEach(x => x.classList.remove('on-sim','on-nao'));
+      indicaria = b.dataset.sni;
+      b.classList.add(indicaria === 'Sim' ? 'on-sim' : 'on-nao');
+    });
+  });
+
+  // Nota
+  document.querySelectorAll('.nota-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.nota-btn').forEach(x => x.classList.remove('on'));
+      b.classList.add('on');
+      nota = b.textContent;
+    });
+  });
+
+  function enviar() {
+    const nome = document.getElementById('nome').value.trim();
+    if (!nome) { alert('Por favor, informe seu nome.'); return; }
+
+    const causasPedido = [...document.querySelectorAll('#causas-pedido .check-item.on')].map(c => c.textContent.trim()).join(', ');
+    const causasDispensa = [...document.querySelectorAll('#causas-dispensa .check-item.on')].map(c => c.textContent.trim()).join(', ');
+
+    const r = {
+      nome,
+      cargo: document.getElementById('cargo').value,
+      admissao: document.getElementById('admissao').value,
+      desligamento: document.getElementById('desligamento').value,
+      tipoDesligamento: tipoDesl,
+      causasPedido,
+      causasDispensa,
+      consCausas: document.getElementById('cons-causas').value,
+      percepcao: document.getElementById('percepcao').value,
+      pontosPos: document.getElementById('pontos-pos').value,
+      pontosNeg: document.getElementById('pontos-neg').value,
+      sugestoes: document.getElementById('sugestoes').value,
+      comentarios: document.getElementById('comentarios').value,
+
+      voltaria,
+      indicaria,
+      nota,
+      dataResposta: new Date().toLocaleDateString('pt-BR')
+    };
+
+    const btn = document.getElementById('btn-enviar');
+    btn.textContent = 'Enviando...';
+    btn.disabled = true;
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({tipo: 'entrevista', ...r})
+    }).then(() => {
+      document.querySelector('.page-wrap > *:not(#success-screen)') ;
+      document.querySelectorAll('.card, .intro-card, .form-footer').forEach(el => el.style.display = 'none');
+      document.getElementById('success-screen').style.display = 'flex';
+    }).catch(() => {
+      btn.textContent = 'Enviar entrevista';
+      btn.disabled = false;
+      alert('Erro ao enviar. Verifique sua conexão e tente novamente.');
+    });
+  }
+</script>
+</body>
+</html>
