@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil da Equipe — HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1A1E2E;--muted:#5E6680;--hint:#8893B0;--accent:#2E4DA6;--accent-light:#E8EDF8;--accent-dark:#1A2D6B;--radius:14px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6;padding-bottom:3rem}
+.nav-back{position:fixed;top:1rem;left:1rem;z-index:99;background:white;border:1.5px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px;transition:background .15s}
+.nav-back:hover{background:var(--accent-light)}
+.hero{background:linear-gradient(135deg,var(--accent-dark),var(--accent));color:#fff;padding:3rem 2rem 2rem;text-align:center}
+.hero img{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.3);margin-bottom:1rem;object-fit:cover}
+.hero h1{font-family:"Lora",serif;font-size:1.8rem;font-weight:700;margin-bottom:.4rem}
+.hero p{opacity:.85;font-size:.95rem}
+.hero .update{margin-top:.75rem;font-size:.78rem;opacity:.65}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:2rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1rem;text-align:center;transition:border-color .15s}
+.kpi:hover{border-color:var(--accent)}
+.kpi .num{font-family:"Lora",serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1}
+.kpi .label{font-size:.8rem;color:var(--hint);margin-top:.35rem;font-weight:500}
+.kpi .sub{font-size:.72rem;color:var(--hint);margin-top:.2rem}
+.section-title{font-family:"Lora",serif;font-size:1.1rem;font-weight:700;color:var(--accent-dark);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem}
+.charts-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.25rem;margin-bottom:2rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.card h3{font-family:"Lora",serif;font-size:.95rem;font-weight:600;color:var(--accent-dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--accent-light)}
+.bar-item{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;font-size:.85rem}
+.bar-item .name{min-width:100px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-item .bar{flex:1;height:8px;background:var(--accent-light);border-radius:4px;overflow:hidden}
+.bar-item .fill{height:100%;background:var(--accent);border-radius:4px;transition:width .6s ease}
+.bar-item .count{min-width:30px;text-align:right;color:var(--hint);font-size:.78rem}
+.bar-item .pct{min-width:36px;text-align:right;color:var(--accent);font-size:.78rem;font-weight:600}
+.no-data{text-align:center;padding:1.5rem;color:var(--hint);font-size:.85rem;border:1px dashed var(--border);border-radius:8px}
+.no-data .icon{font-size:1.5rem;margin-bottom:.5rem}
+.aniversariantes{display:flex;flex-wrap:wrap;gap:.5rem}
+.aniv-chip{background:var(--accent-light);border:1px solid var(--border);border-radius:8px;padding:.35rem .75rem;font-size:.82rem;color:var(--accent-dark);font-weight:500}
+.loading{text-align:center;padding:3rem;color:var(--hint)}
+.loading .spinner{width:32px;height:32px;border:3px solid var(--accent-light);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 1rem}
+@keyframes spin{to{transform:rotate(360deg)}}
+.erro{background:#fdf0ee;border:1px solid #e8b4ae;border-radius:10px;padding:1rem 1.25rem;color:#9b3a2e;font-size:.88rem;margin:1rem 0}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.82rem}
+thead th{background:var(--accent-light);color:var(--accent-dark);font-weight:600;padding:.6rem .75rem;text-align:left;border-bottom:2px solid var(--border)}
+tbody td{padding:.55rem .75rem;border-bottom:1px solid var(--border);color:var(--muted)}
+tbody tr:hover td{background:#f8faff}
+@media(max-width:600px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<a href="../index.html" class="nav-back">← Início</a>
+<div class="hero">
+  <img src="../logo.jpg" alt="HD Distribuidora">
+  <h1>Perfil da Equipe</h1>
+  <p>Indicadores e composição da equipe HD Distribuidora</p>
+  <div class="update" id="update-time">Carregando dados...</div>
+</div>
+<div class="container">
+  <div id="content"><div class="loading"><div class="spinner"></div>Carregando dados da equipe...</div></div>
+</div>
+
+<script>
+const SHEET_ID = '1qjFfnKVlFAf4NkX32VYn1B0mwJCEmMWCPuJmlGfOTYE';
+const GID = '969115456';
+const URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+// Colunas esperadas (case-insensitive)
+const COL = {
+  nome: ['nome','name','colaborador'],
+  filial: ['filial','unidade','localidade'],
+  depto: ['departamento','setor','area','área','dept'],
+  cargo: ['cargo','função','funcao','posição','posicao'],
+  genero: ['gênero','genero','sexo'],
+  faixa: ['faixa etária','faixa etaria','idade','faixa'],
+  escolaridade: ['escolaridade','grau instrução','grau de instrução','instrução'],
+  admissao: ['admissão','admissao','data admissão','data admissao','data de admissão'],
+  contrato: ['contrato','tipo contrato','modelo contratação','modelo','tipo vínculo'],
+  status: ['status','situação','situacao','ativo'],
+};
+
+function normKey(s){ return s ? s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim() : ''; }
+
+function findCol(headers, keys){
+  for(const k of keys){
+    const idx = headers.findIndex(h => normKey(h) === normKey(k) || normKey(h).includes(normKey(k)));
+    if(idx>=0) return idx;
+  }
+  return -1;
+}
+
+function calcIdade(nasc){
+  if(!nasc) return null;
+  const d = new Date(nasc);
+  if(isNaN(d)) return null;
+  const diff = Date.now() - d.getTime();
+  return Math.floor(diff / (1000*60*60*24*365.25));
+}
+
+function faixaEtaria(idade){
+  if(!idade) return null;
+  if(idade < 25) return 'Até 24 anos';
+  if(idade < 35) return '25–34 anos';
+  if(idade < 45) return '35–44 anos';
+  if(idade < 55) return '45–54 anos';
+  return '55+ anos';
+}
+
+function tempoCategoria(meses){
+  if(meses < 6) return 'Menos de 6 meses';
+  if(meses < 12) return '6–11 meses';
+  if(meses < 24) return '1–2 anos';
+  if(meses < 60) return '2–5 anos';
+  return 'Mais de 5 anos';
+}
+
+function groupBy(arr, fn){
+  return arr.reduce((acc, v) => {
+    const k = fn(v) || 'Não informado';
+    acc[k] = (acc[k]||0)+1;
+    return acc;
+  }, {});
+}
+
+function sorted(obj){
+  return Object.entries(obj).sort((a,b)=>b[1]-a[1]);
+}
+
+function barChart(data, total, title){
+  if(!data || data.length===0) return `<div class="card"><h3>${title}</h3><div class="no-data"><div class="icon">📊</div>Sem informações atualizadas</div></div>`;
+  const hasUnknown = data.some(([k])=>k==='Não informado');
+  const known = data.filter(([k])=>k!=='Não informado');
+  const items = [...known, ...(hasUnknown ? data.filter(([k])=>k==='Não informado') : [])];
+  return `<div class="card"><h3>${title}</h3>${items.map(([k,v])=>{
+    const pct = total>0?Math.round(v/total*100):0;
+    return `<div class="bar-item"><span class="name" title="${k}">${k}</span><div class="bar"><div class="fill" style="width:${pct}%"></div></div><span class="count">${v}</span><span class="pct">${pct}%</span></div>`;
+  }).join('')}</div>`;
+}
+
+function anivCard(nomes){
+  if(!nomes||nomes.length===0) return `<div class="card"><h3>🎂 Aniversariantes do Mês</h3><div class="no-data"><div class="icon">🎂</div>Nenhum aniversariante este mês ou data não informada</div></div>`;
+  return `<div class="card"><h3>🎂 Aniversariantes do Mês</h3><div class="aniversariantes">${nomes.map(n=>`<span class="aniv-chip">🎉 ${n}</span>`).join('')}</div></div>`;
+}
+
+async function loadData(){
+  try{
+    const res = await fetch(URL);
+    const text = await res.text();
+    const json = JSON.parse(text.match(/google.visualization.Query.setResponse\((.+)\);?$/s)[1]);
+    const rows = json.table.rows;
+    const cols = json.table.cols.map(c=>c.label);
+
+    // Mapear colunas
+    const iNome      = findCol(cols, COL.nome);
+    const iFilial    = findCol(cols, COL.filial);
+    const iDepto     = findCol(cols, COL.depto);
+    const iCargo     = findCol(cols, COL.cargo);
+    const iGenero    = findCol(cols, COL.genero);
+    const iFaixa     = findCol(cols, COL.faixa);
+    const iEscol     = findCol(cols, COL.escolaridade);
+    const iAdm       = findCol(cols, COL.admissao);
+    const iContrato  = findCol(cols, COL.contrato);
+    const iStatus    = findCol(cols, COL.status);
+
+    const get = (row, i) => i>=0 && row.c[i] && row.c[i].v!=null ? String(row.c[i].v).trim() : '';
+
+    // Filtrar ativos
+    let data = rows.map(r=>({
+      nome:      get(r,iNome),
+      filial:    get(r,iFilial),
+      depto:     get(r,iDepto),
+      cargo:     get(r,iCargo),
+      genero:    get(r,iGenero),
+      faixa:     get(r,iFaixa),
+      escol:     get(r,iEscol),
+      admissao:  iAdm>=0 && r.c[iAdm] ? r.c[iAdm].v : null,
+      contrato:  get(r,iContrato),
+      status:    get(r,iStatus),
+    })).filter(r=>r.nome && (!r.status || /ativ/i.test(r.status) || r.status===''));
+
+    const total = data.length;
+    const agora = new Date();
+    const mesAtual = agora.getMonth()+1;
+
+    // Calcular tempo de casa
+    data = data.map(r=>{
+      let meses = null;
+      if(r.admissao){
+        const d = r.admissao instanceof Date ? r.admissao : new Date(r.admissao);
+        if(!isNaN(d)) meses = Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));
+      }
+      return {...r, meses};
+    });
+
+    // Aniversariantes (col faixa pode ser data de nasc)
+    const aniversariantes = [];
+    // Tentar col separada de nascimento
+    const iNasc = findCol(cols, ['nascimento','data nascimento','data de nascimento','nasc']);
+    if(iNasc>=0){
+      rows.forEach((r,i)=>{
+        const v = r.c[iNasc]?.v;
+        if(!v) return;
+        const d = v instanceof Date ? v : new Date(v);
+        if(!isNaN(d) && (d.getMonth()+1)===mesAtual && data[i]?.nome){
+          aniversariantes.push(data[i].nome.split(' ').slice(0,2).join(' '));
+        }
+      });
+    }
+
+    // Tempo de casa
+    const tempoGroup = groupBy(data, r=>r.meses!=null ? tempoCategoria(r.meses) : null);
+    const TEMPO_ORD = ['Menos de 6 meses','6–11 meses','1–2 anos','2–5 anos','Mais de 5 anos','Não informado'];
+    const tempoSorted = TEMPO_ORD.map(k=>[k,tempoGroup[k]||0]).filter(([,v])=>v>0);
+
+    // Turnover (desligados / média) — placeholder
+    const filiais = sorted(groupBy(data, r=>r.filial));
+    const deptos  = sorted(groupBy(data, r=>r.depto));
+    const generos = sorted(groupBy(data, r=>r.genero));
+    const faixas  = sorted(groupBy(data, r=>r.faixa||null));
+    const escols  = sorted(groupBy(data, r=>r.escol));
+    const contratos = sorted(groupBy(data, r=>r.contrato));
+
+    // KPIs
+    const kpis = [
+      {num: total, label: 'Colaboradores Ativos'},
+      {num: filiais.length>0?filiais.length:'—', label: 'Filiais', sub: filiais.map(([k,v])=>`${k}: ${v}`).join(' · ')},
+      {num: deptos.length>0?deptos.length:'—', label: 'Departamentos'},
+      {num: aniversariantes.length>0?aniversariantes.length:'—', label: 'Aniversariantes', sub: 'neste mês'},
+      {num: data.filter(r=>r.meses!=null&&r.meses<6).length||'—', label: 'Novos (< 6m)'},
+      {num: data.filter(r=>r.meses!=null&&r.meses>=60).length||'—', label: '5+ anos de casa'},
+    ];
+
+    const kpiHtml = `<div class="kpi-grid">${kpis.map(k=>`
+      <div class="kpi">
+        <div class="num">${k.num}</div>
+        <div class="label">${k.label}</div>
+        ${k.sub?`<div class="sub">${k.sub}</div>`:''}
+      </div>`).join('')}</div>`;
+
+    document.getElementById('update-time').textContent = 'Atualizado em: '+agora.toLocaleString('pt-BR');
+    document.getElementById('content').innerHTML = kpiHtml + `
+      <div class="section-title">📍 Distribuição por Filial e Departamento</div>
+      <div class="charts-grid">
+        ${barChart(filiais, total, '🏢 Por Filial')}
+        ${barChart(deptos, total, '🗂️ Por Departamento')}
+      </div>
+      <div class="section-title">👥 Composição da Equipe</div>
+      <div class="charts-grid">
+        ${barChart(generos, total, '⚥ Por Gênero')}
+        ${barChart(faixas, total, '📅 Por Faixa Etária')}
+        ${barChart(escols, total, '🎓 Por Escolaridade')}
+        ${barChart(contratos, total, '📋 Por Modelo de Contratação')}
+      </div>
+      <div class="section-title">⏱️ Tempo de Casa</div>
+      <div class="charts-grid">
+        ${barChart(tempoSorted, total, '🕐 Tempo de Casa')}
+        ${anivCard(aniversariantes)}
+      </div>
+    `;
+  } catch(err){
+    document.getElementById('update-time').textContent = 'Erro ao carregar';
+    document.getElementById('content').innerHTML = `
+      <div class="erro">⚠️ Não foi possível carregar os dados da planilha.<br>
+      <small>Verifique se a planilha está compartilhada publicamente como "Qualquer pessoa com o link pode visualizar".</small><br>
+      <small>Erro: ${err.message}</small></div>
+      <div class="no-data" style="padding:2rem"><div class="icon">📊</div>Sem informações atualizadas</div>`;
+  }
+}
+
+loadData();
+</script>
+</body>
+</html>
