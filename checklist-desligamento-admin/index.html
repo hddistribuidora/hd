@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist de Desligamento | HD Distribuidora</title>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #2E4DA6;
+      --green-pale: #e8f0ea;
+      --bg: #F0F3F8;
+      --surface: #FFFFFF;
+      --border: #C8D6E8;
+      --text: #1e2a22;
+      --muted: #6b7a6e;
+      --red: #9b3a2e;
+      --red-pale: #fdf0ee;
+      --red-border: #e8b4ae;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "DM Sans", sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 5rem; }
+    .container { max-width: 780px; margin: 0 auto; }
+
+    .page-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.75rem; }
+    .header-logo { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+    .page-header h1 { font-family: "Lora", serif; font-size: 1.4rem; font-weight: 700; color: var(--red); line-height: 1.2; }
+    .page-header p { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+
+    .print-header { display: none; }
+    .print-colab-box { display: none; }
+    .tab-section-title { display: none; }
+
+    .selector-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .selector-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+    .selector-field { flex: 1; min-width: 200px; }
+    .selector-field label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .selector-field select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: "DM Sans", sans-serif; font-size: 0.9rem; color: var(--text); background: white; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7a6e' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; cursor: pointer; }
+    .selector-field select:focus { outline: none; border-color: var(--red); }
+
+    .btn { font-family: "DM Sans", sans-serif; font-size: 0.88rem; font-weight: 600; padding: 10px 18px; border-radius: 8px; border: none; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+    .btn-primary { background: var(--red); color: white; }
+    .btn-primary:hover { background: #7d2e24; }
+    .btn-primary:disabled { background: #dba49e; cursor: not-allowed; }
+    .btn-ghost { background: white; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { background: var(--bg); }
+    .btn-outline { background: white; color: var(--red); border: 1.5px solid var(--red); }
+    .btn-outline:hover { background: var(--red-pale); }
+    .btn-sm { padding: 7px 14px; font-size: 0.82rem; }
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    .btn.loading .spinner { display: inline-block; }
+    .btn.loading .btn-label { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .colab-banner { display: none; background: var(--red-pale); border: 1px solid var(--red-border); border-radius: 10px; padding: 0.85rem 1.1rem; margin-top: 1rem; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .colab-banner.visible { display: flex; }
+    .colab-info { display: flex; align-items: center; gap: 10px; }
+    .colab-avatar { width: 36px; height: 36px; background: var(--red); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 0.85rem; flex-shrink: 0; }
+    .colab-name { font-weight: 600; font-size: 0.95rem; color: var(--red); }
+    .colab-meta { font-size: 0.78rem; color: var(--muted); }
+    .save-status { font-size: 0.78rem; font-weight: 600; padding: 4px 10px; border-radius: 20px; display: none; }
+    .save-status.saved { display: inline-flex; align-items: center; gap: 4px; background: #d4edda; color: #276843; }
+    .save-status.saving { display: inline-flex; align-items: center; gap: 4px; background: #fff3cd; color: #856404; }
+    .save-status.error { display: inline-flex; align-items: center; gap: 4px; background: #f8d7da; color: #721c24; }
+
+    .checklist-area { display: none; }
+    .checklist-area.visible { display: block; }
+
+    .cl-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1.25rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+    .cl-card-header { padding: 0.9rem 1.25rem; background: var(--red-pale); border-bottom: 1px solid var(--red-border); display: flex; align-items: center; justify-content: space-between; }
+    .cl-card-title { font-family: "Lora", serif; font-weight: 600; font-size: 0.92rem; color: var(--red); }
+    .resp-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 3px 9px; border-radius: 20px; color: white; background: var(--red); white-space: nowrap; }
+    .cl-list { list-style: none; }
+    .cl-item { display: flex; align-items: flex-start; gap: 12px; padding: 0.8rem 1.25rem; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.12s; user-select: none; }
+    .cl-item:last-child { border-bottom: none; }
+    .cl-item:hover { background: #fdf7f6; }
+    .cl-item.checked { background: #f0f7f2; }
+    .chkbox { width: 21px; height: 21px; border-radius: 6px; border: 2px solid var(--border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: all 0.12s; background: white; }
+    .cl-item.checked .chkbox { background: var(--green); border-color: var(--green); }
+    .chkbox svg { width: 12px; height: 12px; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transition: opacity 0.12s; }
+    .cl-item.checked .chkbox svg { opacity: 1; }
+    .cl-label { font-size: 0.88rem; color: var(--text); line-height: 1.4; flex: 1; transition: color 0.12s; }
+    .cl-item.checked .cl-label { color: var(--muted); text-decoration: line-through; text-decoration-color: #b0bdb3; }
+    .cl-footer { padding: 0.85rem 1.25rem; background: var(--red-pale); border-top: 1px solid var(--red-border); }
+    .prog-track { height: 5px; background: var(--red-border); border-radius: 99px; overflow: hidden; }
+    .prog-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.3s; width: 0%; }
+    .prog-label { font-size: 0.76rem; color: var(--muted); margin-top: 5px; }
+    .complete-badge { display: none; align-items: center; gap: 8px; background: #e8f5ed; border: 1px solid #a8d5b5; border-radius: 10px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; color: var(--green); font-weight: 600; font-size: 0.88rem; }
+    .complete-badge.visible { display: flex; }
+    .complete-badge svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+    .empty-state { text-align: center; padding: 3rem 1rem; color: var(--muted); }
+    .empty-state svg { width: 48px; height: 48px; margin-bottom: 1rem; opacity: 0.35; }
+    .empty-state h3 { font-family: "Lora", serif; font-size: 1.1rem; color: var(--text); margin-bottom: 0.5rem; }
+    .empty-state p { font-size: 0.85rem; }
+
+    .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid var(--border); padding: 0.85rem 1.5rem; display: none; align-items: center; justify-content: flex-end; gap: 1rem; z-index: 100; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); }
+    .save-bar.visible { display: flex; }
+
+    @media print {
+      body { background: white; padding: 0; font-size: 11pt; }
+      .selector-card, .save-bar, .complete-badge, .empty-state { display: none !important; }
+      .page-header { display: none !important; }
+      .print-header { display: flex !important; align-items: center; gap: 12px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--red); }
+      .print-header img { width: 44px; height: 44px; border-radius: 50%; }
+      .print-header-text h1 { font-family: "Lora", serif; font-size: 14pt; font-weight: 700; color: var(--red); }
+      .print-header-text p { font-size: 9pt; color: var(--muted); }
+      .print-colab-box { display: flex !important; align-items: center; gap: 10px; background: var(--red-pale); border: 1px solid var(--red-border); border-radius: 8px; padding: 8px 12px; margin-bottom: 16px; }
+      .print-colab-box .label { font-size: 8pt; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em; }
+      .print-colab-box .name { font-size: 12pt; font-weight: 700; color: var(--red); font-family: "Lora", serif; }
+      .checklist-area { display: block !important; }
+      .cl-card { box-shadow: none; border: 1px solid var(--border); page-break-inside: avoid; }
+      .cl-item { padding: 5px 10px; }
+      .cl-label { font-size: 9pt; }
+      .chkbox { width: 14px; height: 14px; border-radius: 3px; }
+      .chkbox svg { width: 9px; height: 9px; }
+      .cl-footer, .prog-track, .prog-label { display: none; }
+      .cl-card-header { padding: 6px 10px; }
+      .cl-card-title { font-size: 9pt; }
+      @page { margin: 15mm 12mm; }
+    }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: "DM Sans", sans-serif; font-size: 0.82rem; font-weight: 600;
+    color: var(--green, #2E4DA6); text-decoration: none;
+    padding: 6px 12px; border-radius: 8px;
+    border: 1.5px solid var(--green, #2E4DA6);
+    background: white; transition: all 0.15s;
+    margin-bottom: 1.5rem; align-self: flex-start;
+  }
+  .back-btn:hover { background: var(--green-pale, #e8f0ea); }
+  @media print { .back-btn { display: none !important; } }
+  </style>
+</head>
+<body>
+<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'" class="no-print">← Início</a>
+
+<div class="container">
+  
+
+  <div class="page-header">
+    <img src="../logo.jpg" class="header-logo" alt="HD Distribuidora"/>
+    <div>
+      <h1>Checklist de Desligamento</h1>
+      <p>Painel administrativo — HD Distribuidora RH</p>
+    </div>
+  </div>
+
+  <div class="print-header">
+    <img src="../logo.jpg" alt="HD Distribuidora"/>
+    <div class="print-header-text">
+      <h1>Checklist de Desligamento</h1>
+      <p>HD Distribuidora Tecnologia da Informação Ltda</p>
+    </div>
+  </div>
+  <div class="print-colab-box" id="printColabBox">
+    <div>
+      <div class="label">Colaborador</div>
+      <div class="name" id="printColabName">—</div>
+    </div>
+  </div>
+
+  <div class="selector-card">
+    <div class="selector-row">
+      <div class="selector-field">
+        <label>Colaborador</label>
+        <select id="selectColab" onchange="onColabChange()">
+          <option value="">— Selecione um colaborador —</option>
+        </select>
+      </div>
+      <button class="btn btn-outline" onclick="loadColabs()">
+        <div class="spinner"></div>
+        <span class="btn-label">↻ Atualizar lista</span>
+      </button>
+    </div>
+    <div class="colab-banner" id="colabBanner">
+      <div class="colab-info">
+        <div class="colab-avatar" id="colabAvatar">--</div>
+        <div>
+          <div class="colab-name" id="colabName">—</div>
+          <div class="colab-meta" id="colabMeta">—</div>
+        </div>
+      </div>
+      <span class="save-status" id="saveStatus"></span>
+    </div>
+  </div>
+
+  <div class="empty-state" id="emptyState">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    <h3>Nenhum colaborador selecionado</h3>
+    <p>Clique em "Atualizar lista" e selecione um colaborador para iniciar.</p>
+  </div>
+
+  <div class="checklist-area" id="checklistArea">
+    <div class="complete-badge" id="done-desl">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Todos os procedimentos de desligamento foram concluídos!
+    </div>
+    <div class="cl-card">
+      <div class="cl-card-header">
+        <span class="cl-card-title">🏢 Setor de RH — Registros de Saída</span>
+        <span class="resp-tag">RH</span>
+      </div>
+      <ul class="cl-list" id="list-desl">
+        <li class="cl-item" onclick="toggleItem(this,0)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Exame Demissional</span></li>
+        <li class="cl-item" onclick="toggleItem(this,1)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Aviso Prévio</span></li>
+        <li class="cl-item" onclick="toggleItem(this,2)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Termo de Rescisão Contratual</span></li>
+        <li class="cl-item" onclick="toggleItem(this,3)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cancelamento no Cadastro do Ponto</span></li>
+        <li class="cl-item" onclick="toggleItem(this,4)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cancelamento do Cartão Caju</span></li>
+        <li class="cl-item" onclick="toggleItem(this,5)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Cancelamento de acesso à porta — reconhecimento facial</span></li>
+        <li class="cl-item" onclick="toggleItem(this,6)"><div class="chkbox"><svg viewBox="0 0 12 10"><polyline points="1,5 4,9 11,1"/></svg></div><span class="cl-label">Encaminhamento de troca de senhas — sistemas do setor</span></li>
+      </ul>
+      <div class="cl-footer">
+        <div class="prog-track"><div class="prog-fill" id="bar-desl"></div></div>
+        <div class="prog-label" id="lbl-desl">0 de 7 procedimentos concluídos</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="save-bar" id="saveBar">
+  <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Imprimir</button>
+  <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveProgress()">
+    <div class="spinner"></div>
+    <span class="btn-label">💾 Salvar progresso</span>
+  </button>
+</div>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywkZIgkqmapHY1U1LePoKmx93vxVU8Ijn3-0nxtrAoMOPup-ScpQnWiaTSz_aZSmHdrg/exec';
+const TOTAL = 7;
+let currentColab = null;
+let state = new Array(TOTAL).fill(false);
+
+async function loadColabs() {
+  const btn = document.querySelector('.btn-outline');
+  btn.classList.add('loading'); btn.disabled = true;
+  try {
+    const res = await fetch(SCRIPT_URL);
+    const data = await res.json();
+    const sel = document.getElementById('selectColab');
+    sel.innerHTML = '<option value="">— Selecione um colaborador —</option>';
+    (data.fichas || []).forEach(c => {
+      const name = c['Nome'] || '';
+      if (!name) return;
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.dataset.cargo = c['Funcao'] || c['Funcão'] || '';
+      opt.dataset.admissao = c['Admissao'] || c['Admissão'] || '';
+      opt.textContent = name;
+      sel.appendChild(opt);
+    });
+  } catch(e) { alert('Erro ao carregar colaboradores.'); }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+async function onColabChange() {
+  const sel = document.getElementById('selectColab');
+  const opt = sel.options[sel.selectedIndex];
+  if (!opt || !opt.value) {
+    currentColab = null;
+    document.getElementById('colabBanner').classList.remove('visible');
+    document.getElementById('checklistArea').classList.remove('visible');
+    document.getElementById('emptyState').style.display = 'block';
+    document.getElementById('saveBar').classList.remove('visible');
+    return;
+  }
+  currentColab = { nome: opt.value, cargo: '', admissao: '' };
+
+  // Busca dados admin (cargo, admissão, departamento)
+  try {
+    const url = SCRIPT_URL + '?acao=getDadosAdmin&colaborador=' + encodeURIComponent(opt.value);
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.dados) {
+      const d = data.dados;
+      currentColab.cargo = d['Função'] || d['Funcao'] || d['função'] || d['funcao'] || d['Cargo'] || '';
+      const rawAdmissao = d['Data Admissão'] || d['Data Admissao'] || d['Data admissão'] || d['DataAdmissao'] || '';
+      if (rawAdmissao && rawAdmissao.includes('T')) {
+        const parts = rawAdmissao.split('T')[0].split('-');
+        currentColab.admissao = parts[2] + '/' + parts[1] + '/' + parts[0];
+      } else {
+        currentColab.admissao = rawAdmissao;
+      }
+      currentColab.departamento = d['Departamento'] || d['departamento'] || '';
+    }
+  } catch(e) { /* sem dados admin ainda */ }
+
+  const initials = opt.value.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+  document.getElementById('colabAvatar').textContent = initials;
+  document.getElementById('colabName').textContent = opt.value;
+  document.getElementById('printColabName').textContent = opt.value;
+  document.getElementById('printColabBox').style.display = 'flex';
+  let meta = [];
+  if (currentColab.cargo) meta.push(currentColab.cargo);
+  if (currentColab.departamento) meta.push(currentColab.departamento);
+  if (currentColab.admissao) meta.push('Admissão: ' + currentColab.admissao);
+  document.getElementById('colabMeta').textContent = meta.join(' · ') || 'Colaborador HD Distribuidora';
+  document.getElementById('colabBanner').classList.add('visible');
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('checklistArea').classList.add('visible');
+  document.getElementById('saveBar').classList.add('visible');
+  setSaveStatus('');
+  await loadSavedState();
+}
+
+async function loadSavedState() {
+  setSaveStatus('saving', '⏳ Carregando...');
+  try {
+    const url = SCRIPT_URL + '?acao=getChecklist&colaborador=' + encodeURIComponent(currentColab.nome) + '&tipo=desligamento';
+    const res = await fetch(url);
+    const data = await res.json();
+    if (data.checklist && data.checklist.desl) {
+      resetItems();
+      data.checklist.desl.forEach((v,i) => { if(v) markItem(i, true); });
+      updateProgress();
+      setSaveStatus('saved', '✓ Atualizado');
+    } else {
+      resetItems();
+      setSaveStatus('');
+    }
+  } catch(e) { resetItems(); setSaveStatus(''); }
+}
+
+function markItem(idx, checked) {
+  const items = document.getElementById('list-desl').querySelectorAll('.cl-item');
+  if (items[idx]) {
+    if (checked) items[idx].classList.add('checked');
+    else items[idx].classList.remove('checked');
+  }
+  state[idx] = checked;
+}
+
+function toggleItem(item, idx) {
+  const checked = !item.classList.contains('checked');
+  item.classList.toggle('checked');
+  state[idx] = checked;
+  updateProgress();
+}
+
+function updateProgress() {
+  const items = document.getElementById('list-desl').querySelectorAll('.cl-item');
+  const done = [...items].filter(i => i.classList.contains('checked')).length;
+  document.getElementById('bar-desl').style.width = (done/TOTAL*100)+'%';
+  document.getElementById('lbl-desl').textContent = done+' de '+TOTAL+' procedimentos concluídos';
+  document.getElementById('done-desl').classList.toggle('visible', done === TOTAL);
+}
+
+function resetItems() {
+  state = new Array(TOTAL).fill(false);
+  document.querySelectorAll('.cl-item.checked').forEach(i => i.classList.remove('checked'));
+  document.getElementById('bar-desl').style.width = '0%';
+  document.getElementById('lbl-desl').textContent = '0 de '+TOTAL+' procedimentos concluídos';
+  document.getElementById('done-desl').classList.remove('visible');
+}
+
+function setSaveStatus(s, msg) {
+  const el = document.getElementById('saveStatus');
+  el.className = 'save-status';
+  if (!s) { el.style.display='none'; return; }
+  el.classList.add(s); el.textContent = msg;
+}
+
+async function saveProgress() {
+  if (!currentColab) return;
+  const btn = document.getElementById('saveBtn');
+  btn.classList.add('loading'); btn.disabled = true;
+  setSaveStatus('saving','⏳ Salvando...');
+  const payload = {
+    tipo: 'checklist',
+    subtipo: 'desligamento',
+    colaborador: currentColab.nome,
+    cargo: currentColab.cargo,
+    dataRegistro: new Date().toLocaleDateString('pt-BR'),
+    horaRegistro: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}),
+    state: { desl: state },
+    progressoDesligamento: state.filter(Boolean).length+'/'+TOTAL
+  };
+  try {
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+    setSaveStatus('saved','✓ Salvo');
+  } catch(e) { setSaveStatus('error','✗ Erro ao salvar'); }
+  btn.classList.remove('loading'); btn.disabled = false;
+}
+
+loadColabs();
+</script>
+</body>
+</html>
