@@ -124,16 +124,16 @@ function render(colaboradores){
 
   var data = colaboradores.map(function(r){
     return {
-      nome:    getV(r,['nome','colaborador','name']),
-      filial:  getV(r,['filial','unidade','localidade']),
-      depto:   getV(r,['departamento','setor','area']),
-      genero:  getV(r,['genero','sexo']),
-      faixa:   getV(r,['faixa etaria','faixa','idade']),
-      escol:   getV(r,['escolaridade','instrucao','grau']),
-      contrat: getV(r,['contrato','tipo contrato','modelo','vinculo']),
+      nome:    getV(r,['Colaborador','nome','colaborador','name']),
+      filial:  getV(r,['Alocacao','Alocação','filial','unidade','localidade']),
+      depto:   getV(r,['Departamento','departamento','setor','area']),
+      genero:  getV(r,['Sexo','genero','sexo']),
+      faixa:   getV(r,['Faixa Etaria','faixa etaria','faixa','idade']),
+      escol:   getV(r,['Grau Formacao','Grau Formação','escolaridade','instrucao','grau']),
+      contrat: getV(r,['Tipo de Contrato','Contrato','contrato','tipo contrato','modelo','vinculo']),
       status:  getV(r,['status','situacao','ativo']),
-      admissao:getV(r,['admissao','data admissao','dt admissao']),
-      nasc:    getV(r,['nascimento','data nascimento','nasc','dt nasc']),
+      admissao:getV(r,['Admissao','Admissão','admissao','data admissao','dt admissao']),
+      nasc:    getV(r,['Aniversario','Aniversário','nascimento','data nascimento','nasc','dt nasc']),
     };
   }).filter(function(r){ return r.nome && (!r.status || /ativ/i.test(r.status) || r.status === ''); });
 
