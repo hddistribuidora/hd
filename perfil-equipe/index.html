@@ -1,204 +1,204 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Perfil da Equipe — HD Distribuidora</title>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #F0F3F8; --surface: #FFFFFF; --border: #C8D6E8;
-      --text: #1C201A; --text-muted: #5E6659; --text-hint: #9AA394;
-      --accent: #2E4DA6; --accent-light: #E8EDF8; --accent-text: #1A2D6B;
-      --radius: 12px; --radius-sm: 8px;
-    }
-    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-    header { background: var(--accent); color: #fff; padding: 20px 32px 20px 140px; display: flex; align-items: center; gap: 16px; }
-    .header-back { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 13px; transition: color .2s; }
-    .header-back:hover { color: #fff; }
-    .header-title { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; }
-    .header-sub { margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.6); }
-
-    .container { max-width: 1100px; margin: 0 auto; padding: 32px 20px 48px; }
-
-    /* CARDS DE RESUMO */
-    .resumo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
-    .resumo-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; text-align: center; }
-    .resumo-num { font-family: 'Lora', serif; font-size: 36px; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 6px; }
-    .resumo-label { font-size: 12px; color: var(--text-hint); font-weight: 500; text-transform: uppercase; letter-spacing: .05em; }
-
-    /* GRID DE GRÁFICOS */
-    .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 28px; }
-    @media (max-width: 700px) { .charts-grid { grid-template-columns: 1fr; } }
-
-    .chart-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
-    .chart-title { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 20px; text-align: center; }
-    .chart-wrap { position: relative; height: 220px; }
-
-    /* TABELA ANIVERSÁRIOS */
-    .aniv-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
-    .aniv-header { padding: 18px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-    .aniv-header h2 { font-family: 'Lora', serif; font-size: 15px; font-weight: 600; }
-    .aniv-table { width: 100%; border-collapse: collapse; }
-    .aniv-table th { padding: 10px 24px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--text-hint); text-align: left; background: var(--bg); border-bottom: 1px solid var(--border); }
-    .aniv-table td { padding: 12px 24px; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
-    .aniv-table tr:last-child td { border-bottom: none; }
-    .aniv-table tr:hover td { background: var(--accent-light); }
-    .tempo-badge { display: inline-block; background: var(--accent-light); color: var(--accent-text); font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; }
-
-    .loading { text-align: center; padding: 60px 20px; color: var(--text-hint); font-size: 14px; }
-    .section-title { font-family: 'Lora', serif; font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 16px; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil da Equipe - HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1A1E2E;--muted:#5E6680;--hint:#8893B0;--accent:#2E4DA6;--light:#E8EDF8;--dark:#1A2D6B;--radius:14px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;padding-bottom:3rem}
+a.back{position:fixed;top:1rem;left:1rem;z-index:99;background:#fff;border:1.5px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+a.back:hover{background:var(--light)}
+.hero{background:linear-gradient(135deg,var(--dark),var(--accent));color:#fff;padding:3rem 2rem 2rem;text-align:center}
+.hero img{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.3);margin-bottom:1rem;object-fit:cover}
+.hero h1{font-family:"Lora",serif;font-size:1.8rem;font-weight:700;margin-bottom:.4rem}
+.hero p{opacity:.85;font-size:.95rem}
+.update{margin-top:.75rem;font-size:.78rem;opacity:.65}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:2rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1rem;text-align:center}
+.kpi .num{font-family:"Lora",serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1}
+.kpi .lbl{font-size:.8rem;color:var(--hint);margin-top:.35rem;font-weight:500}
+.kpi .sub{font-size:.7rem;color:var(--hint);margin-top:.2rem}
+.sec{font-family:"Lora",serif;font-size:1.05rem;font-weight:700;color:var(--dark);margin:1.5rem 0 1rem;display:flex;align-items:center;gap:.5rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem}
+.card h3{font-family:"Lora",serif;font-size:.92rem;font-weight:600;color:var(--dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--light)}
+.bar{display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem;font-size:.84rem}
+.bar .nm{min-width:105px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.bar .track{flex:1;height:8px;background:var(--light);border-radius:4px;overflow:hidden}
+.bar .fill{height:100%;background:var(--accent);border-radius:4px}
+.bar .ct{min-width:24px;text-align:right;color:var(--hint);font-size:.76rem}
+.bar .pc{min-width:34px;text-align:right;color:var(--accent);font-size:.76rem;font-weight:600}
+.empty{text-align:center;padding:1.5rem;color:var(--hint);font-size:.84rem;border:1px dashed var(--border);border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.82rem;color:var(--dark);font-weight:500}
+.loading{text-align:center;padding:3rem;color:var(--hint)}
+.spin{width:30px;height:30px;border:3px solid var(--light);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 1rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+.err{background:#fdf0ee;border:1px solid #e8b4ae;border-radius:10px;padding:1rem 1.25rem;color:#9b3a2e;font-size:.88rem;margin:1rem 0}
+@media(max-width:580px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
 </head>
 <body>
-<a href="../index.html" style="position:fixed;top:1rem;left:1rem;z-index:9999;display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-size:0.82rem;font-weight:600;color:#2E4DA6;text-decoration:none;padding:6px 14px;border-radius:8px;border:1.5px solid #2E4DA6;background:white;box-shadow:0 2px 6px rgba(0,0,0,0.08);transition:background 0.15s;" onmouseover="this.style.background='#E8EDF8'" onmouseout="this.style.background='white'">← Início</a>
-
-<header>
-  <span class="header-title">Perfil da Equipe</span>
-  <span class="header-sub" id="header-sub">Carregando...</span>
-</header>
-
-<div class="container">
-  <div id="loading" class="loading">Carregando dados...</div>
-  <div id="conteudo" style="display:none;">
-
-    <!-- Resumo -->
-    <div class="resumo-grid" id="resumo-grid"></div>
-
-    <!-- Gráficos -->
-    <p class="section-title">Distribuição da Equipe</p>
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-title">Faixa Etária</div>
-        <div class="chart-wrap"><canvas id="chart-faixa"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Tempo de Empresa</div>
-        <div class="chart-wrap"><canvas id="chart-tempo"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Gênero</div>
-        <div class="chart-wrap"><canvas id="chart-genero"></canvas></div>
-      </div>
-      <div class="chart-card">
-        <div class="chart-title">Modelo de Contratação</div>
-        <div class="chart-wrap"><canvas id="chart-contrato"></canvas></div>
-      </div>
-    </div>
-
-    <div class="chart-card" style="margin-bottom:28px;">
-      <div class="chart-title">Colaboradores por Setor</div>
-      <div class="chart-wrap" style="height:180px;"><canvas id="chart-setor"></canvas></div>
-    </div>
-
-    <!-- Aniversários -->
-    <p class="section-title">🎉 Próximos Aniversários de Empresa</p>
-    <div class="aniv-card">
-      <table class="aniv-table">
-        <thead>
-          <tr>
-            <th>Colaborador</th>
-            <th>Data de Início</th>
-            <th>Tempo de Empresa</th>
-          </tr>
-        </thead>
-        <tbody id="aniv-tbody"></tbody>
-      </table>
-    </div>
-
-  </div>
+<a href="../index.html" class="back">&#8592; Inicio</a>
+<div class="hero">
+  <img src="../logo.jpg" alt="HD Distribuidora">
+  <h1>Perfil da Equipe</h1>
+  <p>Indicadores e composicao da equipe HD Distribuidora</p>
+  <div class="update" id="upd">Carregando...</div>
 </div>
-
+<div class="wrap">
+  <div id="app"><div class="loading"><div class="spin"></div>Carregando dados da equipe...</div></div>
+</div>
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxVvz7SegVrS-1qq3ktFoIh0kRmiNRaSVqHP0kEQyZAnNb0aGeNouVhw4l9Rwt0QJRn/exec/exec';
+var SCRIPT = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
 
-  const CORES = ['#2E4DA6','#6aab7e','#8dc4a0','#b2d9c2','#d5ece0','#1A2D6B','#1a3d28','#9fc5b0','#5c9474','#3d7a5a'];
-  const CORES_PIZZA = ['#2E4DA6','#6aab7e','#9fc5b0','#d5ece0','#1A2D6B','#b2d9c2'];
+function norm(s){ return s ? s.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim() : ''; }
 
-  async function carregar() {
-    try {
-      const r = await fetch(`${SCRIPT_URL}?acao=publico`);
-      const d = await r.json();
-      if (!d.ok) throw new Error(d.erro);
-      renderizar(d);
-    } catch(e) {
-      document.getElementById('loading').textContent = 'Erro ao carregar dados. Tente novamente.';
+function getV(row, keys){
+  var ks = Object.keys(row);
+  for(var i=0;i<keys.length;i++){
+    var k = keys[i];
+    var h = ks.find(function(h){ return norm(h) === norm(k) || norm(h).indexOf(norm(k)) >= 0; });
+    if(h && row[h] && String(row[h]).trim() !== '') return String(row[h]).trim();
+  }
+  return '';
+}
+
+function grp(arr, fn){
+  return arr.reduce(function(a,v){
+    var k = fn(v); var l = (!k || k === '') ? 'Sem informacao' : k;
+    a[l] = (a[l]||0)+1; return a;
+  },{});
+}
+
+function srt(o){ return Object.entries(o).sort(function(a,b){return b[1]-a[1];}); }
+
+function tempo(m){
+  if(m===null||m===undefined) return null;
+  if(m<6) return 'Menos de 6 meses';
+  if(m<12) return '6 a 11 meses';
+  if(m<24) return '1 a 2 anos';
+  if(m<60) return '2 a 5 anos';
+  return 'Mais de 5 anos';
+}
+
+function card(t,inner){ return '<div class="card"><h3>'+t+'</h3>'+inner+'</div>'; }
+function empty(){ return '<div class="empty">Sem informacoes atualizadas</div>'; }
+
+function bars(data, total, title){
+  if(!data || !data.length) return card(title, empty());
+  var TORDEM = ['Menos de 6 meses','6 a 11 meses','1 a 2 anos','2 a 5 anos','Mais de 5 anos'];
+  var items = data;
+  if(data[0] && TORDEM.indexOf(data[0][0]) >= 0){
+    items = TORDEM.map(function(k){ return [k, (data.find(function(d){return d[0]===k;})||[k,0])[1]]; }).filter(function(x){return x[1]>0;});
+    var ni = data.find(function(x){return x[0]==='Sem informacao';});
+    if(ni) items.push(ni);
+  }
+  var known = items.filter(function(x){return x[0]!=='Sem informacao';});
+  var unk = items.filter(function(x){return x[0]==='Sem informacao';});
+  var all = known.concat(unk);
+  if(!all.length) return card(title, empty());
+  var html = all.map(function(x){
+    var pct = total > 0 ? Math.round(x[1]/total*100) : 0;
+    return '<div class="bar"><span class="nm" title="'+x[0]+'">'+x[0]+'</span><div class="track"><div class="fill" style="width:'+pct+'%"></div></div><span class="ct">'+x[1]+'</span><span class="pc">'+pct+'%</span></div>';
+  }).join('');
+  return card(title, html);
+}
+
+function anivCard(nomes){
+  if(!nomes||!nomes.length) return card('Aniversariantes do Mes', empty());
+  return card('Aniversariantes do Mes','<div class="chips">'+nomes.map(function(n){return '<span class="chip">'+n+'</span>';}).join('')+'</div>');
+}
+
+function kpiBox(num, lbl, sub){
+  return '<div class="kpi"><div class="num">'+num+'</div><div class="lbl">'+lbl+'</div>'+(sub?'<div class="sub">'+sub+'</div>':'')+'</div>';
+}
+
+function render(colaboradores){
+  var agora = new Date();
+  var mes = agora.getMonth()+1;
+
+  var data = colaboradores.map(function(r){
+    return {
+      nome:    getV(r,['nome','colaborador','name']),
+      filial:  getV(r,['filial','unidade','localidade']),
+      depto:   getV(r,['departamento','setor','area']),
+      genero:  getV(r,['genero','sexo']),
+      faixa:   getV(r,['faixa etaria','faixa','idade']),
+      escol:   getV(r,['escolaridade','instrucao','grau']),
+      contrat: getV(r,['contrato','tipo contrato','modelo','vinculo']),
+      status:  getV(r,['status','situacao','ativo']),
+      admissao:getV(r,['admissao','data admissao','dt admissao']),
+      nasc:    getV(r,['nascimento','data nascimento','nasc','dt nasc']),
+    };
+  }).filter(function(r){ return r.nome && (!r.status || /ativ/i.test(r.status) || r.status === ''); });
+
+  data = data.map(function(r){
+    var m = null;
+    if(r.admissao){
+      var d = new Date(r.admissao);
+      if(!isNaN(d)) m = Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));
     }
-  }
+    r.meses = m; return r;
+  });
 
-  function renderizar(d) {
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('conteudo').style.display = 'block';
+  var total = data.length;
 
-    const total = d.genero.reduce((s, i) => s + i.valor, 0);
-    document.getElementById('header-sub').textContent = total + ' colaboradores';
+  var aniv = data.filter(function(r){
+    if(!r.nasc) return false;
+    var d = new Date(r.nasc);
+    return !isNaN(d) && (d.getMonth()+1) === mes;
+  }).map(function(r){ return r.nome.split(' ').slice(0,2).join(' '); });
 
-    // Resumo
-    document.getElementById('resumo-grid').innerHTML = `
-      <div class="resumo-card"><div class="resumo-num">${total}</div><div class="resumo-label">Colaboradores</div></div>
-      <div class="resumo-card"><div class="resumo-num">${parseFloat(d.mediaIdade).toFixed(1)}</div><div class="resumo-label">Média de Idade</div></div>
-      <div class="resumo-card"><div class="resumo-num">${d.setor.length}</div><div class="resumo-label">Setores</div></div>
-      <div class="resumo-card"><div class="resumo-num">${d.modeloContratacao.find(m => m.label === 'CLT')?.valor || 0}</div><div class="resumo-label">CLT</div></div>
-    `;
+  var filiais  = srt(grp(data, function(r){return r.filial||null;}));
+  var deptos   = srt(grp(data, function(r){return r.depto||null;}));
+  var generos  = srt(grp(data, function(r){return r.genero||null;}));
+  var faixas   = srt(grp(data, function(r){return r.faixa||null;}));
+  var escols   = srt(grp(data, function(r){return r.escol||null;}));
+  var contratos= srt(grp(data, function(r){return r.contrat||null;}));
+  var tempos   = srt(grp(data, function(r){return tempo(r.meses);}));
 
-    // Gráficos de pizza
-    criarPizza('chart-faixa', d.faixaEtaria);
-    criarPizza('chart-tempo', d.tempoEmpresa);
-    criarPizza('chart-genero', d.genero);
-    criarPizza('chart-contrato', d.modeloContratacao);
+  var fk = filiais.filter(function(x){return x[0]!=='Sem informacao';});
+  var dk = deptos.filter(function(x){return x[0]!=='Sem informacao';});
+  var novos = data.filter(function(r){return r.meses!==null&&r.meses<6;}).length;
+  var seniors = data.filter(function(r){return r.meses!==null&&r.meses>=60;}).length;
 
-    // Gráfico de barras — Setor
-    new Chart(document.getElementById('chart-setor'), {
-      type: 'bar',
-      data: {
-        labels: d.setor.map(s => s.label),
-        datasets: [{ data: d.setor.map(s => s.valor), backgroundColor: CORES, borderRadius: 6, borderSkipped: false }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { family: 'DM Sans', size: 12 } } },
-          y: { grid: { color: '#f0f0ec' }, ticks: { stepSize: 1, font: { family: 'DM Sans', size: 11 } } }
-        }
-      }
-    });
+  document.getElementById('upd').textContent = 'Atualizado: '+agora.toLocaleString('pt-BR');
+  document.getElementById('app').innerHTML =
+    '<div class="kpi-grid">'+
+      kpiBox(total,'Colaboradores Ativos')+
+      kpiBox(fk.length||'?','Filiais',fk.map(function(x){return x[0]+': '+x[1];}).join(' &middot; '))+
+      kpiBox(dk.length||'?','Departamentos')+
+      kpiBox(aniv.length||0,'Aniversariantes','neste mes')+
+      kpiBox(novos||0,'Novos','menos de 6 meses')+
+      kpiBox(seniors||0,'Veteranos','5+ anos de casa')+
+    '</div>'+
+    '<div class="sec">Por Filial e Departamento</div>'+
+    '<div class="grid">'+bars(filiais,total,'Por Filial')+bars(deptos,total,'Por Departamento')+'</div>'+
+    '<div class="sec">Composicao da Equipe</div>'+
+    '<div class="grid">'+bars(generos,total,'Por Genero')+bars(faixas,total,'Por Faixa Etaria')+bars(escols,total,'Por Escolaridade')+bars(contratos,total,'Por Contratacao')+'</div>'+
+    '<div class="sec">Tempo de Casa e Aniversariantes</div>'+
+    '<div class="grid">'+bars(tempos,total,'Tempo de Casa')+anivCard(aniv)+'</div>';
+}
 
-    // Aniversários
-    const tbody = document.getElementById('aniv-tbody');
-    tbody.innerHTML = d.aniversarios.map(a => `
-      <tr>
-        <td>${a.nome}</td>
-        <td>${a.inicio}</td>
-        <td><span class="tempo-badge">${a.tempo}</span></td>
-      </tr>
-    `).join('');
-  }
-
-  function criarPizza(id, dados) {
-    new Chart(document.getElementById(id), {
-      type: 'doughnut',
-      data: {
-        labels: dados.map(d => d.label),
-        datasets: [{ data: dados.map(d => d.valor), backgroundColor: CORES_PIZZA, borderWidth: 2, borderColor: '#fff' }]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: false,
-        cutout: '60%',
-        plugins: {
-          legend: {
-            position: 'bottom',
-            labels: { font: { family: 'DM Sans', size: 11 }, padding: 12, boxWidth: 12, boxHeight: 12 }
-          }
-        }
-      }
-    });
-  }
-
-  carregar();
+fetch(SCRIPT)
+  .then(function(r){ return r.json(); })
+  .then(function(j){
+    if(j.erro){
+      document.getElementById('upd').textContent = 'Erro';
+      document.getElementById('app').innerHTML = '<div class="err">Erro: '+j.erro+'</div>';
+      return;
+    }
+    render(j.colaboradores || []);
+  })
+  .catch(function(e){
+    document.getElementById('upd').textContent = 'Erro';
+    document.getElementById('app').innerHTML = '<div class="err">Nao foi possivel carregar os dados.<br><small>'+e.message+'</small></div>';
+  });
 </script>
 </body>
 </html>
