@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Perfil da Equipe - HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1A1E2E;--muted:#5E6680;--hint:#8893B0;--accent:#2E4DA6;--light:#E8EDF8;--dark:#1A2D6B;--r:14px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;padding-bottom:3rem}
+a.back{position:fixed;top:1rem;left:1rem;z-index:99;background:#fff;border:1.5px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+a.back:hover{background:var(--light)}
+.hero{background:linear-gradient(135deg,var(--dark),var(--accent));color:#fff;padding:3rem 2rem 2rem;text-align:center}
+.hero img{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.3);margin-bottom:1rem;object-fit:cover}
+.hero h1{font-family:"Lora",serif;font-size:1.8rem;font-weight:700;margin-bottom:.4rem}
+.hero p{opacity:.85;font-size:.95rem}
+.upd{margin-top:.75rem;font-size:.78rem;opacity:.65}
+.wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+.kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:2rem}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1rem;text-align:center}
+.kpi .n{font-family:"Lora",serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1}
+.kpi .l{font-size:.8rem;color:var(--hint);margin-top:.35rem;font-weight:500}
+.kpi .s{font-size:.7rem;color:var(--hint);margin-top:.2rem}
+.sec{font-family:"Lora",serif;font-size:1.05rem;font-weight:700;color:var(--dark);margin:1.5rem 0 1rem}
+.cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
+.card h3{font-family:"Lora",serif;font-size:.92rem;font-weight:600;color:var(--dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--light)}
+.bar{display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem;font-size:.84rem}
+.bar .nm{min-width:120px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
+.bar .tr{flex:1;height:8px;background:var(--light);border-radius:4px;overflow:hidden}
+.bar .fi{height:100%;background:var(--accent);border-radius:4px}
+.bar .ct{min-width:24px;text-align:right;color:var(--hint);font-size:.76rem}
+.bar .pc{min-width:34px;text-align:right;color:var(--accent);font-size:.76rem;font-weight:600}
+.empty{text-align:center;padding:1.5rem;color:var(--hint);font-size:.84rem;border:1px dashed var(--border);border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.82rem;color:var(--dark);font-weight:500}
+.spin{width:30px;height:30px;border:3px solid var(--light);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 1rem}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading{text-align:center;padding:3rem;color:var(--hint)}
+.err{background:#fdf0ee;border:1px solid #e8b4ae;border-radius:10px;padding:1rem 1.25rem;color:#9b3a2e;font-size:.88rem;margin:1rem 0}
+@media(max-width:580px){.kgrid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<a href="../index.html" class="back">&#8592; In&iacute;cio</a>
+<div class="hero">
+  <img src="../logo.jpg" alt="HD Distribuidora">
+  <h1>Perfil da Equipe</h1>
+  <p>Indicadores e composi&ccedil;&atilde;o da equipe HD Distribuidora</p>
+  <div class="upd" id="upd">Carregando...</div>
+</div>
+<div class="wrap"><div id="app"><div class="loading"><div class="spin"></div>Carregando dados...</div></div></div>
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
+
+// Meses em portugues
+var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+function v(row, key) {
+  var val = row[key];
+  return (val !== undefined && val !== null) ? String(val).trim() : '';
+}
+
+function grp(arr, fn) {
+  return arr.reduce(function(a, r) {
+    var k = fn(r);
+    if(k === null || k === '') k = 'Sem informação';
+    a[k] = (a[k]||0)+1; return a;
+  }, {});
+}
+
+function srt(o) { return Object.entries(o).sort(function(a,b){return b[1]-a[1];}); }
+
+function tempo(m) {
+  if(m===null) return null;
+  if(m<6) return 'Menos de 6 meses';
+  if(m<12) return '6 a 11 meses';
+  if(m<24) return '1 a 2 anos';
+  if(m<60) return '2 a 5 anos';
+  return 'Mais de 5 anos';
+}
+
+// Normalizar departamentos (unificar similares)
+function normDepto(d) {
+  if(!d) return null;
+  var s = d.trim();
+  // Unificar variacoes comuns
+  if(/comercial/i.test(s)) return 'Comercial';
+  if(/log.stic/i.test(s)) return 'Logística';
+  if(/financ/i.test(s)) return 'Financeiro';
+  if(/administra/i.test(s)) return 'Administrativo';
+  if(/rh|recursos humanos|gestao de pessoas/i.test(s)) return 'Recursos Humanos';
+  if(/ti|tecnologia|inform.tica/i.test(s)) return 'TI';
+  if(/opera/i.test(s)) return 'Operações';
+  if(/marketing/i.test(s)) return 'Marketing';
+  if(/diretoria|direção/i.test(s)) return 'Diretoria';
+  return s;
+}
+
+function card(t, inner) { return '<div class="card"><h3>'+t+'</h3>'+inner+'</div>'; }
+function empty() { return '<div class="empty">Sem informações atualizadas</div>'; }
+
+function bars(data, total, title) {
+  var ORDR = ['Menos de 6 meses','6 a 11 meses','1 a 2 anos','2 a 5 anos','Mais de 5 anos'];
+  if(!data||!data.length) return card(title, empty());
+  var items = data;
+  if(ORDR.indexOf(data[0][0]) >= 0) {
+    items = ORDR.map(function(k){return [k,(data.find(function(d){return d[0]===k;})||[k,0])[1]];}).filter(function(x){return x[1]>0;});
+    var ni=data.find(function(x){return x[0]==='Sem informação';});
+    if(ni) items.push(ni);
+  }
+  // Mover "Sem informacao" para o final
+  var known = items.filter(function(x){return x[0]!=='Sem informação';});
+  var unk = items.filter(function(x){return x[0]==='Sem informação';});
+  var all = known.concat(unk);
+  if(!all.length) return card(title, empty());
+  var html = all.map(function(x){
+    var pct=total>0?Math.round(x[1]/total*100):0;
+    return '<div class="bar"><span class="nm" title="'+x[0]+'">'+x[0]+'</span><div class="tr"><div class="fi" style="width:'+pct+'%"></div></div><span class="ct">'+x[1]+'</span><span class="pc">'+pct+'%</span></div>';
+  }).join('');
+  return card(title, html);
+}
+
+function anivCard(anivs) {
+  if(!anivs||!anivs.length) return card('Anivers&aacute;riantes do M&ecirc;s', empty());
+  var chips = anivs.map(function(a){
+    return '<span class="chip">'+a.nome+' &mdash; dia '+a.dia+'</span>';
+  }).join('');
+  return card('Anivers&aacute;riantes do M&ecirc;s','<div class="chips">'+chips+'</div>');
+}
+
+function kbox(n, l, s) {
+  return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
+}
+
+// Verificar se uma data eh valida e nao eh "Data de Hoje" (ano atual nao conta como nasc)
+function parseDateSafe(str) {
+  if(!str) return null;
+  var d = new Date(str);
+  if(isNaN(d)) return null;
+  // Ignorar datas que parecem ser "Data de Hoje" (ano >= ano atual - 1)
+  var ano = d.getFullYear();
+  var anoAtual = new Date().getFullYear();
+  if(ano >= anoAtual - 1) return null; // provavelmente nao eh nascimento
+  return d;
+}
+
+function render(colab) {
+  var agora = new Date();
+  var mes = agora.getMonth()+1;
+
+  var data = colab.map(function(r) {
+    var admStr = v(r,'Admissão') || v(r,'Admissao');
+    var meses = null;
+    if(admStr) {
+      var d = new Date(admStr);
+      if(!isNaN(d)) meses = Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));
+    }
+    var nascStr = v(r,'Aniversário') || v(r,'Aniversario');
+    var nascDate = parseDateSafe(nascStr);
+    return {
+      nome:    v(r,'Colaborador'),
+      filial:  v(r,'Alocação') || v(r,'Alocacao'),
+      depto:   normDepto(v(r,'Departamento')),
+      genero:  v(r,'Sexo'),
+      faixa:   v(r,'Faixa Etária') || v(r,'Faixa Etaria') || v(r,'Idade'),
+      escol:   v(r,'Grau Formação') || v(r,'Grau Formacao') || v(r,'Formação') || v(r,'Formacao'),
+      contrat: v(r,'Tipo de Contrato') || v(r,'Contrato'),
+      meses:   meses,
+      nascDate: nascDate,
+    };
+  }).filter(function(r){ return r.nome !== ''; });
+
+  var total = data.length;
+
+  // Aniversariantes do mes com o dia
+  var anivs = data.filter(function(r){
+    return r.nascDate && (r.nascDate.getMonth()+1) === mes;
+  }).map(function(r){
+    return {
+      nome: r.nome.split(' ').slice(0,2).join(' '),
+      dia: r.nascDate.getDate()
+    };
+  }).sort(function(a,b){ return a.dia - b.dia; });
+
+  var filiais  = srt(grp(data, function(r){return r.filial||null;}));
+  var deptos   = srt(grp(data, function(r){return r.depto||null;}));
+  var generos  = srt(grp(data, function(r){return r.genero||null;}));
+
+  // Faixa etaria — ignorar valores que nao sao faixas reais (ex: numeros grandes = Data de Hoje)
+  var faixas = srt(grp(data, function(r){
+    var f = r.faixa;
+    if(!f || f === '') return null;
+    // Se for um numero maior que 100 ou parecer data, ignorar
+    if(/^d{5,}/.test(f)) return null;
+    // Se for so um numero, transformar em faixa
+    var num = parseInt(f);
+    if(!isNaN(num) && num > 0 && num < 100) {
+      if(num < 25) return 'Até 24 anos';
+      if(num < 35) return '25-34 anos';
+      if(num < 45) return '35-44 anos';
+      if(num < 55) return '45-54 anos';
+      return '55+ anos';
+    }
+    return f;
+  }));
+
+  var escols   = srt(grp(data, function(r){return r.escol||null;}));
+  var contratos= srt(grp(data, function(r){return r.contrat||null;}));
+  var tempos   = srt(grp(data, function(r){return tempo(r.meses);}));
+
+  var fk = filiais.filter(function(x){return x[0]!=='Sem informação';});
+  var dk = deptos.filter(function(x){return x[0]!=='Sem informação';});
+  var novos   = data.filter(function(r){return r.meses!==null&&r.meses<6;}).length;
+  var seniors = data.filter(function(r){return r.meses!==null&&r.meses>=60;}).length;
+
+  document.getElementById('upd').textContent = 'Atualizado: '+agora.toLocaleString('pt-BR');
+  document.getElementById('app').innerHTML =
+    '<div class="kgrid">'+
+      kbox(total,'Colaboradores Ativos')+
+      kbox(fk.length||'?','Filiais',fk.map(function(x){return x[0]+': '+x[1];}).join(' &middot; '))+
+      kbox(dk.length||'?','Departamentos')+
+      kbox(anivs.length||0,'Anivers&aacute;riantes','neste m&ecirc;s')+
+      kbox(novos,'Novos','menos de 6 meses')+
+      kbox(seniors,'Veteranos','5+ anos de casa')+
+    '</div>'+
+    '<div class="sec">Por Filial e Departamento</div>'+
+    '<div class="cgrid">'+bars(filiais,total,'Por Filial')+bars(deptos,total,'Por Departamento')+'</div>'+
+    '<div class="sec">Composi&ccedil;&atilde;o da Equipe</div>'+
+    '<div class="cgrid">'+bars(generos,total,'Por G&ecirc;nero')+bars(faixas,total,'Por Faixa Et&aacute;ria')+bars(escols,total,'Por Escolaridade')+bars(contratos,total,'Por Contrata&ccedil;&atilde;o')+'</div>'+
+    '<div class="sec">Tempo de Casa e Anivers&aacute;riantes</div>'+
+    '<div class="cgrid">'+bars(tempos,total,'Tempo de Casa')+anivCard(anivs)+'</div>';
+}
+
+fetch(SCRIPT_URL)
+  .then(function(r){return r.json();})
+  .then(function(j){
+    if(j.erro){
+      document.getElementById('upd').textContent='Erro';
+      document.getElementById('app').innerHTML='<div class="err">Erro: '+j.erro+'</div>';
+      return;
+    }
+    render(j.colaboradores||[]);
+  })
+  .catch(function(e){
+    document.getElementById('upd').textContent='Erro';
+    document.getElementById('app').innerHTML='<div class="err">Não foi possível carregar: '+e.message+'</div>';
+  });
+</script>
+</body>
+</html>
