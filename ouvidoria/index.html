@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ouvidoria | HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1C201A;--muted:#5E6659;--hint:#9AA394;--accent:#2E4DA6;--light:#E8EDF8;--dark:#1A2D6B;--r:12px;--rs:8px}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem 1rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2.5rem 2rem;width:100%;max-width:520px;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.logo-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.75rem}
+.logo-row img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.logo-row h1{font-family:"Lora",serif;font-size:1.1rem;font-weight:700;color:var(--accent);line-height:1.3}
+.logo-row p{font-size:.78rem;color:var(--hint)}
+.back-btn{display:inline-flex;align-items:center;gap:5px;font-size:.8rem;font-weight:600;color:var(--accent);text-decoration:none;border:1px solid var(--border);border-radius:6px;padding:4px 12px;margin-bottom:1.25rem;background:#fff;transition:background .15s}
+.back-btn:hover{background:var(--light)}
+h2{font-family:"Lora",serif;font-size:1.1rem;font-weight:700;color:var(--dark);margin-bottom:.35rem}
+.subtitle{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem;line-height:1.5}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:.35rem}
+.field input,.field select,.field textarea{width:100%;padding:10px 13px;border:1px solid var(--border);border-radius:var(--rs);font-family:"DM Sans",sans-serif;font-size:14px;outline:none;transition:border-color .15s;background:#fff;color:var(--text)}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,77,166,.1)}
+.field textarea{resize:vertical;min-height:120px;line-height:1.5}
+.anonimo-row{display:flex;align-items:center;gap:.6rem;margin-bottom:1rem;font-size:.88rem;color:var(--muted)}
+.anonimo-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;flex-shrink:0}
+.btn{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--rs);font-family:"DM Sans",sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .15s;margin-top:.5rem}
+.btn:hover{background:var(--dark)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.aviso{background:var(--light);border:1px solid #c3d0e8;border-radius:var(--rs);padding:.75rem 1rem;font-size:.82rem;color:var(--dark);margin-bottom:1.25rem;line-height:1.5}
+.msg{border-radius:var(--rs);padding:.75rem 1rem;font-size:.85rem;margin-top:.75rem;display:none}
+.msg.ok{background:#D5F0E0;border:1px solid #8fcfab;color:#1E6E3A}
+.msg.err{background:#fdf0ee;border:1px solid #e8b4ae;color:#9b3a2e}
+#nome-field{transition:all .2s}
+</style>
+</head>
+<body>
+<div class="card">
+  <a href="../index.html" class="back-btn">&#8592; Início</a>
+  <div class="logo-row">
+    <img src="../logo.jpg" alt="HD Distribuidora">
+    <div>
+      <h1>Ouvidoria</h1>
+      <p>Conecta HD Distribuidora &middot; RH</p>
+    </div>
+  </div>
+  <h2>Enviar Mensagem</h2>
+  <p class="subtitle">Este canal é confidencial. Você pode se identificar ou enviar de forma anônima. Todas as mensagens são recebidas pelo RH.</p>
+  <div class="aviso">🔒 Suas informações são tratadas com sigilo. O anonimato é garantido quando selecionado.</div>
+
+  <div class="anonimo-row">
+    <input type="checkbox" id="chk-anonimo" onchange="toggleAnonimo(this)">
+    <label for="chk-anonimo">Enviar de forma anônima</label>
+  </div>
+
+  <div class="field" id="nome-field">
+    <label for="inp-nome">Seu nome (opcional)</label>
+    <input type="text" id="inp-nome" placeholder="Como prefere ser chamado(a)">
+  </div>
+
+  <div class="field">
+    <label for="inp-tipo">Categoria *</label>
+    <select id="inp-tipo">
+      <option value="">Selecione uma categoria</option>
+      <option>Clima organizacional</option>
+      <option>Relacionamento com liderança</option>
+      <option>Relacionamento entre colegas</option>
+      <option>Condições de trabalho</option>
+      <option>Benefícios</option>
+      <option>Processos internos</option>
+      <option>Assédio ou discriminação</option>
+      <option>Sugestão de melhoria</option>
+      <option>Elogio</option>
+      <option>Outro</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label for="inp-depto">Departamento relacionado (opcional)</label>
+    <input type="text" id="inp-depto" placeholder="Ex: Logística, Comercial...">
+  </div>
+
+  <div class="field">
+    <label for="inp-msg">Mensagem *</label>
+    <textarea id="inp-msg" placeholder="Descreva sua mensagem, sugestão ou situação..."></textarea>
+  </div>
+
+  <button class="btn" id="btn-enviar" onclick="enviar()">Enviar Mensagem</button>
+  <div class="msg" id="msg-retorno"></div>
+</div>
+
+<script>
+var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGAtoxtg6XwVO9OF23Os2cuKVV-dkDym_Y1CC7hrAT7-sHPKk7Og/exec';
+
+function toggleAnonimo(chk) {
+  var nf = document.getElementById('nome-field');
+  nf.style.display = chk.checked ? 'none' : 'block';
+}
+
+function mostrar(msg, tipo) {
+  var el = document.getElementById('msg-retorno');
+  el.textContent = msg;
+  el.className = 'msg ' + tipo;
+  el.style.display = 'block';
+}
+
+function enviar() {
+  var anonimo = document.getElementById('chk-anonimo').checked;
+  var nome = document.getElementById('inp-nome').value.trim();
+  var tipo = document.getElementById('inp-tipo').value;
+  var depto = document.getElementById('inp-depto').value.trim();
+  var msg = document.getElementById('inp-msg').value.trim();
+
+  if (!tipo) { mostrar('Por favor, selecione uma categoria.', 'err'); return; }
+  if (!msg)  { mostrar('Por favor, escreva sua mensagem.', 'err'); return; }
+
+  var btn = document.getElementById('btn-enviar');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+  document.getElementById('msg-retorno').style.display = 'none';
+
+  var dados = {
+    anonimo: anonimo ? 'Sim' : 'Não',
+    nome: anonimo ? '(anônimo)' : (nome || '(não informado)'),
+    tipo: tipo,
+    departamento: depto,
+    descricao: msg
+  };
+
+  // JSONP para evitar CORS
+  var cbName = 'ouvidoriaCb_' + Date.now();
+  window[cbName] = function(resp) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Mensagem';
+    if (resp && resp.ok) {
+      mostrar('✅ Mensagem enviada com sucesso! O RH receberá em breve.', 'ok');
+      document.getElementById('inp-nome').value = '';
+      document.getElementById('inp-tipo').value = '';
+      document.getElementById('inp-depto').value = '';
+      document.getElementById('inp-msg').value = '';
+      document.getElementById('chk-anonimo').checked = false;
+      document.getElementById('nome-field').style.display = 'block';
+    } else {
+      mostrar('Erro ao enviar. Tente novamente.', 'err');
+    }
+    delete window[cbName];
+    document.body.removeChild(s);
+  };
+
+  // Enviar via postMessage workaround — Apps Script POST via form
+  var form = document.createElement('form');
+  form.style.display = 'none';
+
+  // Usar fetch com no-cors para POST (Apps Script aceita)
+  fetch(SCRIPT_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(dados)
+  }).then(function() {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Mensagem';
+    mostrar('✅ Mensagem enviada com sucesso! O RH receberá em breve.', 'ok');
+    document.getElementById('inp-nome').value = '';
+    document.getElementById('inp-tipo').value = '';
+    document.getElementById('inp-depto').value = '';
+    document.getElementById('inp-msg').value = '';
+    document.getElementById('chk-anonimo').checked = false;
+    document.getElementById('nome-field').style.display = 'block';
+  }).catch(function(e) {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Mensagem';
+    mostrar('Erro ao enviar. Tente novamente.', 'err');
+  });
+
+  // Limpar JSONP se não usado
+  var s = document.createElement('script');
+  delete window[cbName];
+}
+</script>
+</body>
+</html>
