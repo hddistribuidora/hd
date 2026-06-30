@@ -197,7 +197,6 @@ function render(colab) {
     var num = parseInt(f);
     if(!isNaN(num)) {
       if(num === 126 || num > 100) return null;
-      if(num > 0 && num < 100) {
       if(num < 25) return 'Até 24 anos';
       if(num < 35) return '25-34 anos';
       if(num < 45) return '35-44 anos';
