@@ -384,25 +384,29 @@ function renderDesligados(raw){
 }
 
 // ── FETCH ─────────────────────────────────────────────────────────────────
-fetch(SCRIPT_URL)
-  .then(function(r){return r.json();})
-  .then(function(j){
-    if(j.erro){
-      document.getElementById('loading').innerHTML='<div class="err">Erro no script: '+j.erro+'</div>';
-      return;
-    }
-    document.getElementById('loading').style.display='none';
-    document.getElementById('upd').textContent='Atualizado: '+new Date().toLocaleString('pt-BR');
-    renderEquipe(j.colaboradores||[]);
-    renderAfastamentos(j.afastamentos||[]);
-    renderDesligados(j.desligados||[]);
-    // Mostrar tab ativa inicial
-    document.getElementById('tab-equipe').style.display='block';
-    document.getElementById('tab-equipe').classList.add('active');
-  })
-  .catch(function(e){
-    document.getElementById('loading').innerHTML='<div class="err">Não foi possível carregar os dados: '+e.message+'</div>';
-  });
+// JSONP — evita bloqueio CORS do Apps Script
+function handleData(j) {
+  if(j.erro){
+    document.getElementById('loading').innerHTML='<div class="err">Erro no script: '+j.erro+'</div>';
+    return;
+  }
+  document.getElementById('loading').style.display='none';
+  document.getElementById('upd').textContent='Atualizado: '+new Date().toLocaleString('pt-BR');
+  renderEquipe(j.colaboradores||[]);
+  renderAfastamentos(j.afastamentos||[]);
+  renderDesligados(j.desligados||[]);
+  document.getElementById('tab-equipe').style.display='block';
+  document.getElementById('tab-equipe').classList.add('active');
+}
+
+(function(){
+  var s=document.createElement('script');
+  s.src=SCRIPT_URL+'?callback=handleData';
+  s.onerror=function(){
+    document.getElementById('loading').innerHTML='<div class="err">Não foi possível carregar os dados.</div>';
+  };
+  document.body.appendChild(s);
+})();
 </script>
 </body>
 </html>
