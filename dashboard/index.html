@@ -7,39 +7,78 @@
 <link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1A1E2E;--muted:#5E6680;--hint:#8893B0;--accent:#2E4DA6;--light:#E8EDF8;--dark:#1A2D6B;--r:14px}
+:root{--bg:#F0F3F8;--surface:#fff;--border:#C8D6E8;--text:#1A1E2E;--muted:#5E6680;--hint:#8893B0;--accent:#2E4DA6;--light:#E8EDF8;--dark:#1A2D6B;--r:14px;--warn:#E8A020;--danger:#C0392B;--ok:#1E8449}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);font-size:15px;padding-bottom:3rem}
 a.back{position:fixed;top:1rem;left:1rem;z-index:99;background:#fff;border:1.5px solid var(--accent);color:var(--accent);padding:6px 16px;border-radius:8px;font-size:.82rem;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
 a.back:hover{background:var(--light)}
-.hero{background:linear-gradient(135deg,var(--dark),var(--accent));color:#fff;padding:3rem 2rem 2rem;text-align:center}
+.hero{background:linear-gradient(135deg,var(--dark),var(--accent));color:#fff;padding:3rem 2rem 0;text-align:center}
 .hero img{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.3);margin-bottom:1rem;object-fit:cover}
 .hero h1{font-family:"Lora",serif;font-size:1.8rem;font-weight:700;margin-bottom:.4rem}
 .hero p{opacity:.85;font-size:.95rem}
-.upd{margin-top:.75rem;font-size:.78rem;opacity:.65}
+.upd{margin-top:.75rem;font-size:.78rem;opacity:.65;padding-bottom:1rem}
+/* TABS */
+.tabs{display:flex;justify-content:center;gap:0;background:rgba(0,0,0,.2);padding:.75rem 1.5rem 0;flex-wrap:wrap}
+.tab-btn{background:transparent;border:none;color:rgba(255,255,255,.7);font-family:"DM Sans",sans-serif;font-size:.88rem;font-weight:500;padding:.6rem 1.4rem;cursor:pointer;border-bottom:3px solid transparent;transition:all .2s}
+.tab-btn:hover{color:#fff}
+.tab-btn.active{color:#fff;border-bottom:3px solid #fff;font-weight:700}
+.tab-panel{display:none}.tab-panel.active{display:block}
+/* WRAP */
 .wrap{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+/* KPIs */
 .kgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:12px;margin-bottom:2rem}
 .kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1rem;text-align:center}
 .kpi .n{font-family:"Lora",serif;font-size:2.2rem;font-weight:700;color:var(--accent);line-height:1}
+.kpi .n.warn{color:var(--warn)}.kpi .n.danger{color:var(--danger)}.kpi .n.ok{color:var(--ok)}
 .kpi .l{font-size:.8rem;color:var(--hint);margin-top:.35rem;font-weight:500}
 .kpi .s{font-size:.7rem;color:var(--hint);margin-top:.2rem}
+/* SECTION */
 .sec{font-family:"Lora",serif;font-size:1.05rem;font-weight:700;color:var(--dark);margin:1.5rem 0 1rem}
 .cgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:1.25rem;margin-bottom:1.5rem}
+/* CARD */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem}
 .card h3{font-family:"Lora",serif;font-size:.92rem;font-weight:600;color:var(--dark);margin-bottom:1rem;padding-bottom:.5rem;border-bottom:1px solid var(--light)}
+/* BARS */
 .bar{display:flex;align-items:center;gap:.6rem;margin-bottom:.55rem;font-size:.84rem}
 .bar .nm{min-width:120px;color:var(--muted);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:0}
 .bar .tr{flex:1;height:8px;background:var(--light);border-radius:4px;overflow:hidden}
 .bar .fi{height:100%;background:var(--accent);border-radius:4px}
+.bar .fi.warn{background:var(--warn)}.bar .fi.danger{background:var(--danger)}
 .bar .ct{min-width:24px;text-align:right;color:var(--hint);font-size:.76rem}
 .bar .pc{min-width:34px;text-align:right;color:var(--accent);font-size:.76rem;font-weight:600}
-.empty{text-align:center;padding:1.5rem;color:var(--hint);font-size:.84rem;border:1px dashed var(--border);border-radius:8px}
+/* CHIPS */
 .chips{display:flex;flex-wrap:wrap;gap:.5rem}
 .chip{background:var(--light);border:1px solid var(--border);border-radius:8px;padding:.3rem .75rem;font-size:.82rem;color:var(--dark);font-weight:500}
+.chip.warn{background:#FFF3CD;border-color:#F0C040;color:#7A5000}
+.chip.danger{background:#FDECEA;border-color:#E8B4AE;color:#9b3a2e}
+/* FILTER */
+.filter-row{display:flex;align-items:center;gap:.75rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.filter-row label{font-size:.84rem;color:var(--muted);font-weight:500}
+.filter-row select{border:1px solid var(--border);border-radius:8px;padding:.4rem .75rem;font-size:.84rem;font-family:"DM Sans",sans-serif;color:var(--text);background:#fff;cursor:pointer}
+/* TABLE */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.83rem}
+th{background:var(--light);color:var(--dark);font-weight:600;padding:.6rem .75rem;text-align:left;white-space:nowrap;border-bottom:2px solid var(--border)}
+td{padding:.55rem .75rem;border-bottom:1px solid var(--light);color:var(--muted)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#F7F9FD}
+.badge{display:inline-block;padding:.15rem .6rem;border-radius:20px;font-size:.72rem;font-weight:600}
+.badge.ativo{background:#D5F0E0;color:#1E6E3A}
+.badge.afas{background:#FFF3CD;color:#7A5000}
+.badge.desl{background:#FDECEA;color:#9b3a2e}
+/* MISC */
+.empty{text-align:center;padding:1.5rem;color:var(--hint);font-size:.84rem;border:1px dashed var(--border);border-radius:8px}
 .spin{width:30px;height:30px;border:3px solid var(--light);border-top-color:var(--accent);border-radius:50%;animation:sp 1s linear infinite;margin:0 auto 1rem}
 @keyframes sp{to{transform:rotate(360deg)}}
 .loading{text-align:center;padding:3rem;color:var(--hint)}
 .err{background:#fdf0ee;border:1px solid #e8b4ae;border-radius:10px;padding:1rem 1.25rem;color:#9b3a2e;font-size:.88rem;margin:1rem 0}
-@media(max-width:580px){.kgrid{grid-template-columns:repeat(2,1fr)}}
+/* CHART simples */
+.month-chart{display:flex;align-items:flex-end;gap:6px;height:120px;margin-bottom:1rem}
+.mcol{display:flex;flex-direction:column;align-items:center;flex:1;gap:4px}
+.mbar{width:100%;background:var(--accent);border-radius:4px 4px 0 0;transition:height .3s;min-height:2px}
+.mbar.warn{background:var(--warn)}
+.mlbl{font-size:.65rem;color:var(--hint);text-align:center;white-space:nowrap}
+.mval{font-size:.7rem;color:var(--accent);font-weight:600}
+@media(max-width:580px){.kgrid{grid-template-columns:repeat(2,1fr)}.tabs{gap:0}.tab-btn{font-size:.78rem;padding:.5rem .9rem}}
 </style>
 </head>
 <body>
@@ -49,203 +88,307 @@ a.back:hover{background:var(--light)}
   <h1>Perfil da Equipe</h1>
   <p>Indicadores e composi&ccedil;&atilde;o da equipe da HD Distribuidora</p>
   <div class="upd" id="upd">Carregando...</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('equipe',this)">&#128101; Equipe Ativa</button>
+    <button class="tab-btn" onclick="switchTab('afastamentos',this)">&#128197; Afastamentos</button>
+    <button class="tab-btn" onclick="switchTab('desligados',this)">&#128683; Desligados</button>
+  </div>
 </div>
-<div class="wrap"><div id="app"><div class="loading"><div class="spin"></div>Carregando dados...</div></div></div>
+
+<div class="wrap">
+  <div id="loading" class="loading"><div class="spin"></div>Carregando dados...</div>
+  <div id="tab-equipe" class="tab-panel" style="display:none"></div>
+  <div id="tab-afastamentos" class="tab-panel" style="display:none"></div>
+  <div id="tab-desligados" class="tab-panel" style="display:none"></div>
+</div>
+
 <script>
-var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
+var SCRIPT_URL='https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
+var MESES=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+var MESES_ABREV=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+var _afasGlobal=[], _desGlobal=[];
 
-// Meses em portugues
-var MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
-function v(row, key) {
-  var val = row[key];
-  return (val !== undefined && val !== null) ? String(val).trim() : '';
+function switchTab(id,btn){
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active');p.style.display='none';});
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById('tab-'+id);
+  el.classList.add('active'); el.style.display='block';
+  btn.classList.add('active');
 }
 
-function grp(arr, fn) {
-  return arr.reduce(function(a, r) {
-    var k = fn(r);
-    if(k === null || k === '') k = 'Sem informação';
-    a[k] = (a[k]||0)+1; return a;
-  }, {});
+function v(row,key){var val=row[key];return(val!==undefined&&val!==null)?String(val).trim():'';}
+function grp(arr,fn){return arr.reduce(function(a,r){var k=fn(r);if(k===null||k==='')k='Sem informação';a[k]=(a[k]||0)+1;return a;},{});}
+function srt(o){return Object.entries(o).sort(function(a,b){return b[1]-a[1];});}
+function card(t,inner){return '<div class="card"><h3>'+t+'</h3>'+inner+'</div>';}
+function empty(){return '<div class="empty">Sem dados disponíveis</div>';}
+function kbox(n,l,s,cls){return '<div class="kpi"><div class="n'+(cls?' '+cls:'')+'">'+(n===null||n===undefined?'—':n)+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';}
+
+function bars(data,total,title,colorClass){
+  if(!data||!data.length)return card(title,empty());
+  var known=data.filter(function(x){return x[0]!=='Sem informação';});
+  var unk=data.filter(function(x){return x[0]==='Sem informação';});
+  var all=known.concat(unk);
+  var html=all.map(function(x){
+    var pct=total>0?Math.round(x[1]/total*100):0;
+    var cc=colorClass||'';
+    return '<div class="bar"><span class="nm" title="'+x[0]+'">'+x[0]+'</span><div class="tr"><div class="fi '+cc+'" style="width:'+pct+'%"></div></div><span class="ct">'+x[1]+'</span><span class="pc">'+pct+'%</span></div>';
+  }).join('');
+  return card(title,html);
 }
 
-function srt(o) { return Object.entries(o).sort(function(a,b){return b[1]-a[1];}); }
-
-function tempo(m) {
-  if(m===null) return null;
-  if(m<6) return 'Menos de 6 meses';
-  if(m<12) return '6 a 11 meses';
-  if(m<24) return '1 a 2 anos';
-  if(m<60) return '2 a 5 anos';
+function tempo(m){
+  if(m===null)return null;
+  if(m<6)return 'Menos de 6 meses';
+  if(m<12)return '6 a 11 meses';
+  if(m<24)return '1 a 2 anos';
+  if(m<60)return '2 a 5 anos';
   return 'Mais de 5 anos';
 }
 
-// Normalizar departamentos (unificar similares)
-function normDepto(d) {
-  if(!d) return null;
-  var s = d.trim();
-  // Unificar variacoes comuns
-  if(/comercial/i.test(s)) return 'Comercial';
-  if(/log.stic/i.test(s)) return 'Logística';
-  if(/financ/i.test(s)) return 'Financeiro';
-  if(/administra/i.test(s)) return 'Administrativo';
-  if(/rh|recursos humanos|gestao de pessoas/i.test(s)) return 'Recursos Humanos';
-  if(/ti|tecnologia|inform.tica/i.test(s)) return 'TI';
-  if(/opera/i.test(s)) return 'Operações';
-  if(/marketing/i.test(s)) return 'Marketing';
-  if(/diretoria|direção/i.test(s)) return 'Diretoria';
-  return s;
-}
-
-function card(t, inner) { return '<div class="card"><h3>'+t+'</h3>'+inner+'</div>'; }
-function empty() { return '<div class="empty">Sem informações atualizadas</div>'; }
-
-function bars(data, total, title) {
-  var ORDR = ['Menos de 6 meses','6 a 11 meses','1 a 2 anos','2 a 5 anos','Mais de 5 anos'];
-  if(!data||!data.length) return card(title, empty());
-  var items = data;
-  if(ORDR.indexOf(data[0][0]) >= 0) {
-    items = ORDR.map(function(k){return [k,(data.find(function(d){return d[0]===k;})||[k,0])[1]];}).filter(function(x){return x[1]>0;});
-    var ni=data.find(function(x){return x[0]==='Sem informação';});
-    if(ni) items.push(ni);
-  }
-  // Mover "Sem informacao" para o final
-  var known = items.filter(function(x){return x[0]!=='Sem informação';});
-  var unk = items.filter(function(x){return x[0]==='Sem informação';});
-  var all = known.concat(unk);
-  if(!all.length) return card(title, empty());
-  var html = all.map(function(x){
-    var pct=total>0?Math.round(x[1]/total*100):0;
-    return '<div class="bar"><span class="nm" title="'+x[0]+'">'+x[0]+'</span><div class="tr"><div class="fi" style="width:'+pct+'%"></div></div><span class="ct">'+x[1]+'</span><span class="pc">'+pct+'%</span></div>';
-  }).join('');
-  return card(title, html);
-}
-
-function anivCard(anivs) {
-  if(!anivs||!anivs.length) return card('Anivers&aacute;riantes do M&ecirc;s', empty());
-  var chips = anivs.map(function(a){
-    return '<span class="chip">'+a.nome+' &mdash; dia '+a.dia+'</span>';
-  }).join('');
-  return card('Anivers&aacute;riantes do M&ecirc;s','<div class="chips">'+chips+'</div>');
-}
-
-function kbox(n, l, s) {
-  return '<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div>'+(s?'<div class="s">'+s+'</div>':'')+'</div>';
-}
-
-// Verificar se uma data eh valida e nao eh "Data de Hoje" (ano atual nao conta como nasc)
-function parseDateSafe(str) {
-  if(!str) return null;
-  var d = new Date(str);
-  if(isNaN(d)) return null;
-  // Ignorar datas que parecem ser "Data de Hoje" (ano >= ano atual - 1)
-  var ano = d.getFullYear();
-  var anoAtual = new Date().getFullYear();
-  if(ano >= anoAtual - 1) return null; // provavelmente nao eh nascimento
+function parseDateSafe(str){
+  if(!str)return null;
+  var d=new Date(str);
+  if(isNaN(d))return null;
+  var ano=d.getFullYear();
+  if(ano>=new Date().getFullYear()-1)return null;
   return d;
 }
 
-function render(colab) {
-  var agora = new Date();
-  var mes = agora.getMonth()+1;
+function parseDate(str){
+  if(!str||str.trim()==='')return null;
+  var d=new Date(str);
+  return isNaN(d)?null:d;
+}
 
-  var data = colab.map(function(r) {
-    var admStr = v(r,'Admissão') || v(r,'Admissao');
-    var meses = null;
-    if(admStr) {
-      var d = new Date(admStr);
-      if(!isNaN(d)) meses = Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));
-    }
-    var nascStr = v(r,'Aniversário') || v(r,'Aniversario');
-    var nascDate = parseDateSafe(nascStr);
-    return {
-      nome:    v(r,'Colaborador'),
-      filial:  v(r,'Alocação') || v(r,'Alocacao'),
-      depto:   normDepto(v(r,'Departamento')),
-      genero:  v(r,'Sexo'),
-      faixa:   v(r,'Faixa Etária') || v(r,'Faixa Etaria') || v(r,'Idade'),
-      escol:   v(r,'Grau Formação') || v(r,'Grau Formacao') || v(r,'Formação') || v(r,'Formacao'),
-      contrat: v(r,'Tipo de Contrato') || v(r,'Contrato'),
-      meses:   meses,
-      nascDate: nascDate,
-    };
-  }).filter(function(r){ return r.nome !== ''; });
+// ── TAB EQUIPE ────────────────────────────────────────────────────────────────
+function renderEquipe(colab){
+  var agora=new Date();
+  var mes=agora.getMonth()+1;
+  var data=colab.map(function(r){
+    var admStr=v(r,'Admissão')||v(r,'Admissao');
+    var meses=null;
+    if(admStr){var d=new Date(admStr);if(!isNaN(d))meses=Math.floor((Date.now()-d.getTime())/(1000*60*60*24*30.44));}
+    var nascDate=parseDateSafe(v(r,'Aniversário')||v(r,'Aniversario'));
+    var fRaw=v(r,'Faixa Etária')||v(r,'Faixa Etaria')||v(r,'Idade');
+    var faixa=null;
+    if(fRaw){var num=parseInt(fRaw);if(!isNaN(num)&&num!==126&&num<=100){if(num<25)faixa='Até 24 anos';else if(num<35)faixa='25-34 anos';else if(num<45)faixa='35-44 anos';else if(num<55)faixa='45-54 anos';else faixa='55+ anos';}else if(isNaN(num))faixa=fRaw;}
+    return{nome:v(r,'Colaborador'),filial:v(r,'Alocação')||v(r,'Alocacao'),depto:v(r,'Departamento'),genero:v(r,'Sexo'),faixa:faixa,escol:v(r,'Grau Formação')||v(r,'Grau Formacao'),contrat:v(r,'Tipo de Contrato')||v(r,'Contrato'),meses:meses,nascDate:nascDate};
+  }).filter(function(r){return r.nome!=='';});
 
-  var total = data.length;
+  var total=data.length;
+  var anivs=data.filter(function(r){return r.nascDate&&(r.nascDate.getMonth()+1)===mes;}).map(function(r){return{nome:r.nome.split(' ').slice(0,2).join(' '),dia:r.nascDate.getDate()};}).sort(function(a,b){return a.dia-b.dia;});
+  var filiais=srt(grp(data,function(r){return r.filial||null;}));
+  var deptos=srt(grp(data,function(r){return r.depto||null;}));
+  var generos=srt(grp(data,function(r){return r.genero||null;}));
+  var faixas=srt(grp(data,function(r){return r.faixa||null;}));
+  var escols=srt(grp(data,function(r){return r.escol||null;}));
+  var contratos=srt(grp(data,function(r){return r.contrat||null;}));
+  var tempos=srt(grp(data,function(r){return tempo(r.meses);}));
+  var TORDR=['Menos de 6 meses','6 a 11 meses','1 a 2 anos','2 a 5 anos','Mais de 5 anos'];
+  var temposOrd=TORDR.map(function(k){return[k,(tempos.find(function(d){return d[0]===k;})||[k,0])[1]];}).filter(function(x){return x[1]>0;});
+  var fk=filiais.filter(function(x){return x[0]!=='Sem informação';});
+  var dk=deptos.filter(function(x){return x[0]!=='Sem informação';});
+  var novos=data.filter(function(r){return r.meses!==null&&r.meses<6;}).length;
+  var seniors=data.filter(function(r){return r.meses!==null&&r.meses>=60;}).length;
 
-  // Aniversariantes do mes com o dia
-  var anivs = data.filter(function(r){
-    return r.nascDate && (r.nascDate.getMonth()+1) === mes;
-  }).map(function(r){
-    return {
-      nome: r.nome.split(' ').slice(0,2).join(' '),
-      dia: r.nascDate.getDate()
-    };
-  }).sort(function(a,b){ return a.dia - b.dia; });
+  var chips=anivs.length?anivs.map(function(a){return '<span class="chip">'+a.nome+' &mdash; dia '+a.dia+'</span>';}).join(''):empty();
+  var anivCard=card('Aniversariantes do Mês',anivs.length?'<div class="chips">'+chips+'</div>':empty());
 
-  var filiais  = srt(grp(data, function(r){return r.filial||null;}));
-  var deptos   = srt(grp(data, function(r){return r.depto||null;}));
-  var generos  = srt(grp(data, function(r){return r.genero||null;}));
-
-  // Faixa etaria — ignorar valores que nao sao faixas reais (ex: numeros grandes = Data de Hoje)
-  var faixas = srt(grp(data, function(r){
-    var f = r.faixa;
-    if(!f || f === '') return null;
-    // Se for um numero maior que 100 ou parecer data, ignorar
-    if(/^d{5,}/.test(f)) return null;
-    var num = parseInt(f);
-    if(!isNaN(num)) {
-      if(num === 126 || num > 100) return null;
-      if(num < 25) return 'Até 24 anos';
-      if(num < 35) return '25-34 anos';
-      if(num < 45) return '35-44 anos';
-      if(num < 55) return '45-54 anos';
-      return '55+ anos';
-    }
-    return f;
-  }));
-
-  var escols   = srt(grp(data, function(r){return r.escol||null;}));
-  var contratos= srt(grp(data, function(r){return r.contrat||null;}));
-  var tempos   = srt(grp(data, function(r){return tempo(r.meses);}));
-
-  var fk = filiais.filter(function(x){return x[0]!=='Sem informação';});
-  var dk = deptos.filter(function(x){return x[0]!=='Sem informação';});
-  var novos   = data.filter(function(r){return r.meses!==null&&r.meses<6;}).length;
-  var seniors = data.filter(function(r){return r.meses!==null&&r.meses>=60;}).length;
-
-  document.getElementById('upd').textContent = 'Atualizado: '+agora.toLocaleString('pt-BR');
-  document.getElementById('app').innerHTML =
+  document.getElementById('tab-equipe').innerHTML=
     '<div class="kgrid">'+
       kbox(total,'Colaboradores Ativos')+
       kbox(fk.length||'?','Filiais',fk.map(function(x){return x[0]+': '+x[1];}).join(' &middot; '))+
       kbox(dk.length||'?','Departamentos')+
-      kbox(anivs.length||0,'Anivers&aacute;riantes','neste m&ecirc;s')+
+      kbox(anivs.length,'Aniversariantes','neste mês')+
       kbox(novos,'Novos','menos de 6 meses')+
       kbox(seniors,'Veteranos','5+ anos de casa')+
     '</div>'+
     '<div class="sec">Por Filial e Departamento</div>'+
     '<div class="cgrid">'+bars(filiais,total,'Por Filial')+bars(deptos,total,'Por Departamento')+'</div>'+
-    '<div class="sec">Composi&ccedil;&atilde;o da Equipe</div>'+
-    '<div class="cgrid">'+bars(generos,total,'Por G&ecirc;nero')+bars(faixas,total,'Por Faixa Et&aacute;ria')+bars(escols,total,'Por Escolaridade')+bars(contratos,total,'Por Contrata&ccedil;&atilde;o')+'</div>'+
-    '<div class="sec">Tempo de Casa e Anivers&aacute;riantes</div>'+
-    '<div class="cgrid">'+bars(tempos,total,'Tempo de Casa')+anivCard(anivs)+'</div>';
+    '<div class="sec">Composição da Equipe</div>'+
+    '<div class="cgrid">'+bars(generos,total,'Por Gênero')+bars(faixas,total,'Por Faixa Etária')+bars(escols,total,'Por Escolaridade')+bars(contratos,total,'Por Contratação')+'</div>'+
+    '<div class="sec">Tempo de Casa e Aniversariantes</div>'+
+    '<div class="cgrid">'+bars(temposOrd,total,'Tempo de Casa')+anivCard+'</div>';
 }
 
+// ── TAB AFASTAMENTOS ──────────────────────────────────────────────────────────
+function renderAfastamentos(raw){
+  _afasGlobal=raw.map(function(r){
+    var inicio=parseDate(v(r,'Afastamento em:')||v(r,'Afastamento em'));
+    var retorno=parseDate(v(r,'Retorno ao trabalho em:')||v(r,'Retorno ao trabalho em'));
+    return{
+      nome:v(r,'Colaborador'),
+      filial:v(r,'Alocação')||v(r,'Alocacao'),
+      funcao:v(r,'Função')||v(r,'Funcao'),
+      depto:v(r,'Departamento'),
+      motivo:v(r,'Motivo do Afastamento:')||v(r,'Motivo do Afastamento'),
+      obs:v(r,'Observações do Afastamento')||v(r,'Observacoes do Afastamento'),
+      inicio:inicio,
+      retorno:retorno,
+      mesPt:inicio?(MESES[inicio.getMonth()]+' '+inicio.getFullYear()):null
+    };
+  }).filter(function(r){return r.nome!=='';});
+  drawAfastamentos('todos');
+}
+
+function drawAfastamentos(filtroMes){
+  var dados=_afasGlobal;
+  var mesesDisp=['todos'];
+  var mesSet={};
+  dados.forEach(function(r){if(r.mesPt&&!mesSet[r.mesPt]){mesSet[r.mesPt]=true;mesesDisp.push(r.mesPt);}});
+
+  var filtrados=filtroMes==='todos'?dados:dados.filter(function(r){return r.mesPt===filtroMes;});
+
+  // Gráfico por mês (todos os afastamentos)
+  var porMes={};
+  dados.forEach(function(r){if(r.mesPt){porMes[r.mesPt]=(porMes[r.mesPt]||0)+1;}});
+  var mesEntries=Object.entries(porMes);
+  var maxVal=mesEntries.reduce(function(m,x){return Math.max(m,x[1]);},1);
+  var chartHtml=mesEntries.length?
+    '<div class="month-chart">'+mesEntries.map(function(e){
+      var h=Math.round((e[1]/maxVal)*100);
+      var partes=e[0].split(' ');
+      return '<div class="mcol"><div class="mval">'+e[1]+'</div><div class="mbar warn" style="height:'+h+'px"></div><div class="mlbl">'+partes[0].slice(0,3)+'<br>'+partes[1]+'</div></div>';
+    }).join('')+'</div>':'<div class="empty">Sem dados para o gráfico</div>';
+
+  // KPIs filtrados
+  var ativos=filtrados.filter(function(r){return !r.retorno||r.retorno>new Date();}).length;
+  var motivos=srt(grp(filtrados,function(r){return r.motivo||null;}));
+  var porFilial=srt(grp(filtrados,function(r){return r.filial||null;}));
+
+  // Seletor de mês
+  var selectOpts=mesesDisp.map(function(m){return'<option value="'+m+'"'+(m===filtroMes?' selected':'')+'>'+( m==='todos'?'Todos os meses':m)+'</option>';}).join('');
+  var select='<div class="filter-row"><label>Filtrar por mês:</label><select onchange="drawAfastamentos(this.value)">'+selectOpts+'</select></div>';
+
+  // Tabela
+  var linhas=filtrados.map(function(r){
+    var emCurso=!r.retorno||r.retorno>new Date();
+    return '<tr><td>'+r.nome+'</td><td>'+r.filial+'</td><td>'+r.depto+'</td><td>'+r.motivo+'</td>'+
+      '<td>'+(r.inicio?r.inicio.toLocaleDateString('pt-BR'):'—')+'</td>'+
+      '<td>'+(r.retorno?r.retorno.toLocaleDateString('pt-BR'):'—')+'</td>'+
+      '<td><span class="badge '+(emCurso?'afas':'ativo')+'">'+(emCurso?'Em curso':'Retornou')+'</span></td></tr>';
+  }).join('');
+
+  var tabela=filtrados.length?
+    '<div class="tbl-wrap"><table><thead><tr><th>Colaborador</th><th>Filial</th><th>Departamento</th><th>Motivo</th><th>Início</th><th>Retorno</th><th>Status</th></tr></thead><tbody>'+linhas+'</tbody></table></div>':
+    empty();
+
+  document.getElementById('tab-afastamentos').innerHTML=
+    '<div class="sec">Visão Geral — Afastamentos por Mês</div>'+
+    '<div class="cgrid" style="grid-template-columns:1fr">'+card('Ocorrências por Mês',chartHtml)+'</div>'+
+    select+
+    '<div class="kgrid">'+
+      kbox(filtrados.length,'Afastamentos',(filtroMes==='todos'?'total registrado':filtroMes))+
+      kbox(ativos,'Em curso','sem retorno registrado','warn')+
+      kbox(motivos.length,'Tipos de Motivo')+
+    '</div>'+
+    '<div class="sec">Por Motivo e Filial</div>'+
+    '<div class="cgrid">'+bars(motivos,filtrados.length,'Por Motivo','warn')+bars(porFilial,filtrados.length,'Por Filial','warn')+'</div>'+
+    '<div class="sec">Registros'+(filtroMes!=='todos'?' — '+filtroMes:'')+'</div>'+
+    tabela;
+}
+
+// ── TAB DESLIGADOS ────────────────────────────────────────────────────────────
+function renderDesligados(raw){
+  _desGlobal=raw.map(function(r){
+    // Detectar colunas automaticamente
+    var keys=Object.keys(r);
+    var nomeKey=keys.find(function(k){return/colaborador|nome/i.test(k);})||keys[0];
+    var filialKey=keys.find(function(k){return/aloca|filial/i.test(k);})||'';
+    var deptoKey=keys.find(function(k){return/depto|departamento/i.test(k);})||'';
+    var motivoKey=keys.find(function(k){return/motivo/i.test(k);})||'';
+    var desligKey=keys.find(function(k){return/deslig|saída|saida|data/i.test(k);})||'';
+    var admKey=keys.find(function(k){return/admiss/i.test(k);})||'';
+    var admD=parseDate(v(r,admKey));
+    var desD=parseDate(v(r,desligKey));
+    var mesesCasa=null;
+    if(admD&&desD)mesesCasa=Math.floor((desD-admD)/(1000*60*60*24*30.44));
+    return{
+      nome:v(r,nomeKey),
+      filial:v(r,filialKey),
+      depto:v(r,deptoKey),
+      motivo:v(r,motivoKey),
+      dataDeslig:desD,
+      admissao:admD,
+      mesesCasa:mesesCasa,
+      raw:r
+    };
+  }).filter(function(r){return r.nome!=='';});
+
+  var dados=_desGlobal;
+  var total=dados.length;
+  var motivos=srt(grp(dados,function(r){return r.motivo||null;}));
+  var porFilial=srt(grp(dados,function(r){return r.filial||null;}));
+  var porDepto=srt(grp(dados,function(r){return r.depto||null;}));
+
+  // Turnover por filial (desligados / total ativo aproximado por filial)
+  var filialAtivos={};
+  // Usamos porFilial como base (não temos os ativos por filial aqui, então mostramos contagem)
+
+  // Gráfico por mês
+  var porMes={};
+  dados.forEach(function(r){
+    if(r.dataDeslig){
+      var k=MESES_ABREV[r.dataDeslig.getMonth()]+'/'+r.dataDeslig.getFullYear();
+      porMes[k]=(porMes[k]||0)+1;
+    }
+  });
+  var mesEntries=Object.entries(porMes);
+  var maxVal=mesEntries.reduce(function(m,x){return Math.max(m,x[1]);},1);
+  var chartHtml=mesEntries.length?
+    '<div class="month-chart">'+mesEntries.map(function(e){
+      var h=Math.round((e[1]/maxVal)*100);
+      return '<div class="mcol"><div class="mval">'+e[1]+'</div><div class="mbar danger" style="height:'+h+'px"></div><div class="mlbl">'+e[0]+'</div></div>';
+    }).join('')+'</div>':'<div class="empty">Sem dados para o gráfico</div>';
+
+  // Tempo de casa dos desligados
+  var tempos=srt(grp(dados,function(r){return tempo(r.mesesCasa);}));
+
+  // Tabela
+  var linhas=dados.map(function(r){
+    return '<tr><td>'+r.nome+'</td><td>'+r.filial+'</td><td>'+r.depto+'</td><td>'+r.motivo+'</td>'+
+      '<td>'+(r.dataDeslig?r.dataDeslig.toLocaleDateString('pt-BR'):'—')+'</td>'+
+      '<td>'+(r.mesesCasa!==null?r.mesesCasa+' meses':'—')+'</td></tr>';
+  }).join('');
+
+  var tabela=dados.length?
+    '<div class="tbl-wrap"><table><thead><tr><th>Colaborador</th><th>Filial</th><th>Departamento</th><th>Motivo</th><th>Desligamento</th><th>Tempo de Casa</th></tr></thead><tbody>'+linhas+'</tbody></table></div>':
+    empty();
+
+  document.getElementById('tab-desligados').innerHTML=
+    '<div class="sec">Visão Geral — Desligamentos por Mês</div>'+
+    '<div class="cgrid" style="grid-template-columns:1fr">'+card('Desligamentos por Mês (2026+)',chartHtml)+'</div>'+
+    '<div class="kgrid">'+
+      kbox(total,'Desligados','desde jan/2026','danger')+
+      kbox(motivos.length,'Tipos de Motivo')+
+      kbox(porFilial.length,'Filiais afetadas')+
+    '</div>'+
+    '<div class="sec">Distribuição</div>'+
+    '<div class="cgrid">'+bars(motivos,total,'Por Motivo','danger')+bars(porFilial,total,'Por Filial','danger')+'</div>'+
+    '<div class="cgrid">'+bars(porDepto,total,'Por Departamento','danger')+bars(tempos,total,'Tempo de Casa')+'</div>'+
+    '<div class="sec">Registros</div>'+
+    tabela;
+}
+
+// ── FETCH ─────────────────────────────────────────────────────────────────────
 fetch(SCRIPT_URL)
   .then(function(r){return r.json();})
   .then(function(j){
     if(j.erro){
-      document.getElementById('upd').textContent='Erro';
-      document.getElementById('app').innerHTML='<div class="err">Erro: '+j.erro+'</div>';
+      document.getElementById('loading').innerHTML='<div class="err">Erro: '+j.erro+'</div>';
       return;
     }
-    render(j.colaboradores||[]);
+    document.getElementById('loading').style.display='none';
+    document.getElementById('upd').textContent='Atualizado: '+new Date().toLocaleString('pt-BR');
+    renderEquipe(j.colaboradores||[]);
+    renderAfastamentos(j.afastamentos||[]);
+    renderDesligados(j.desligados||[]);
+    // Mostrar tab ativa
+    document.getElementById('tab-equipe').classList.add('active');
+    document.getElementById('tab-equipe').style.display='block';
   })
   .catch(function(e){
-    document.getElementById('upd').textContent='Erro';
-    document.getElementById('app').innerHTML='<div class="err">Não foi possível carregar: '+e.message+'</div>';
+    document.getElementById('loading').innerHTML='<div class="err">Não foi possível carregar: '+e.message+'</div>';
   });
 </script>
 </body>
