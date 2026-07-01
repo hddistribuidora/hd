@@ -459,7 +459,7 @@
       descricao: mensagem
     };
     const qs = Object.entries(params).map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
-    s.src = SCRIPT_OUVIDORIA + '?' + qs;
+    s.src = SCRIPT_OUVIDORIA + '?' + qs + '&authuser=0';
     document.body.appendChild(s);
   }
 
