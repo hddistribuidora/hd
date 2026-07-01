@@ -465,7 +465,18 @@
     document.getElementById('modal-sucesso').style.display = 'block';
   }, 1500);
 }
-
+function toggle(id) {
+    const sub = document.getElementById('sub-' + id);
+    const arrow = document.getElementById('arrow-' + id);
+    const isOpen = sub.classList.contains('open');
+    document.querySelectorAll('.sub-items').forEach(el => el.classList.remove('open'));
+    document.querySelectorAll('.card-arrow[id]').forEach(el => { el.classList.remove('open'); el.textContent = '→'; });
+    if (!isOpen) {
+      sub.classList.add('open');
+      arrow.classList.add('open');
+      arrow.textContent = '↓';
+    }
+  }
   // ANIVERSARIANTES
   (async function() {
     const SHEET_ID = '1X0PlIpFRuZudc4vgbpFotm2lPjQf1eDeIMExNNPYQbQ';
