@@ -234,30 +234,32 @@ function parseCSVLine(linha) {
 }
 
 // ── CARREGAR ─────────────────────────────────────────────────
-async function carregar() {
+function carregar() {
   document.getElementById('lista-wrap').innerHTML = '<div class="loading">Carregando...</div>';
-  try {
-    const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID_OUVIDORIA}/export?format=csv&gid=${GID_RESPOSTAS}`;
-    const resp = await fetch(url);
-    if (!resp.ok) throw new Error('HTTP ' + resp.status);
-    const text   = await resp.text();
-    const linhas = text.trim().split('\n').slice(1);
-    todosRegistros = linhas
-      .map(l => {
-        const cols = parseCSVLine(l);
-        return {
-          data:      cols[0] || '',
-          nome:      cols[1] || '',
-          categorias: cols[2] || '',
-          mensagem:  cols[3] || '',
-        };
-      })
-      .filter(r => r.data)
-      .reverse();
+  var cbName = 'ouvidoriaPainelCb_' + Date.now();
+  var script = document.createElement('script');
+  var timeout = setTimeout(function(){
+    document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Tempo esgotado ao carregar. Tente novamente.</div>';
+    if(script.parentNode) document.body.removeChild(script);
+    delete window[cbName];
+  }, 20000);
+  window[cbName] = function(j) {
+    clearTimeout(timeout);
+    if(script.parentNode) document.body.removeChild(script);
+    delete window[cbName];
+    if(!j) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Sem resposta do servidor.</div>'; return; }
+    if(j.erro) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro: ' + j.erro + '</div>'; return; }
+    var rows = j.registros || [];
+    todosRegistros = rows.map(function(r){ return { data: r['Data']||'', nome: r['Nome / Anônimo']||r['Nome']||'', categorias: r['Categorias']||r['Tipo']||'', mensagem: r['Mensagem']||r['Descrição']||'' }; }).filter(function(r){ return r.data; }).reverse();
     renderLista();
-  } catch(e) {
+  };
+  script.src = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGAtoxtg6XwVO9OF23Os2cuKVV-dkDym_Y1CC7hrAT7-sHPKk7Og/exec?callback=' + cbName;
+  script.onerror = function(){
+    clearTimeout(timeout);
     document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro ao carregar dados.</div>';
-  }
+    delete window[cbName];
+  };
+  document.body.appendChild(script);
 }
 
 function filtrar() { renderLista(); }
