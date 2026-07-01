@@ -250,7 +250,7 @@ function carregar() {
     if(!j) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Sem resposta do servidor.</div>'; return; }
     if(j.erro) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro: ' + j.erro + '</div>'; return; }
     var rows = j.registros || [];
-    todosRegistros = rows.map(function(r){ return { data: r['Data']||'', nome: r['Nome / Anônimo']||r['Nome']||'', categorias: r['Categorias']||r['Tipo']||'', mensagem: r['Mensagem']||r['Descrição']||'' }; }).filter(function(r){ return r.data; }).reverse();
+    todosRegistros = rows.map(function(r){ return { data: r['Data']||'', nome: r['Nome / Anônimo']||r['Nome']||'', categorias: r['Categorias']||r['Tipo']||'', mensagem: r['Mensagem']||r['Descrição']||'' }; }).filter(function(r){ return formatarData(r.data); }).reverse();
     renderLista();
   };
   script.src = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGAtoxtg6XwVO9OF23Os2cuKVV-dkDym_Y1CC7hrAT7-sHPKk7Og/exec?callback=' + cbName;
@@ -272,6 +272,17 @@ function filtrarCategoria(cat, el) {
 }
 
 // ── RENDERIZAR LISTA ─────────────────────────────────────────
+function formatarData(str) {
+  if (!str) return '';
+  // Se já está no formato dd/MM/yyyy, retorna direto
+  if (/^\d{2}\/\d{2}\/\d{4}/.test(str)) return str;
+  // Tenta converter de outros formatos (ex: "Wed Jul 01 2026 09:15:00...")
+  var d = new Date(str);
+  if (isNaN(d)) return str;
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  return pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+}
+
 function renderLista() {
   const q = document.getElementById('busca').value.toLowerCase().trim();
   let dados = [...todosRegistros];
@@ -299,7 +310,7 @@ function renderLista() {
       return `<div class="card-item" onclick="abrirDetalhe(${idx})">
         <div class="card-top">
           <div class="card-nome">${r.nome}</div>
-          <div class="card-data">${r.data}</div>
+          <div class="card-data">${formatarData(r.data)}</div>
         </div>
         <div class="card-cats">${cats}</div>
         <div class="card-preview">${preview}</div>
@@ -318,7 +329,7 @@ function abrirDetalhe(idx) {
   document.getElementById('modal-body').innerHTML = `
     <div class="detalhe-grid">
       <div><div class="detalhe-label">Remetente</div><div class="detalhe-valor">${r.nome}</div></div>
-      <div><div class="detalhe-label">Data e Hora</div><div class="detalhe-valor">${r.data}</div></div>
+      <div><div class="detalhe-label">Data e Hora</div><div class="detalhe-valor">${formatarData(r.data)}</div></div>
     </div>
     <div style="margin-bottom:1.25rem">
       <div class="detalhe-label" style="margin-bottom:8px">Categorias</div>${cats}
@@ -361,7 +372,7 @@ function imprimirMensagem() {
         </td>
         <td style="width:50%">
           <div class="print-label">Data e Hora</div>
-          <div class="print-value">${r.data}</div>
+          <div class="print-value">${formatarData(r.data)}</div>
         </td>
       </tr>
       <tr>
@@ -375,7 +386,7 @@ function imprimirMensagem() {
     <div class="print-msg">${r.mensagem}</div>
     <div class="print-footer">
       <span>HD Distribuidora · Gestão de Pessoas</span>
-      <span>${r.data}</span>
+      <span>${formatarData(r.data)}</span>
     </div>
   `;
   document.getElementById('area-impressao').style.display = 'block';
