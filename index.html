@@ -121,7 +121,7 @@
   </div>
   <span class="card-arrow">→</span>
 </a>
-   
+
     <!-- Ouvidoria -->
     <div class="card-group">
       <button class="card-toggle" onclick="toggle('ouvidoria')">
@@ -292,8 +292,8 @@
     <div class="card-desc">Remuneração e indicadores — acesso restrito RH</div>
   </div>
   <span class="card-arrow">→</span>
-</a> 
-   
+</a>
+
     <!-- Aniversariantes -->
     <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem 1.5rem;text-align:left;transition:border-color 0.15s,box-shadow 0.15s;" onmouseover="this.style.borderColor='#2E4DA6';this.style.boxShadow='0 4px 16px rgba(46,77,166,0.1)'" onmouseout="this.style.borderColor='#C8D6E8';this.style.boxShadow='none'">
       <div style="display:flex;align-items:center;gap:16px;margin-bottom:0.9rem;">
@@ -359,7 +359,7 @@
 </div>
 
 <script>
-  const SCRIPT_OUVIDORIA = 'https://script.google.com/macros/s/AKfycbyhtNE9aZqBr1N7cERxpghKKCBCOgG66PgtWOel303VoTryvq9Zit7_tzD9QvHlXFP-/exec';
+  const SCRIPT_OUVIDORIA = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGAtoxtg6XwVO9OF23Os2cuKVV-dkDym_Y1CC7hrAT7-sHPKk7Og/exec';
   let categoriasSelecionadas = [];
 
   function selecionarCategoria(el) {
@@ -399,7 +399,7 @@
     document.getElementById('contador').textContent = document.getElementById('ouv-mensagem').value.length;
   }
 
-  async function enviarOuvidoria() {
+  function enviarOuvidoria() {
     const nome = document.getElementById('ouv-nome').value.trim();
     const mensagem = document.getElementById('ouv-mensagem').value.trim();
     const btn = document.getElementById('btn-enviar');
@@ -422,24 +422,45 @@
     btn.disabled = true;
     btn.textContent = 'Enviando...';
 
-    try {
-      await fetch(SCRIPT_OUVIDORIA, {
-        method: 'POST', mode: 'no-cors',
-        body: JSON.stringify({
-          tipo: 'ouvidoria',
-          nome: nome || 'Anônimo',
-          categorias: categoriasSelecionadas.join(', '),
-          mensagem,
-          data: new Date().toLocaleString('pt-BR'),
-        }),
-      });
+    const cbName = 'ouvCb_' + Date.now();
+    const s = document.createElement('script');
+
+    const timeout = setTimeout(() => {
+      btn.disabled = false;
+      btn.textContent = 'Enviar mensagem';
+      alert('Tempo esgotado. Tente novamente.');
+      if (s.parentNode) document.body.removeChild(s);
+      delete window[cbName];
+    }, 20000);
+
+    window[cbName] = function(resp) {
+      clearTimeout(timeout);
+      if (s.parentNode) document.body.removeChild(s);
+      delete window[cbName];
       document.getElementById('modal-form').style.display = 'none';
       document.getElementById('modal-sucesso').style.display = 'block';
-    } catch(e) {
+    };
+
+    s.onerror = function() {
+      clearTimeout(timeout);
+      delete window[cbName];
       btn.disabled = false;
       btn.textContent = 'Enviar mensagem';
       alert('Erro ao enviar. Tente novamente.');
-    }
+    };
+
+    const params = {
+      callback: cbName,
+      acao: 'enviar',
+      anonimo: nome ? 'Não' : 'Sim',
+      nome: nome || '(anônimo)',
+      tipo: categoriasSelecionadas.join(', '),
+      departamento: '',
+      descricao: mensagem
+    };
+    const qs = Object.entries(params).map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
+    s.src = SCRIPT_OUVIDORIA + '?' + qs;
+    document.body.appendChild(s);
   }
 
   function toggle(id) {
