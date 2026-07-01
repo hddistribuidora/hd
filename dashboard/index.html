@@ -66,6 +66,47 @@ tr:hover td{background:#F7F9FD}
 .mlbl{font-size:.65rem;color:var(--hint);text-align:center;white-space:nowrap}
 .mval{font-size:.7rem;color:var(--accent);font-weight:600}
 @media(max-width:580px){.kgrid{grid-template-columns:repeat(2,1fr)}.tab-btn{font-size:.78rem;padding:.5rem .9rem}}
+
+/* ── PRINT ─────────────────────────────────────────────────── */
+.print-btn{position:fixed;bottom:1.5rem;right:1.5rem;z-index:999;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:10px 20px;font-family:"DM Sans",sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;box-shadow:0 4px 16px rgba(46,77,166,.3);display:flex;align-items:center;gap:6px;transition:background .15s}
+.print-btn:hover{background:var(--dark)}
+@media print{
+  .print-btn,.back,.tabs,.tab-btn,.filter-row,#loading{display:none!important}
+  .tab-panel{display:block!important}
+  body{background:#fff;font-size:12px;padding:0}
+  .wrap{max-width:100%;padding:0 1rem}
+  .hero{padding:1rem;background:none;color:#1A2D6B;border-bottom:2px solid #2E4DA6;margin-bottom:1rem}
+  .hero img{width:40px;height:40px}
+  .hero h1{font-size:1.3rem;color:#1A2D6B}
+  .hero p,.upd{color:#5E6680;font-size:.8rem}
+  .print-section{page-break-before:always;margin-top:1.5rem}
+  .print-section:first-child{page-break-before:avoid}
+  .print-title{font-family:"Lora",serif;font-size:1rem;font-weight:700;color:#1A2D6B;border-bottom:2px solid #2E4DA6;padding-bottom:.4rem;margin-bottom:1rem}
+  .kgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-bottom:1rem}
+  .kpi{border:1px solid #C8D6E8;border-radius:8px;padding:.6rem .5rem;text-align:center}
+  .kpi .n{font-size:1.4rem;color:#2E4DA6}
+  .kpi .l{font-size:.65rem;color:#8893B0}
+  .kpi .s{font-size:.6rem;color:#8893B0}
+  .cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:1rem}
+  .card{border:1px solid #C8D6E8;border-radius:8px;padding:1rem;break-inside:avoid}
+  .card h3{font-size:.8rem;font-weight:700;color:#1A2D6B;margin-bottom:.6rem;padding-bottom:.3rem;border-bottom:1px solid #E8EDF8}
+  .bar{display:flex;align-items:center;gap:.4rem;margin-bottom:.35rem;font-size:.72rem}
+  .bar .nm{min-width:110px}
+  .bar .tr{flex:1;height:6px;background:#E8EDF8;border-radius:3px}
+  .bar .fi{height:100%;background:#2E4DA6;border-radius:3px}
+  .bar .fi.warn{background:#E8A020}
+  .bar .fi.danger{background:#C0392B}
+  .bar .ct,.bar .pc{font-size:.65rem}
+  .chip{font-size:.72rem;padding:.2rem .5rem}
+  table{font-size:.7rem}
+  th{font-size:.7rem;padding:.4rem .5rem}
+  td{padding:.35rem .5rem}
+  .month-chart{height:80px}
+  .mval{font-size:.6rem}
+  .mlbl{font-size:.55rem}
+  .sec{font-size:.9rem;margin:1rem 0 .6rem}
+  .badge{font-size:.6rem}
+}
 </style>
 </head>
 <body>
@@ -408,5 +449,45 @@ function handleData(j) {
   document.body.appendChild(s);
 })();
 </script>
+
+<button class="print-btn" onclick="imprimirDashboard()">&#128438; Imprimir / PDF</button>
+<script>
+function imprimirDashboard(){
+  // Mostrar todas as tabs antes de imprimir
+  var panels = document.querySelectorAll('.tab-panel');
+  var btns = document.querySelectorAll('.tab-btn');
+  panels.forEach(function(p){p.style.display='block';});
+  
+  // Adicionar títulos de seção para impressão
+  var secTitles = ['Equipe Ativa', 'Afastamentos', 'Desligados'];
+  var ids = ['tab-equipe','tab-afastamentos','tab-desligados'];
+  ids.forEach(function(id, i){
+    var el = document.getElementById(id);
+    if(!el.querySelector('.print-section-header')){
+      var h = document.createElement('div');
+      h.className = 'print-section-header print-title';
+      h.innerHTML = (i===0?'&#128101;':i===1?'&#128197;':'&#128683;') + ' ' + secTitles[i];
+      el.insertBefore(h, el.firstChild);
+    }
+    if(i > 0) el.classList.add('print-section');
+  });
+
+  window.print();
+
+  // Restaurar estado após impressão
+  setTimeout(function(){
+    panels.forEach(function(p, i){
+      p.style.display = i===0 ? 'block' : 'none';
+      p.classList.remove('print-section');
+    });
+    ids.forEach(function(id){
+      var h = document.getElementById(id).querySelector('.print-section-header');
+      if(h) h.remove();
+    });
+    btns[0].classList.add('active');
+  }, 1000);
+}
+</script>
+
 </body>
 </html>
