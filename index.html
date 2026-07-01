@@ -400,81 +400,71 @@
   }
 
   function enviarOuvidoria() {
-    const nome = document.getElementById('ouv-nome').value.trim();
-    const mensagem = document.getElementById('ouv-mensagem').value.trim();
-    const btn = document.getElementById('btn-enviar');
+  const nome = document.getElementById('ouv-nome').value.trim();
+  const mensagem = document.getElementById('ouv-mensagem').value.trim();
+  const btn = document.getElementById('btn-enviar');
 
-    if (categoriasSelecionadas.length === 0) {
-      document.querySelectorAll('.cat-pill').forEach(p => {
-        p.style.borderColor = '#c0392b';
-        setTimeout(() => p.style.borderColor = '', 2000);
-      });
-      return;
-    }
-    if (!mensagem) {
-      const t = document.getElementById('ouv-mensagem');
-      t.style.borderColor = '#c0392b';
-      t.focus();
-      setTimeout(() => t.style.borderColor = '', 2000);
-      return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Enviando...';
-
-    const cbName = 'ouvCb_' + Date.now();
-    const s = document.createElement('script');
-
-    const timeout = setTimeout(() => {
-      btn.disabled = false;
-      btn.textContent = 'Enviar mensagem';
-      alert('Tempo esgotado. Tente novamente.');
-      if (s.parentNode) document.body.removeChild(s);
-      delete window[cbName];
-    }, 20000);
-
-    window[cbName] = function(resp) {
-      clearTimeout(timeout);
-      if (s.parentNode) document.body.removeChild(s);
-      delete window[cbName];
-      document.getElementById('modal-form').style.display = 'none';
-      document.getElementById('modal-sucesso').style.display = 'block';
-    };
-
-    s.onerror = function() {
-      clearTimeout(timeout);
-      delete window[cbName];
-      btn.disabled = false;
-      btn.textContent = 'Enviar mensagem';
-      alert('Erro ao enviar. Tente novamente.');
-    };
-
-    const params = {
-      callback: cbName,
-      acao: 'enviar',
-      anonimo: nome ? 'Não' : 'Sim',
-      nome: nome || '(anônimo)',
-      tipo: categoriasSelecionadas.join(', '),
-      departamento: '',
-      descricao: mensagem
-    };
-    const qs = Object.entries(params).map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v)).join('&');
-    s.src = SCRIPT_OUVIDORIA + '?' + qs + '&authuser=0';
-    document.body.appendChild(s);
+  if (categoriasSelecionadas.length === 0) {
+    document.querySelectorAll('.cat-pill').forEach(p => {
+      p.style.borderColor = '#c0392b';
+      setTimeout(() => p.style.borderColor = '', 2000);
+    });
+    return;
+  }
+  if (!mensagem) {
+    const t = document.getElementById('ouv-mensagem');
+    t.style.borderColor = '#c0392b';
+    t.focus();
+    setTimeout(() => t.style.borderColor = '', 2000);
+    return;
   }
 
-  function toggle(id) {
-    const sub = document.getElementById('sub-' + id);
-    const arrow = document.getElementById('arrow-' + id);
-    const isOpen = sub.classList.contains('open');
-    document.querySelectorAll('.sub-items').forEach(el => el.classList.remove('open'));
-    document.querySelectorAll('.card-arrow[id]').forEach(el => { el.classList.remove('open'); el.textContent = '→'; });
-    if (!isOpen) {
-      sub.classList.add('open');
-      arrow.classList.add('open');
-      arrow.textContent = '↓';
-    }
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const params = {
+    acao: 'enviar',
+    anonimo: nome ? 'Não' : 'Sim',
+    nome: nome || '(anônimo)',
+    tipo: categoriasSelecionadas.join(', '),
+    departamento: '',
+    descricao: mensagem
+  };
+
+  // Cria iframe oculto (se não existir)
+  let iframe = document.getElementById('hidden-submit-frame');
+  if (!iframe) {
+    iframe = document.createElement('iframe');
+    iframe.id = 'hidden-submit-frame';
+    iframe.name = 'hidden-submit-frame';
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
   }
+
+  // Cria form real, envia via POST pro iframe
+  const form = document.createElement('form');
+  form.method = 'POST';
+  form.action = SCRIPT_OUVIDORIA;
+  form.target = 'hidden-submit-frame';
+  form.style.display = 'none';
+
+  const hidden = document.createElement('input');
+  hidden.type = 'hidden';
+  hidden.name = 'payload';
+  hidden.value = JSON.stringify(params);
+  form.appendChild(hidden);
+
+  document.body.appendChild(form);
+  form.submit();
+  document.body.removeChild(form);
+
+  // Não temos como ler a resposta do iframe (cross-origin),
+  // então assumimos sucesso após um pequeno delay.
+  setTimeout(() => {
+    document.getElementById('modal-form').style.display = 'none';
+    document.getElementById('modal-sucesso').style.display = 'block';
+  }, 1500);
+}
 
   // ANIVERSARIANTES
   (async function() {
