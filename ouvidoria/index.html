@@ -121,6 +121,7 @@ function enviar() {
   document.getElementById('msg-retorno').style.display = 'none';
 
   var dados = {
+    acao: 'enviar',
     anonimo: anonimo ? 'Sim' : 'Não',
     nome: anonimo ? '(anônimo)' : (nome || '(não informado)'),
     tipo: tipo,
@@ -128,39 +129,23 @@ function enviar() {
     descricao: msg
   };
 
-  // JSONP para evitar CORS
   var cbName = 'ouvidoriaCb_' + Date.now();
-  window[cbName] = function(resp) {
+  var s = document.createElement('script');
+
+  var timeout = setTimeout(function(){
     btn.disabled = false;
     btn.textContent = 'Enviar Mensagem';
-    if (resp && resp.ok) {
-      mostrar('✅ Mensagem enviada com sucesso! O RH receberá em breve.', 'ok');
-      document.getElementById('inp-nome').value = '';
-      document.getElementById('inp-tipo').value = '';
-      document.getElementById('inp-depto').value = '';
-      document.getElementById('inp-msg').value = '';
-      document.getElementById('chk-anonimo').checked = false;
-      document.getElementById('nome-field').style.display = 'block';
-    } else {
-      mostrar('Erro ao enviar. Tente novamente.', 'err');
-    }
+    mostrar('Tempo esgotado. Tente novamente.', 'err');
+    if(s.parentNode) document.body.removeChild(s);
     delete window[cbName];
-    document.body.removeChild(s);
-  };
+  }, 20000);
 
-  // Enviar via postMessage workaround — Apps Script POST via form
-  var form = document.createElement('form');
-  form.style.display = 'none';
-
-  // Usar fetch com no-cors para POST (Apps Script aceita)
-  fetch(SCRIPT_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dados)
-  }).then(function() {
+  window[cbName] = function(resp) {
+    clearTimeout(timeout);
     btn.disabled = false;
     btn.textContent = 'Enviar Mensagem';
+    if(s.parentNode) document.body.removeChild(s);
+    delete window[cbName];
     mostrar('✅ Mensagem enviada com sucesso! O RH receberá em breve.', 'ok');
     document.getElementById('inp-nome').value = '';
     document.getElementById('inp-tipo').value = '';
@@ -168,15 +153,32 @@ function enviar() {
     document.getElementById('inp-msg').value = '';
     document.getElementById('chk-anonimo').checked = false;
     document.getElementById('nome-field').style.display = 'block';
-  }).catch(function(e) {
+  };
+
+  s.onerror = function(){
+    clearTimeout(timeout);
     btn.disabled = false;
     btn.textContent = 'Enviar Mensagem';
-    mostrar('Erro ao enviar. Tente novamente.', 'err');
-  });
+    delete window[cbName];
+    // no-cors POST como fallback
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(dados)
+    }).then(function(){
+      mostrar('✅ Mensagem enviada! O RH receberá em breve.', 'ok');
+      document.getElementById('inp-nome').value = '';
+      document.getElementById('inp-tipo').value = '';
+      document.getElementById('inp-depto').value = '';
+      document.getElementById('inp-msg').value = '';
+      document.getElementById('chk-anonimo').checked = false;
+      document.getElementById('nome-field').style.display = 'block';
+    }).catch(function(){ mostrar('Erro ao enviar. Tente novamente.', 'err'); });
+  };
 
-  // Limpar JSONP se não usado
-  var s = document.createElement('script');
-  delete window[cbName];
+  var params = Object.keys(dados).map(function(k){ return encodeURIComponent(k)+'='+encodeURIComponent(dados[k]); }).join('&');
+  s.src = SCRIPT_URL + '?callback=' + cbName + '&' + params;
+  document.body.appendChild(s);
 }
 </script>
 </body>
