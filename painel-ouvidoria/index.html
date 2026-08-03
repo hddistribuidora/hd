@@ -173,36 +173,26 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGA
 const SHEET_ID_OUVIDORIA = '1VSYscC0FPUtTl3NBCDwOaxsT2WkGKdY7av8e2ExEtVw';
 const GID_RESPOSTAS      = '1400704772';
 
-const USUARIOS = {
-  'rh':      { senha: 'hdd@rh',      nome: 'RH',     perfil: 'rh' },
-  'tais':    { senha: 'hdd@tais',    nome: 'Taís',   perfil: 'rh' },
-  'paulo':   { senha: 'hdd@paulo',   nome: 'Paulo',  perfil: 'rh' },
-  'renan':   { senha: 'hdd@renan',   nome: 'Renan',  perfil: 'rh' },
-  'sandro':  { senha: 'hdd@sandro',  nome: 'Sandro', perfil: 'lider' },
-  'juliana': { senha: 'hdd@juliana', nome: 'Juliana',perfil: 'lider' },
-  'loren':   { senha: 'hdd@loren',   nome: 'Loren',  perfil: 'lider' },
-};
-
 let usuarioLogado  = null;
 let todosRegistros = [];
 let categoriaAtiva = 'Todos';
 let registroAtual  = null;
 
 // ── LOGIN ────────────────────────────────────────────────────
+// As credenciais não ficam mais no código do site: a validação de usuário
+// e senha é feita no Apps Script (backend). O painel só recebe as
+// mensagens da Ouvidoria se o backend confirmar usuário/senha válidos.
 function fazerLogin() {
-  const u   = document.getElementById('inp-usuario').value.trim().toLowerCase();
-  const s   = document.getElementById('inp-senha').value;
-  const usr = USUARIOS[u];
-  if (!usr || usr.senha !== s) {
+  const u = document.getElementById('inp-usuario').value.trim().toLowerCase();
+  const s = document.getElementById('inp-senha').value;
+  if (!u || !s) {
+    document.getElementById('login-erro').textContent = 'Usuário ou senha incorretos.';
     document.getElementById('login-erro').style.display = 'block';
     return;
   }
   document.getElementById('login-erro').style.display = 'none';
-  usuarioLogado = { ...usr, usuario: u };
-  document.getElementById('tela-login').style.display  = 'none';
-  document.getElementById('tela-painel').style.display = 'block';
-  document.getElementById('nome-usuario').textContent  = usr.nome;
-  carregar();
+  usuarioLogado = { usuario: u, senha: s };
+  carregar(true);
 }
 
 function sair() {
@@ -234,12 +224,25 @@ function parseCSVLine(linha) {
 }
 
 // ── CARREGAR ─────────────────────────────────────────────────
-function carregar() {
-  document.getElementById('lista-wrap').innerHTML = '<div class="loading">Carregando...</div>';
+// isLogin=true quando a chamada é a tentativa de login (mostra erro na
+// tela de login); caso contrário é um recarregamento normal do painel.
+function carregar(isLogin) {
+  if (!usuarioLogado) { return; }
+  if (isLogin) {
+    document.getElementById('login-erro').style.display = 'none';
+  } else {
+    document.getElementById('lista-wrap').innerHTML = '<div class="loading">Carregando...</div>';
+  }
   var cbName = 'ouvidoriaPainelCb_' + Date.now();
   var script = document.createElement('script');
   var timeout = setTimeout(function(){
-    document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Tempo esgotado ao carregar. Tente novamente.</div>';
+    if (isLogin) {
+      usuarioLogado = null;
+      document.getElementById('login-erro').textContent = '⚠️ Tempo esgotado ao entrar. Tente novamente.';
+      document.getElementById('login-erro').style.display = 'block';
+    } else {
+      document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Tempo esgotado ao carregar. Tente novamente.</div>';
+    }
     if(script.parentNode) document.body.removeChild(script);
     delete window[cbName];
   }, 20000);
@@ -247,16 +250,38 @@ function carregar() {
     clearTimeout(timeout);
     if(script.parentNode) document.body.removeChild(script);
     delete window[cbName];
-    if(!j) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Sem resposta do servidor.</div>'; return; }
-    if(j.erro) { document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro: ' + j.erro + '</div>'; return; }
+    if(!j || j.erro) {
+      var mensagemErro = (j && j.erro) || 'Sem resposta do servidor.';
+      if (isLogin) {
+        usuarioLogado = null;
+        document.getElementById('login-erro').textContent = '⚠️ ' + mensagemErro;
+        document.getElementById('login-erro').style.display = 'block';
+      } else {
+        document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro: ' + mensagemErro + '</div>';
+      }
+      return;
+    }
+    if (isLogin) {
+      usuarioLogado.nome   = (j.usuario && j.usuario.nome)   || usuarioLogado.usuario;
+      usuarioLogado.perfil = (j.usuario && j.usuario.perfil) || '';
+      document.getElementById('tela-login').style.display  = 'none';
+      document.getElementById('tela-painel').style.display = 'block';
+      document.getElementById('nome-usuario').textContent  = usuarioLogado.nome;
+    }
     var rows = j.registros || [];
     todosRegistros = rows.map(function(r){ return { data: r['Data']||'', nome: r['Nome / Anônimo']||r['Nome']||'', categorias: r['Categorias']||r['Tipo']||'', mensagem: r['Mensagem']||r['Descrição']||'' }; }).filter(function(r){ return formatarData(r.data); }).reverse();
     renderLista();
   };
-  script.src = 'https://script.google.com/macros/s/AKfycbyF8weV6rOPyTwkpZoGAtoxtg6XwVO9OF23Os2cuKVV-dkDym_Y1CC7hrAT7-sHPKk7Og/exec?callback=' + cbName;
+  script.src = SCRIPT_URL + '?callback=' + cbName + '&usuario=' + encodeURIComponent(usuarioLogado.usuario) + '&senha=' + encodeURIComponent(usuarioLogado.senha);
   script.onerror = function(){
     clearTimeout(timeout);
-    document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro ao carregar dados.</div>';
+    if (isLogin) {
+      usuarioLogado = null;
+      document.getElementById('login-erro').textContent = '⚠️ Erro ao entrar. Tente novamente.';
+      document.getElementById('login-erro').style.display = 'block';
+    } else {
+      document.getElementById('lista-wrap').innerHTML = '<div class="empty">⚠️ Erro ao carregar dados.</div>';
+    }
     delete window[cbName];
   };
   document.body.appendChild(script);
