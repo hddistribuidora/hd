@@ -4,16 +4,16 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Calendário — HD Distribuidora RH</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Lora:wght@600;700&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg: #f5f4f0;
+      --bg: #F0F3F8;
       --surface: #ffffff;
-      --border: #e8e6e0;
-      --text: #1a1a18;
-      --muted: #8a8880;
-      --primary: #2d5a4e;
-      --primary-light: #e8f0ee;
+      --border: #C8D6E8;
+      --text: #1A1E2E;
+      --muted: #5E6680;
+      --primary: #2E4DA6;
+      --primary-light: #E8EDF8;
 
       --aniv: #7c4dbd;
       --aniv-bg: #f3eeff;
@@ -52,7 +52,7 @@
     }
     .header-back:hover { color: #fff; }
     .header-title {
-      font-family: 'DM Serif Display', serif;
+      font-family: 'Lora', serif;
       font-size: 22px;
       font-weight: 400;
     }
@@ -88,7 +88,7 @@
       border-bottom: 1px solid var(--border);
     }
     .cal-nav-month {
-      font-family: 'DM Serif Display', serif;
+      font-family: 'Lora', serif;
       font-size: 20px;
       font-weight: 400;
     }
@@ -240,7 +240,7 @@
       text-align: center;
     }
     .event-date-day {
-      font-family: 'DM Serif Display', serif;
+      font-family: 'Lora', serif;
       font-size: 22px;
       line-height: 1;
       color: var(--text);
@@ -361,7 +361,7 @@
 </div>
 
 <script>
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzGKY4jACd0Zp-U1mTZ63dImg8Kj7ZrDTRKn3U-SBGNZrRUaq_tRasCSDvr5Z_vsfnkyA/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
 
   const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const MESES_CURTO = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
@@ -376,7 +376,7 @@
 
   async function loadData() {
     try {
-      const r = await fetch(SCRIPT_URL);
+      const r = await fetch(SCRIPT_URL + '?tipo=calendario');
       dados = await r.json();
       render();
     } catch(e) {
