@@ -358,7 +358,7 @@
 </div>
 
 <script>
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywkZIgkqmapHY1U1LePoKmx93vxVU8Ijn3-0nxtrAoMOPup-ScpQnWiaTSz_aZSmHdrg/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0fb1cPABZ7AH6BfOnU8W9xetN2D0_HTtEnr-FUDwlaEpCCWWSFFE9y0SvBeISXaqG2A/exec';
 const GRUPOS = { docs: 14, sign: 6, reg: 8 };
 let currentColab = null;
 let state = { docs: [], sign: [], reg: [] };
@@ -370,7 +370,7 @@ async function loadColabs() {
   const btn = document.querySelector('.btn-outline-green');
   btn.classList.add('loading'); btn.disabled = true;
   try {
-    const res = await fetch(SCRIPT_URL);
+    const res = await fetch(SCRIPT_URL + '?acao=getFichas');
     const data = await res.json();
     const sel = document.getElementById('selectColab');
     sel.innerHTML = '<option value="">— Selecione um colaborador —</option>';
