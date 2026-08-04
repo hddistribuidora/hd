@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesquisa eNPS — HD Distribuidora</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #F0F3F8; --surface: #FFFFFF; --border: #C8D6E8;
+    --text: #1C201A; --text-muted: #5E6659; --text-hint: #9AA394;
+    --accent: #2E4DA6; --accent-light: #E8EDF8; --accent-text: #1A2D6B;
+    --radius: 12px; --radius-sm: 8px;
+  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text);
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 40px 32px; width: 100%; max-width: 480px; text-align: center; }
+  .titulo { font-family: 'Lora', serif; font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .subtitulo { font-size: 14px; color: var(--text-muted); margin-bottom: 6px; line-height: 1.5; }
+  .aviso { font-size: 12px; color: var(--text-hint); margin-bottom: 28px; }
+  .pergunta { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 20px; line-height: 1.4; }
+  .escala { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; margin-bottom: 14px; }
+  .nota-btn { aspect-ratio: 1; border: 1.5px solid var(--border); border-radius: 8px; background: white;
+    font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-muted);
+    cursor: pointer; transition: all .15s; display: flex; align-items: center; justify-content: center; }
+  .nota-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .nota-btn.sel { background: var(--accent); border-color: var(--accent); color: white; }
+  .legendas { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-hint); margin-bottom: 28px; }
+  .btn-enviar { width: 100%; padding: 13px; background: var(--accent); color: white; border: none;
+    border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    cursor: pointer; transition: background .15s; }
+  .btn-enviar:hover { background: #1A2D6B; }
+  .btn-enviar:disabled { background: var(--text-hint); cursor: not-allowed; }
+  .sucesso { display: none; }
+  .sucesso-icon { width: 56px; height: 56px; border-radius: 50%; background: var(--accent-light);
+    display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; font-size: 1.6rem; }
+  .sucesso-titulo { font-family: 'Lora', serif; font-size: 19px; font-weight: 600; color: var(--accent); margin-bottom: 8px; }
+  .sucesso-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; }
+  @media (max-width: 420px) {
+    .escala { grid-template-columns: repeat(6, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="card-form">
+  <div class="titulo">💬 Pesquisa de Satisfação</div>
+  <div class="subtitulo">Sua opinião ajuda a HD Distribuidora a melhorar o ambiente de trabalho.</div>
+  <div class="aviso">🔒 Resposta 100% anônima — não pedimos nome, e-mail ou qualquer identificação.</div>
+  <div class="pergunta">Em uma escala de 0 a 10, o quanto você recomendaria a HD Distribuidora como lugar para trabalhar?</div>
+  <div class="escala" id="escala"></div>
+  <div class="legendas"><span>0 — Nada provável</span><span>10 — Extremamente provável</span></div>
+  <button class="btn-enviar" id="btn-enviar" onclick="enviar()" disabled>Selecione uma nota</button>
+</div>
+
+<div class="card sucesso" id="card-sucesso">
+  <div class="sucesso-icon">✅</div>
+  <div class="sucesso-titulo">Obrigado pela sua resposta!</div>
+  <div class="sucesso-desc">Sua opinião foi registrada de forma anônima e vai ajudar a melhorar a experiência de todos na HD Distribuidora.</div>
+</div>
+
+<script>
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
+  let notaSelecionada = null;
+
+  const escala = document.getElementById('escala');
+  for (let i = 0; i <= 10; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'nota-btn';
+    btn.textContent = i;
+    btn.onclick = () => selecionarNota(i, btn);
+    escala.appendChild(btn);
+  }
+
+  function selecionarNota(nota, btnClicado) {
+    notaSelecionada = nota;
+    document.querySelectorAll('.nota-btn').forEach(b => b.classList.remove('sel'));
+    btnClicado.classList.add('sel');
+    const btnEnviar = document.getElementById('btn-enviar');
+    btnEnviar.disabled = false;
+    btnEnviar.textContent = 'Enviar resposta';
+  }
+
+  function enviar() {
+    if (notaSelecionada === null) return;
+    const btn = document.getElementById('btn-enviar');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify({ acao: 'enps_responder', nota: notaSelecionada })
+    }).catch(() => {});
+
+    // Sem CORS não há como ler a resposta — assumimos sucesso após um pequeno delay,
+    // igual ao padrão já usado na Ouvidoria do portal.
+    setTimeout(() => {
+      document.getElementById('card-form').style.display = 'none';
+      document.getElementById('card-sucesso').style.display = 'block';
+    }, 900);
+  }
+</script>
+</body>
+</html>
