@@ -321,7 +321,7 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0fb1cPABZ7AH6BfOnU
 function carregarFichas() {
   const lista = document.getElementById('lista-fichas');
   lista.innerHTML = '<div class="loading">Carregando fichas...</div>';
-  fetch(SCRIPT_URL)
+  fetch(SCRIPT_URL + '?acao=getFichas')
     .then(r => r.json())
     .then(data => {
       if (!data.fichas || data.fichas.length === 0) {
