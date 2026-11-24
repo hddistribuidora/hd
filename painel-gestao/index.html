@@ -105,7 +105,7 @@
 <div class="login-wrap" id="login-wrap">
   <div class="login-card">
     <h1>🔒 Painel de Gestão</h1>
-    <p>Indicadores de RH — acesso restrito ao RH e liderança autorizada.</p>
+    <p>Indicadores de RH — acesso restrito ao RH.</p>
     <div class="login-field">
       <label>Usuário</label>
       <input type="text" id="login-user" placeholder="usuário" onkeydown="if(event.key==='Enter')fazerLogin()"/>
@@ -116,6 +116,7 @@
     </div>
     <button class="btn-login" onclick="fazerLogin()">Entrar</button>
     <div class="login-erro" id="login-erro">Usuário ou senha incorretos.</div>
+    <p style="margin:14px 0 0;text-align:center;font-size:12px;"><a href="../dashboard/index.html#esqueci" style="color:var(--accent);">Esqueci minha senha</a></p>
   </div>
 </div>
 
@@ -152,6 +153,7 @@
 <script>
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwx1dgtUQRwO1nnUFvYg3YumEdWz5ll7f4y1eeogxhogYM0uVGLa5Xzc2ZYcOWIhp2p/exec';
   let usuarioLogado = null;
+  let sessaoToken = null;   // só na memória da página
 
   // ── LOGIN ─────────────────────────────────────────────────
   async function fazerLogin() {
@@ -159,17 +161,21 @@
     const pass = document.getElementById('login-pass').value.trim();
     if (!user || !pass) return;
     try {
-      const r = await fetch(`${SCRIPT_URL}?tipo=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&cb=${Date.now()}`, { cache: 'no-store' });
+      const r = await fetch(`${SCRIPT_URL}?acao=login&user=${encodeURIComponent(user)}&pass=${encodeURIComponent(pass)}&cb=${Date.now()}`, { cache: 'no-store' });
       const data = await r.json();
-      if (data.ok) {
-        usuarioLogado = data.user;
+      const erroEl = document.getElementById('login-erro');
+      if (data.ok && data.perfil === 'rh') {
+        usuarioLogado = data.nome || data.user;
+        sessaoToken = data.sessao;
+        erroEl.style.display = 'none';
         document.getElementById('login-wrap').style.display = 'none';
         document.getElementById('painel-wrap').style.display = 'block';
-        document.getElementById('header-user').textContent = data.user;
+        document.getElementById('header-user').textContent = usuarioLogado;
         montarSeletorAno();
         carregarDados();
       } else {
-        document.getElementById('login-erro').style.display = 'block';
+        erroEl.textContent = (data.ok && data.perfil !== 'rh') ? 'Este usuário não tem acesso ao Painel de Gestão (somente perfil RH).' : (data.erro || 'Usuário ou senha incorretos.');
+        erroEl.style.display = 'block';
       }
     } catch (e) {
       document.getElementById('login-erro').style.display = 'block';
@@ -178,6 +184,7 @@
 
   function sair() {
     usuarioLogado = null;
+    sessaoToken = null;
     document.getElementById('login-wrap').style.display = 'flex';
     document.getElementById('painel-wrap').style.display = 'none';
     document.getElementById('login-user').value = '';
@@ -201,8 +208,9 @@
     const ano = document.getElementById('filtro-ano').value;
     document.getElementById('conteudo').innerHTML = '<div class="loading">Carregando indicadores...</div>';
     try {
-      const r = await fetch(`${SCRIPT_URL}?tipo=painelGestao&ano=${ano}&cb=${Date.now()}`, { cache: 'no-store' });
+      const r = await fetch(`${SCRIPT_URL}?tipo=painelGestao&ano=${ano}&sessao=${encodeURIComponent(sessaoToken || '')}&cb=${Date.now()}`, { cache: 'no-store' });
       const d = await r.json();
+      if (d.semAcesso) { sair(); const e = document.getElementById('login-erro'); e.textContent = 'Sua sessão expirou. Entre novamente.'; e.style.display = 'block'; return; }
       if (d.erro) throw new Error(d.erro);
       renderPainel(d);
     } catch (e) {
