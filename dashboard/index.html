@@ -107,6 +107,33 @@ tr:hover td{background:#F7F9FD}
   .sec{font-size:.9rem;margin:1rem 0 .6rem}
   .badge{font-size:.6rem}
 }
+
+.authbar{margin-top:.6rem;padding-bottom:1rem;font-size:.82rem;display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.authbar .who{opacity:.9}
+.btn-auth{background:rgba(255,255,255,.14);border:1.5px solid rgba(255,255,255,.55);color:#fff;border-radius:8px;padding:5px 14px;font-family:"DM Sans",sans-serif;font-size:.8rem;font-weight:600;cursor:pointer}
+.btn-auth:hover{background:rgba(255,255,255,.26)}
+.lockbox{max-width:460px;margin:2.5rem auto;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem 1.75rem;text-align:center}
+.lockbox .ic{font-size:2rem;margin-bottom:.5rem}
+.lockbox h3{font-family:"Lora",serif;color:var(--dark);font-size:1.05rem;margin-bottom:.5rem}
+.lockbox p{color:var(--muted);font-size:.88rem;line-height:1.5;margin-bottom:1.1rem}
+.btn-main{background:var(--accent);color:#fff;border:none;border-radius:10px;padding:.65rem 1.4rem;font-family:"DM Sans",sans-serif;font-size:.9rem;font-weight:600;cursor:pointer}
+.btn-main:hover{background:var(--dark)}
+.btn-main:disabled{opacity:.6;cursor:default}
+.mask{position:fixed;inset:0;background:rgba(26,30,46,.55);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.mask.open{display:flex}
+.dlg{background:#fff;border-radius:var(--r);padding:2rem 1.75rem;width:100%;max-width:380px;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.dlg h2{font-family:"Lora",serif;font-size:1.2rem;color:var(--dark);margin-bottom:.3rem}
+.dlg .sub{font-size:.82rem;color:var(--hint);margin-bottom:1.2rem}
+.dlg label{display:block;font-size:.72rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:.8rem 0 .35rem}
+.dlg input{width:100%;padding:.65rem .8rem;border:1px solid var(--border);border-radius:8px;font-family:"DM Sans",sans-serif;font-size:.92rem;outline:none}
+.dlg input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(46,77,166,.12)}
+.dlg .row{display:flex;gap:10px;margin-top:1.2rem}
+.dlg .row button{flex:1}
+.btn-ghost{background:#fff;color:var(--accent);border:1.5px solid var(--border);border-radius:10px;padding:.65rem 1rem;font-family:"DM Sans",sans-serif;font-size:.9rem;font-weight:600;cursor:pointer}
+.dlg .msg{font-size:.82rem;margin-top:.9rem;min-height:1.1em}
+.dlg .msg.e{color:var(--danger)}.dlg .msg.o{color:var(--ok)}
+.dlg a.lnk{display:inline-block;margin-top:.9rem;font-size:.8rem;color:var(--accent);cursor:pointer;text-decoration:underline}
+@media print{.authbar,.mask,.lockbox .btn-main{display:none!important}}
 </style>
 </head>
 <body>
@@ -116,6 +143,7 @@ tr:hover td{background:#F7F9FD}
   <h1>Perfil da Equipe</h1>
   <p>Indicadores e composi&ccedil;&atilde;o da equipe da HD Distribuidora</p>
   <div class="upd" id="upd">Carregando...</div>
+  <div class="authbar" id="authbar"></div>
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('equipe',this)">&#128101; Equipe Ativa</button>
     <button class="tab-btn" onclick="switchTab('afastamentos',this)">&#128197; Afastamentos</button>
@@ -135,6 +163,7 @@ var MESES_ABREV=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','No
 var _afasGlobal=[], _desGlobal=[];
 
 function switchTab(id,btn){
+  TAB_ATUAL=id;
   document.querySelectorAll('.tab-panel').forEach(function(p){p.style.display='none';p.classList.remove('active');});
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
   var el=document.getElementById('tab-'+id);
@@ -424,32 +453,131 @@ function renderDesligados(raw){
     tabela;
 }
 
-// ── FETCH ─────────────────────────────────────────────────────────────────
-// JSONP — evita bloqueio CORS do Apps Script
-function handleData(j) {
-  if(j.erro){
-    document.getElementById('loading').innerHTML='<div class="err">Erro no script: '+j.erro+'</div>';
+// ── LOGIN + FETCH ─────────────────────────────────────────────────────────
+// Parte aberta (sem login): composição da equipe, só dados não sensíveis.
+// Afastamentos e desligados: só com login do RH, validado no backend.
+// A sessão fica apenas na memória da página (nada em disco).
+var SESSAO=null, NOME_LOGADO='', TAB_ATUAL='equipe';
+function esc(t){var d=document.createElement('div');d.textContent=String(t==null?'':t);return d.innerHTML;}
+function api(q){return fetch(SCRIPT_URL+'?'+q+'&cb='+Date.now(),{cache:'no-store'}).then(function(r){return r.json();});}
+
+function desenharAuth(){
+  var el=document.getElementById('authbar');
+  if(SESSAO){el.innerHTML='<span class="who">&#128274; '+esc(NOME_LOGADO)+' (RH)</span><button class="btn-auth" onclick="sair()">Sair</button>';}
+  else{el.innerHTML='<button class="btn-auth" onclick="abrirLogin()">&#128274; Entrar (RH)</button>';}
+}
+function caixaTrava(msg){
+  return '<div class="lockbox"><div class="ic">&#128274;</div><h3>Área restrita ao RH</h3><p>'+esc(msg)+'</p><button class="btn-main" onclick="abrirLogin()">Entrar</button></div>';
+}
+function abrirLogin(){mostrarLogin();document.getElementById('mask').classList.add('open');setTimeout(function(){document.getElementById('lg-user').focus();},50);}
+function fecharLogin(){document.getElementById('mask').classList.remove('open');}
+function mostrarLogin(){document.getElementById('dlg-login').style.display='block';document.getElementById('dlg-reset').style.display='none';}
+function mostrarReset(){document.getElementById('dlg-login').style.display='none';document.getElementById('dlg-reset').style.display='block';
+  document.getElementById('rs-passo2').style.display='none';document.getElementById('rs-btn').textContent='Enviar código';document.getElementById('rs-btn').dataset.passo='1';
+  document.getElementById('rs-msg').textContent='';document.getElementById('rs-user').value=document.getElementById('lg-user').value;}
+function setMsg(id,t,tipo){var m=document.getElementById(id);m.textContent=t||'';m.className='msg'+(tipo?' '+tipo:'');}
+
+function fazerLogin(){
+  var u=document.getElementById('lg-user').value.trim(), p=document.getElementById('lg-pass').value;
+  if(!u||!p){setMsg('lg-msg','Informe usuário e senha.','e');return;}
+  var b=document.getElementById('lg-btn');b.disabled=true;setMsg('lg-msg','Entrando...');
+  api('acao=login&user='+encodeURIComponent(u)+'&pass='+encodeURIComponent(p)).then(function(r){
+    b.disabled=false;
+    if(!r||!r.ok){setMsg('lg-msg',(r&&r.erro)||'Não foi possível entrar.','e');return;}
+    if(r.perfil!=='rh'){setMsg('lg-msg','Este usuário não tem acesso aos dados restritos (somente perfil RH).','e');return;}
+    SESSAO=r.sessao;NOME_LOGADO=r.nome||r.usuario;
+    document.getElementById('lg-pass').value='';setMsg('lg-msg','');
+    fecharLogin();desenharAuth();carregar();
+if(location.hash==='#esqueci'){document.getElementById('mask').classList.add('open');mostrarReset();}
+  }).catch(function(){b.disabled=false;setMsg('lg-msg','Falha de conexão. Tente de novo.','e');});
+}
+function sair(){SESSAO=null;NOME_LOGADO='';desenharAuth();carregar();}
+
+function passoReset(){
+  var btn=document.getElementById('rs-btn'), u=document.getElementById('rs-user').value.trim();
+  if(!u){setMsg('rs-msg','Informe o usuário.','e');return;}
+  btn.disabled=true;
+  if(btn.dataset.passo!=='2'){
+    setMsg('rs-msg','Enviando...');
+    api('acao=esqueci&user='+encodeURIComponent(u)).then(function(r){
+      btn.disabled=false;
+      setMsg('rs-msg',(r&&r.msg)||'Se o usuário existir, o código foi enviado ao e-mail do RH.','o');
+      document.getElementById('rs-passo2').style.display='block';btn.textContent='Definir nova senha';btn.dataset.passo='2';
+    }).catch(function(){btn.disabled=false;setMsg('rs-msg','Falha de conexão.','e');});
+  }else{
+    var c=document.getElementById('rs-cod').value.trim(), n=document.getElementById('rs-nova').value;
+    if(!c||!n){btn.disabled=false;setMsg('rs-msg','Informe o código e a nova senha.','e');return;}
+    setMsg('rs-msg','Salvando...');
+    api('acao=redefinir&user='+encodeURIComponent(u)+'&codigo='+encodeURIComponent(c)+'&nova='+encodeURIComponent(n)).then(function(r){
+      btn.disabled=false;
+      if(r&&r.ok){setMsg('rs-msg',r.msg||'Senha redefinida. Já pode entrar.','o');document.getElementById('lg-user').value=u;setTimeout(mostrarLogin,1400);}
+      else setMsg('rs-msg',(r&&r.erro)||'Código inválido ou expirado.','e');
+    }).catch(function(){btn.disabled=false;setMsg('rs-msg','Falha de conexão.','e');});
+  }
+}
+
+function handleData(j){
+  if(!j||j.ok===false||j.erro){
+    document.getElementById('loading').style.display='';
+    document.getElementById('loading').innerHTML='<div class="err">'+esc((j&&j.erro)||'Não foi possível carregar os dados.')+'</div>';
     return;
   }
   document.getElementById('loading').style.display='none';
   document.getElementById('upd').textContent='Atualizado: '+new Date().toLocaleString('pt-BR');
   renderEquipe(j.colaboradores||[]);
-  renderAfastamentos(j.afastamentos||[]);
-  renderDesligados(j.desligados||[]);
-  document.getElementById('tab-equipe').style.display='block';
-  document.getElementById('tab-equipe').classList.add('active');
+  if(j.restrito){
+    var msg=SESSAO?'Sua sessão expirou ou este usuário não tem perfil RH. Entre novamente com um usuário do RH.':'Afastamentos e desligados são dados sensíveis, visíveis apenas para o RH. Entre com seu usuário para ver.';
+    if(SESSAO){SESSAO=null;NOME_LOGADO='';desenharAuth();}
+    _afasGlobal=[];_desGlobal=[];
+    document.getElementById('tab-afastamentos').innerHTML=caixaTrava(msg);
+    document.getElementById('tab-desligados').innerHTML=caixaTrava(msg);
+  }else{
+    renderAfastamentos(j.afastamentos||[]);
+    renderDesligados(j.desligados||[]);
+  }
+  var btns=document.querySelectorAll('.tab-btn'), ids=['equipe','afastamentos','desligados'];
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.style.display='none';p.classList.remove('active');});
+  btns.forEach(function(b){b.classList.remove('active');});
+  var el=document.getElementById('tab-'+TAB_ATUAL);el.style.display='block';el.classList.add('active');
+  btns[ids.indexOf(TAB_ATUAL)].classList.add('active');
 }
-
-(function(){
-  var s=document.createElement('script');
-  s.src=SCRIPT_URL+'?callback=handleData';
-  s.onerror=function(){
-    document.getElementById('loading').innerHTML='<div class="err">Não foi possível carregar os dados.</div>';
-  };
-  document.body.appendChild(s);
-})();
+function carregar(){
+  api(SESSAO?'sessao='+encodeURIComponent(SESSAO):'v=1').then(handleData).catch(function(){
+    document.getElementById('loading').style.display='';
+    document.getElementById('loading').innerHTML='<div class="err">Não foi possível carregar os dados. Tente recarregar a página.</div>';
+  });
+}
+desenharAuth();carregar();
 </script>
 
+
+<div class="mask" id="mask">
+  <div class="dlg" id="dlg-login">
+    <h2>Acesso do RH</h2>
+    <div class="sub">Afastamentos e desligados são dados sensíveis, visíveis só para o RH.</div>
+    <label for="lg-user">Usuário</label>
+    <input type="text" id="lg-user" autocomplete="username" onkeydown="if(event.key==='Enter')fazerLogin()">
+    <label for="lg-pass">Senha</label>
+    <input type="password" id="lg-pass" autocomplete="current-password" onkeydown="if(event.key==='Enter')fazerLogin()">
+    <div class="msg" id="lg-msg"></div>
+    <div class="row"><button class="btn-ghost" onclick="fecharLogin()">Cancelar</button><button class="btn-main" id="lg-btn" onclick="fazerLogin()">Entrar</button></div>
+    <a class="lnk" onclick="mostrarReset()">Esqueci minha senha</a>
+  </div>
+  <div class="dlg" id="dlg-reset" style="display:none">
+    <h2>Redefinir senha</h2>
+    <div class="sub" id="rs-sub">Informe seu usuário. Um código de 6 dígitos será enviado ao e-mail do RH da HD.</div>
+    <label for="rs-user">Usuário</label>
+    <input type="text" id="rs-user" autocomplete="username">
+    <div id="rs-passo2" style="display:none">
+      <label for="rs-cod">Código recebido</label>
+      <input type="text" id="rs-cod" inputmode="numeric" maxlength="6" autocomplete="one-time-code">
+      <label for="rs-nova">Nova senha</label>
+      <input type="password" id="rs-nova" autocomplete="new-password">
+    </div>
+    <div class="msg" id="rs-msg"></div>
+    <div class="row"><button class="btn-ghost" onclick="mostrarLogin()">Voltar</button><button class="btn-main" id="rs-btn" onclick="passoReset()">Enviar código</button></div>
+  </div>
+</div>
 <button class="print-btn" onclick="imprimirDashboard()">&#128438; Imprimir / PDF</button>
 <script>
 function imprimirDashboard(){
